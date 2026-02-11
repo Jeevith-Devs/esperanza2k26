@@ -117,7 +117,7 @@ const MobileNav = ({ onRegister }: MobileNavProps) => {
     return (
         <>
             {/* Mobile Nav Toggle Bar */}
-            <div className={`fixed top-0 left-0 right-0 z-[100] p-4 flex justify-between items-center sm:hidden pointer-events-none transition-all duration-300 ${isOpen ? 'mix-blend-difference' : ''}`}>
+            <div className={`fixed top-0 left-0 right-0 z-[210] p-4 flex justify-between items-center md:hidden pointer-events-none transition-all duration-300 ${isOpen ? 'mix-blend-difference' : ''}`}>
                 {/* Logo - click through permitted */}
                 <Link href="/" className="pointer-events-auto">
                     <Image
@@ -149,10 +149,10 @@ const MobileNav = ({ onRegister }: MobileNavProps) => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                        className="fixed inset-0 z-[99] bg-black sm:hidden flex flex-col items-center justify-center overflow-hidden"
+                        className="fixed inset-0 z-[99] bg-black/80 backdrop-blur-xl md:hidden flex flex-col items-center justify-center overflow-hidden"
                     >
                         {/* Background Elements */}
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-900/20 via-black to-black" />
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-900/30 via-transparent to-transparent" />
 
                         {/* Content Container */}
                         <div className="relative flex flex-col h-full w-full max-w-sm mx-auto px-6 pt-32 pb-20 justify-center items-center">
