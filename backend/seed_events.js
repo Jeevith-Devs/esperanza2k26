@@ -24,7 +24,9 @@ const EventSchema = new mongoose.Schema({
     ticketTiers: [String],
     rules: [String],
     teamSize: String,
-    coordinatorPhone: String
+    coordinatorPhone: String,
+    entryFee: Number,
+    isPassEvent: { type: Boolean, default: true }
 });
 
 const EventModel = mongoose.model('Event', EventSchema);

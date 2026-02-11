@@ -156,7 +156,9 @@ const EventSchema = new mongoose.Schema({
   ticketTiers: [String],
   rules: [String],
   teamSize: String,
-  coordinatorPhone: String // Event coordinator contact number
+  coordinatorPhone: String, // Event coordinator contact number
+  entryFee: Number, // Cost for manual pricing
+  isPassEvent: { type: Boolean, default: true } // Toggle for pricing logic
 });
 const EventModel = mongoose.model('Event', EventSchema);
 
