@@ -26,8 +26,11 @@ interface Event {
 
 // Map backend 'Event' to frontend 'Event'
 const mapBackendEventToFrontend = (beEvent: any): Event => {
+  console.log(`Mapping event: ${beEvent.title}, entryFee: ${beEvent.entryFee}, type: ${typeof beEvent.entryFee}, isPassEvent: ${beEvent.isPassEvent}`);
+
   let fee = "Free";
-  if (beEvent.entryFee && Number(beEvent.entryFee) > 0) {
+  // Explicitly check for entryFee presence and value
+  if (beEvent.entryFee !== undefined && beEvent.entryFee !== null && Number(beEvent.entryFee) > 0) {
     fee = `₹ ${beEvent.entryFee} (Inc. GST)`;
   } else if (beEvent.ticketTiers && beEvent.ticketTiers.length > 0) {
     const tier = beEvent.ticketTiers[0];
@@ -45,10 +48,10 @@ const mapBackendEventToFrontend = (beEvent: any): Event => {
     id: beEvent.id || beEvent._id,
     title: beEvent.title,
     category: beEvent.category,
-    img: (beEvent.image?.type === 'image' ? beEvent.image.url : null) || "/images/events/default.jpg", // Fallback image
+    img: (beEvent.image?.type === 'image' ? beEvent.image.url : null) || "/images/events/default.jpg",
     desc: beEvent.description,
     rules: beEvent.rules || [],
-    contact: beEvent.coordinatorPhone || "Events Team", // Use coordinator phone if available
+    contact: beEvent.coordinatorPhone || "Events Team",
     videoSrc: beEvent.image?.type === 'video' ? beEvent.image.url : undefined,
     fee
   };

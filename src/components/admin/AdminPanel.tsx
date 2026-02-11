@@ -32,9 +32,9 @@ const emptyEvent: Event = {
     coordinatorPhone: '', // Event coordinator contact
     isPassEvent: true, // Default to Pass-based pricing
     ticketTiers: [],
-    entryFee: '',
+    entryFee: 0,
     rules: [],
-    maxSlots: '',
+    maxSlots: 100,
     registeredCount: 0
 };
 
