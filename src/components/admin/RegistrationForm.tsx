@@ -29,6 +29,24 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
     console.log('RegistrationForm - Event:', selectedEvent?.title);
     console.log('RegistrationForm - Team Size (raw):', selectedEvent?.teamSize);
     console.log('RegistrationForm - Max Team Size (parsed):', maxTeamSize);
+    
+    // Helper to calculate total including GST for the form
+    const calculateTotalFee = (feeStr: string | undefined): string => {
+        if (!feeStr) return "0";
+        // Extract the base number (first number found)
+        const baseMatch = feeStr.match(/\d+/);
+        if (!baseMatch) return feeStr;
+        
+        const base = parseInt(baseMatch[0]);
+        // If string contains '%', 'GST', or '+' we assume 18% GST needs to be added for the final total
+        if (feeStr.toLowerCase().includes('gst') || feeStr.includes('18%') || feeStr.includes('+')) {
+            const total = Math.round(base * 1.18);
+            return `₹${total}`;
+        }
+        
+        // If it's already a clean number, just add ₹
+        return feeStr.includes('₹') ? feeStr : `₹${feeStr}`;
+    };
 
     const [formData, setFormData] = useState({
         email,
@@ -200,8 +218,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                         <div className="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_15px_#A855F7] animate-pulse" />
                                         <p className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-[0.3em]">Official Entry Fee</p>
                                     </div>
-                                    <h3 className="text-5xl md:text-7xl font-black bg-gradient-to-b from-white via-[#C0C0C0] to-[#808080] bg-clip-text text-transparent font-bricolage tracking-tighter leading-none py-1">
-                                        ₹{selectedEvent?.entryFee || '0'}
+                                    <h3 className="text-4xl md:text-6xl font-black bg-gradient-to-b from-white via-[#C0C0C0] to-[#808080] bg-clip-text text-transparent font-bricolage tracking-tighter leading-none py-1">
+                                        {calculateTotalFee(selectedEvent?.entryFee)}
                                     </h3>
                                     <p className="text-[10px] md:text-xs text-zinc-500 font-bold uppercase tracking-[0.2em] flex items-center gap-2">
                                         <span className="w-8 h-[1px] bg-zinc-800" />

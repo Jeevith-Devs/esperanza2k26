@@ -1,6 +1,6 @@
 "use client";
 
-import { FaStar, FaMusic, FaFilm, FaCamera, FaMicrophone, FaMicrophoneAlt, FaArrowRight, FaDownload, FaPhone } from "react-icons/fa";
+import { FaStar, FaMusic, FaFilm, FaCamera, FaMicrophone, FaMicrophoneAlt, FaArrowRight, FaDownload, FaPhone, FaCreditCard } from "react-icons/fa";
 import React, { useRef, useState, useEffect } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import Header from "@/components/sections/header";
@@ -20,10 +20,10 @@ interface Event {
   desc: string;
   rules: string[];
   contact: string;
+  entryFee?: string;
   videoSrc?: string;
 }
 
-// Map backend 'Event' to frontend 'Event'
 // Map backend 'Event' to frontend 'Event'
 const mapBackendEventToFrontend = (beEvent: any): Event => {
 
@@ -35,6 +35,7 @@ const mapBackendEventToFrontend = (beEvent: any): Event => {
     desc: beEvent.description,
     rules: beEvent.rules || [],
     contact: beEvent.coordinatorPhone || "Events Team",
+    entryFee: beEvent.entryFee,
     videoSrc: beEvent.image?.type === 'video' ? beEvent.image.url : undefined
   };
 };
@@ -122,6 +123,7 @@ export default function EventsPage() {
       image: { url: evt.img, type: 'image' },
       participationType: 'Solo',
       ticketTiers: [],
+      entryFee: evt.entryFee,
       rules: evt.rules,
       maxSlots: 100,
       registeredCount: 0,
@@ -152,7 +154,7 @@ export default function EventsPage() {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={isHeroInView ? { opacity: 1, scale: 1 } : {}}
             transition={{ duration: 0.8 }}
-            className="text-[12vw] lg:text-[180px] font-black tracking-tight leading-none text-center select-none bg-gradient-to-b from-white via-[#C0C0C0] to-[#505050] bg-clip-text text-transparent mix-blend-screen drop-shadow-[0_0_30px_rgba(255,255,255,0.15)] uppercase font-bricolage px-4"
+            className="text-[12vw] lg:text-[180px] font-black tracking-tight leading-none text-center select-none bg-gradient-to-b from-white via-[#C0C0C0] to-purple-500 bg-clip-text text-transparent mix-blend-screen drop-shadow-[0_0_30px_rgba(255,255,255,0.15)] uppercase font-bricolage px-4"
             style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
           >
             EVENTS
@@ -246,70 +248,112 @@ export default function EventsPage() {
             className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-50 p-4"
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
               transition={{ type: "spring", damping: 25, stiffness: 300, mass: 0.5 }}
-              className="bg-[#0c0c0c] rounded-2xl w-full max-w-lg relative border-2 border-zinc-800 shadow-2xl flex flex-col font-inter overflow-hidden"
+              className="bg-[#0c0c0c] rounded-2xl w-full max-w-lg max-h-[85dvh] relative border-2 border-zinc-800 shadow-2xl flex flex-col font-inter overflow-hidden mx-auto mt-12"
               style={{ fontFamily: '"Inter", sans-serif' }}
             >
               {/* Close Button */}
               <button
                 onClick={() => setSelectedEvent(null)}
-                className="absolute top-4 right-4 z-10 h-10 w-10 flex items-center justify-center rounded-full bg-zinc-900/80 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors border-2 border-white/10"
+                className="absolute top-3 right-3 sm:top-4 sm:right-4 z-20 h-9 w-9 sm:h-10 sm:w-10 flex items-center justify-center rounded-full bg-zinc-900/80 text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors border-2 border-white/10"
               >
                 ✕
               </button>
 
               {/* Header Content */}
-              <div className="pt-10 px-6 sm:px-8 pb-4 text-left">
+              <div className="pt-8 sm:pt-10 px-5 sm:px-8 pb-4 text-left relative z-10">
                 <h2
-                  className="text-2xl lg:text-3xl font-medium text-white mb-2 leading-snug font-bricolage"
+                  className="text-xl sm:text-2xl lg:text-3xl font-black text-white mb-1 sm:mb-2 leading-tight font-bricolage pr-8"
                   style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
                 >
                   {selectedEvent.title}
                 </h2>
                 <p
-                  className="text-zinc-400 text-base font-bricolage"
+                  className="text-zinc-500 text-xs sm:text-sm font-bricolage uppercase tracking-wider"
                   style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
                 >
                   Event Details & Rules
                 </p>
               </div>
 
-              {/* Scrollable Rules */}
-              <div className="px-6 sm:px-8 overflow-y-auto max-h-[50vh] scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20 scrollbar-thumb-rounded-full">
-                <ul className="space-y-4 text-zinc-300 text-sm lg:text-base">
+              {/* Scrollable Rules Container */}
+              <div className="px-5 sm:px-8 overflow-y-auto flex-1 min-h-0 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20 scrollbar-thumb-rounded-full">
+                <ul className="space-y-3 sm:space-y-4 text-zinc-300 text-sm sm:text-base mb-6">
                   {selectedEvent.rules.map((rule, i) => (
                     <li key={i} className="flex items-start gap-3">
-                      <FaArrowRight className="h-5 w-5 text-orange-500 mt-0.5 shrink-0" />
+                      <FaArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-[#A855F7] mt-1 shrink-0" />
                       <span className="leading-relaxed">{rule}</span>
                     </li>
                   ))}
                 </ul>
 
-                <div className="mt-6 flex items-center gap-3 text-zinc-400 text-sm p-4 bg-zinc-900/30 rounded-lg border-2 border-white/5">
-                  <FaPhone className="h-4 w-4 text-zinc-400" />
-                  <span className="font-medium text-zinc-300">{selectedEvent.contact}</span>
+                {/* Contact Card (Coordinator) */}
+                <div className="mt-2 mb-4 flex items-center gap-3 text-zinc-400 text-xs sm:text-sm p-4 bg-zinc-900/30 rounded-xl border-2 border-white/5">
+                  <div className="bg-[#A855F7]/10 p-2 rounded-lg">
+                    <FaPhone className="h-4 w-4 text-[#A855F7]" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold font-bricolage">Coordinator</span>
+                    <span className="font-bold text-zinc-200">{selectedEvent.contact}</span>
+                  </div>
+                </div>
+
+                {/* Registration Fee Card */}
+                <div className="mb-4 flex items-center gap-3 text-zinc-400 text-xs sm:text-sm p-4 bg-zinc-900/30 rounded-xl border-2 border-white/5">
+                  <div className="bg-[#A855F7]/10 p-2 rounded-lg">
+                    <FaStar className="h-4 w-4 text-[#A855F7]" />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold font-bricolage">Registration Fee</span>
+                    <span className="font-bold text-zinc-200">
+                      {selectedEvent.entryFee ? (selectedEvent.entryFee.includes('₹') ? selectedEvent.entryFee : `₹${selectedEvent.entryFee}`) : '₹0'}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Payment Details Card */}
+                <div className="mb-6 p-4 sm:p-5 bg-zinc-900/40 rounded-xl border-2 border-white/10 space-y-4">
+                  <div className="flex items-center gap-3 text-zinc-400 text-xs sm:text-sm uppercase tracking-[0.2em] font-black font-bricolage">
+                    <FaCreditCard className="h-4 w-4 sm:h-5 sm:w-5 text-[#A855F7]" />
+                    <span>Payment Details</span>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold font-bricolage">Acc No:</p>
+                      <p className="text-base sm:text-lg font-black text-white font-bricolage tracking-tight leading-none break-all">
+                        15330400000010
+                      </p>
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold font-bricolage">IFSC:</p>
+                      <p className="text-base sm:text-lg font-black text-white font-bricolage tracking-tight leading-none">
+                        BARB0VJVELT
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               {/* Footer / Action */}
-              <div className="mt-6">
-                <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent mb-4" />
-                <div className="px-6 sm:px-8 pb-6 sm:pb-8 pt-2">
+              <div className="mt-auto">
+                <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+                <div className="px-5 sm:px-8 py-4 sm:py-6">
                   <button
                     onClick={handleRegisterForEvent}
                     className="w-full group relative flex items-center justify-between rounded-xl p-4 bg-zinc-800 hover:bg-zinc-800/80 transition-all duration-300 overflow-hidden cursor-pointer"
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-orange-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#A855F7]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <span
-                      className="font-medium text-white relative z-10 transition-colors group-hover:text-orange-400 font-bricolage"
+                      className="font-medium text-white relative z-10 transition-colors group-hover:text-[#A855F7] font-bricolage"
                       style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
                     >
                       Register Now
                     </span>
-                    <FaArrowRight className="h-5 w-5 text-zinc-400 group-hover:text-orange-500 transition-colors relative z-10" />
+                    <FaArrowRight className="h-5 w-5 text-zinc-400 group-hover:text-[#A855F7] transition-colors relative z-10" />
                   </button>
                 </div>
               </div>
