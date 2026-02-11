@@ -27,19 +27,18 @@ interface Event {
 // Map backend 'Event' to frontend 'Event'
 // Map backend 'Event' to frontend 'Event'
 const mapBackendEventToFrontend = (beEvent: any): Event => {
-  // console.log(`Mapping event: ${beEvent.title}, entryFee: ${beEvent.entryFee}, type: ${typeof beEvent.entryFee}, isPassEvent: ${beEvent.isPassEvent}`);
 
-  let fee = "Free";
-  const entryFee = Number(beEvent.entryFee);
+  let fee = `₹ ${beEvent.entryFee || 0} (included gst)`;
 
   // Priority 1: Check for explicit entryFee (Manual Price)
+  const entryFee = Number(beEvent.entryFee);
   if (!isNaN(entryFee) && entryFee > 0) {
     fee = `₹ ${entryFee} (included gst)`;
   }
-  // Priority 2: Check for Ticket Tiers (Pass Event)
+  // Priority 2: Check for Ticket Tiers (Pass Event) - ONLY if entry fee is not valid
   else if (beEvent.ticketTiers && beEvent.ticketTiers.length > 0) {
     const tier = beEvent.ticketTiers[0];
-    if (tier && typeof tier === 'string' && tier.toLowerCase() !== 'free') {
+    if (tier && typeof tier === 'string') {
       const numericPrice = parseFloat(tier.replace(/[^0-9.]/g, ''));
       if (!isNaN(numericPrice) && numericPrice > 0) {
         fee = `₹ ${numericPrice} (included gst)`;
