@@ -64,7 +64,6 @@ export default function Home() {
         <JuryReveal />
         <TeaserVideo />
         <Vistara />
-        <Sponsors />
         <Footer />
 
         {showTicketPortal && content && (
