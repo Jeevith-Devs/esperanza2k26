@@ -26,6 +26,7 @@ interface TeamMember {
   name: string;
   role: string;
   category: string;
+  subCategory?: string;
   image?: { url: string };
   order?: number;
 }
@@ -85,18 +86,10 @@ export default function TeamPage() {
             if (m.category === 'Faculty Coordinators') {
               getGroup('faculty', '').members.push(memberObj);
             } else if (m.category === 'Vistara Club Members') {
-              // For Vistara, maybe use role as sub-category if it looks like a club name? 
-              // Or just put them all in one big list?
-              // The current backend category is just 'Vistara Club Members'. 
-              // Front end expects groups like "Dance Club", "Music Club".
-              // If backend doesn't have that granularity yet, we might put them in a generic "Members" group
-              // or use the 'role' as a grouper if we enforce it. 
-              // For now, let's group by the backend category itself to show *something*.
-              getGroup('vistara', 'General Members').members.push(memberObj);
+              getGroup('vistara', m.subCategory || 'General Members').members.push(memberObj);
             } else {
-              // All others go to 'students' section, grouped by their backend category
-              // e.g. 'Student Coordinators', 'Technical Team', etc.
-              getGroup('students', m.category).members.push(memberObj);
+              // All others go to 'students' section, grouped by their backend category or subCategory
+              getGroup('students', m.subCategory || m.category).members.push(memberObj);
             }
           });
 
@@ -271,8 +264,8 @@ export default function TeamPage() {
                           initial={{ opacity: 0, y: 20 }}
                           whileInView={{ opacity: 1, y: 0 }}
                           viewport={{ once: true }}
-                          className="relative z-20 py-6 mb-12 md:mb-16"
-                        >                    <h2 className="text-3xl md:text-5xl font-black text-center text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 uppercase tracking-widest font-bricolage">
+                          className="relative z-20 py-6 mb-6 md:mb-10"
+                        >                    <h2 className="text-4xl md:text-6xl font-black text-center text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40 uppercase tracking-widest font-bricolage">
                             {sectionData.title}
                           </h2>
                         </motion.div>
@@ -284,6 +277,7 @@ export default function TeamPage() {
                               group={group}
                               // Use a calculated index to keep alternating sides somewhat consistent across sections
                               index={(sIndex * 10) + gIndex}
+                              sectionTitle={sectionData.title}
                             />
                           ))}
                         </div>
@@ -328,10 +322,12 @@ export default function TeamPage() {
 // CreditSection Component (Sticky Header Style)
 function CreditSection({
   group,
-  index
+  index,
+  sectionTitle
 }: {
   group: { category: string; members: Array<{ name: string; role?: string }> };
   index: number;
+  sectionTitle: string;
 }) {
   const icons = [Puzzle, Trophy, Smile, Gamepad2, DoorOpen, Box, LayoutGrid, Hash, Gem];
   const Icon = icons[index % icons.length];
@@ -354,10 +350,10 @@ function CreditSection({
         className={`absolute ${isLeft ? 'left-[-5%] md:left-[-10%]' : 'right-[-5%] md:right-[-10%]'} top-0 text-white/40 md:text-white/60 -z-10`}
         size={32}
       />
-      {/* Category Header (No longer sticky) */}
-      {group.category && (
-        <div className="relative z-20 mb-6 md:mb-10 mix-blend-difference">
-          <h3 className="text-xl md:text-3xl font-bold text-white/90 uppercase tracking-wider text-center">
+      {/* Category Header (No longer sticky) - Only show if different from Main Section Title */}
+      {group.category && group.category !== sectionTitle && (
+        <div className="relative z-20 mb-4 md:mb-6 mix-blend-difference">
+          <h3 className="text-2xl md:text-4xl font-bold text-white/90 uppercase tracking-wider text-center">
             {group.category}
           </h3>
         </div>

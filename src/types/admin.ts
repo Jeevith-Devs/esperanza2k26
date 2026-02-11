@@ -50,8 +50,9 @@ export interface TeamMember {
     _id?: string;
     id?: string;
     name: string;
-    role: string;
+    role?: string;
     category: string;
+    subCategory?: string;
     image: MediaAsset | null;
     isActive: boolean;
     instagram?: string;

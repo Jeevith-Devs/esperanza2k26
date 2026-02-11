@@ -12,8 +12,10 @@ import {
     FaFont,
     FaFileAlt,
     FaEye,
-    FaExternalLinkAlt
+    FaExternalLinkAlt,
+    FaGripVertical
 } from 'react-icons/fa';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { FileUploader } from './FileUploader';
 import config from '../../config';
 import { Content, Event, TeamMember, Registration, MediaAsset } from '../../types/admin';
@@ -42,6 +44,7 @@ const emptyTeamMember: TeamMember = {
     name: '',
     role: '',
     category: 'Volunteers / Core Committee',
+    subCategory: '',
     image: null,
     instagram: '',
     linkedin: '',
@@ -53,10 +56,23 @@ const teamCategories = [
     'Faculty Coordinators',
     'Student Coordinators',
     'Vistara Club Members',
-    'Cultural Team',
-    'Technical Team',
-    'Design & Media Team',
-    'Volunteers / Core Committee'
+    'Volunteers'
+];
+
+const roleOptions = [
+    'President',
+    'General Secretary',
+    'Secretary'
+];
+
+const subCategoryOptions = [
+    'Core Team',
+    'Tech Club',
+    'Music Club',
+    'Dance Club',
+    'Compering Club',
+    'Media Club',
+    'Fashion Club'
 ];
 
 interface AdminPanelProps {
@@ -363,16 +379,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
     };
 
     const handleDeleteTeamMember = async (id: string) => {
+        if (!id) {
+            alert("This member cannot be deleted yet. Please refresh the page and try again.");
+            return;
+        }
         if (window.confirm("Are you sure you want to delete this team member?")) {
             const updatedTeam = teamMembers.filter((m) => (m._id || m.id) !== id);
             setTeamMembers(updatedTeam);
             await saveTeamToBackend(updatedTeam);
+            await fetchTeamMembers();
         }
     };
 
     const handleSaveTeamMember = async () => {
-        if (!newTeamMember.name || !newTeamMember.role) {
-            alert("Name and Role are required!");
+        if (!newTeamMember.name) {
+            alert("Name is required!");
             return;
         }
 
@@ -382,13 +403,33 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                 (m._id || m.id) === editingTeamId ? { ...newTeamMember, _id: editingTeamId } : m
             );
         } else {
-            updatedTeam = [...teamMembers, { ...newTeamMember }];
+            // Append new member to the END of the list with correct order
+            const newOrder = teamMembers.length;
+            updatedTeam = [...teamMembers, { ...newTeamMember, order: newOrder }];
         }
 
         setTeamMembers(updatedTeam);
         await saveTeamToBackend(updatedTeam);
+        await fetchTeamMembers();
         alert("Team Member Saved!");
         cancelTeamEdit();
+    };
+
+    const handleOnDragEnd = async (result: DropResult) => {
+        if (!result.destination) return;
+
+        const items = Array.from(teamMembers);
+        const [reorderedItem] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, reorderedItem);
+
+        // Update order property based on new index
+        const updatedItems = items.map((item, index) => ({
+            ...item,
+            order: index
+        }));
+
+        setTeamMembers(updatedItems);
+        await saveTeamToBackend(updatedItems);
     };
 
     return (
@@ -602,14 +643,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                         </div>
 
                                         {/* Individual Event Cards */}
-                                        {events.map(event => {
+                                        {events.map((event, index) => {
                                             const eventRegs = registrations.filter(r => r.eventId === event.id);
                                             const verifiedCount = eventRegs.filter(r => r.isActive).length;
                                             const pendingCount = eventRegs.length - verifiedCount;
 
                                             return (
                                                 <div
-                                                    key={event.id}
+                                                    key={event.id || index}
                                                     onClick={() => setSelectedEventFilter(event.id)}
                                                     className="bg-[#1a1a1a] border border-white/10 rounded-xl p-6 cursor-pointer hover:border-purple-500/50 hover:scale-105 transition-all group"
                                                 >
@@ -660,8 +701,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                             {(selectedEventFilter === 'all-list'
                                                 ? registrations
                                                 : registrations.filter(r => r.eventId === selectedEventFilter)
-                                            ).map(reg => (
-                                                <tr key={reg._id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                                            ).map((reg, index) => (
+                                                <tr key={reg._id || index} className="border-b border-white/5 hover:bg-white/5 transition-colors">
                                                     <td className="p-3 font-medium">{reg.name}</td>
                                                     <td className="p-3 text-sm text-gray-400">{reg.college}</td>
                                                     <td className="p-3 text-sm text-purple-400">{reg.eventName || 'N/A'}</td>
@@ -713,13 +754,17 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                     />
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-gray-400 text-sm">Role / Designation</label>
+                                    <label className="text-gray-400 text-sm">Role / Designation (Optional)</label>
                                     <input
                                         type="text"
+                                        list="roleOptionsList"
                                         value={newTeamMember.role}
                                         onChange={(e) => setNewTeamMember({ ...newTeamMember, role: e.target.value })}
                                         className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
                                     />
+                                    <datalist id="roleOptionsList">
+                                        {roleOptions.map(role => <option key={role} value={role} />)}
+                                    </datalist>
                                 </div>
                             </div>
 
@@ -732,6 +777,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                 >
                                     {teamCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                                 </select>
+                            </div>
+                            
+                            <div className="space-y-2">
+                                <label className="text-gray-400 text-sm">Sub Category (Optional)</label>
+                                <input
+                                    type="text"
+                                    list="subCategoryOptionsList"
+                                    placeholder="Ex: Core Team, Lead, etc."
+                                    value={newTeamMember.subCategory || ''}
+                                    onChange={(e) => setNewTeamMember({ ...newTeamMember, subCategory: e.target.value })}
+                                    className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
+                                />
+                                <datalist id="subCategoryOptionsList">
+                                    {subCategoryOptions.map(sub => <option key={sub} value={sub} />)}
+                                </datalist>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -1035,8 +1095,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {events.map((event) => (
-                                    <div key={event.id} className="bg-[#1a1a1a] border border-white/5 rounded-xl overflow-hidden group hover:border-purple-500/50 transition-colors">
+                                {events.map((event, index) => (
+                                    <div key={event.id || index} className="bg-[#1a1a1a] border border-white/5 rounded-xl overflow-hidden group hover:border-purple-500/50 transition-colors">
                                         <div className="h-40 bg-black/50 relative overflow-hidden">
                                             {event.image?.url ? (
                                                 <img src={event.image.url} alt={event.title} className="w-full h-full object-cover" />
@@ -1077,23 +1137,53 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                     <FaPlus size={18} /> Add Member
                                 </button>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                                {teamMembers.map((member) => (
-                                    <div key={member._id} className="bg-[#1a1a1a] border border-white/5 rounded-xl p-4 flex items-center gap-4 group">
-                                        <div className={`w-12 h-12 rounded-full overflow-hidden border-2 ${member.isActive ? 'border-green-500' : 'border-gray-600'}`}>
-                                            {member.image?.url ? <img src={member.image.url} alt={member.name} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gray-700" />}
+                            <DragDropContext onDragEnd={handleOnDragEnd}>
+                                <Droppable droppableId="team-members">
+                                    {(provided) => (
+                                        <div
+                                            {...provided.droppableProps}
+                                            ref={provided.innerRef}
+                                            className="space-y-2"
+                                        >
+                                            {teamMembers.map((member, index) => (
+                                                <Draggable
+                                                    key={member._id || member.id || index}
+                                                    draggableId={member._id || member.id || String(index)}
+                                                    index={index}
+                                                >
+                                                    {(provided) => (
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                            className="bg-[#1a1a1a] border border-white/5 rounded-lg p-3 flex items-center gap-4 group hover:border-purple-500/50 transition-colors cursor-move"
+                                                        >
+                                                            <div className="text-gray-600 hover:text-white cursor-grab active:cursor-grabbing px-2">
+                                                                <FaGripVertical />
+                                                            </div>
+                                                            <div className={`w-10 h-10 rounded-full overflow-hidden border-2 flex-shrink-0 ${member.isActive ? 'border-green-500' : 'border-gray-600'}`}>
+                                                                {member.image?.url ? <img src={member.image.url} alt={member.name} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gray-700" />}
+                                                            </div>
+                                                            <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+                                                                <h4 className="font-bold text-white text-sm truncate">{member.name}</h4>
+                                                                <p className="text-xs text-gray-400 truncate hidden md:block">{member.role || '-'}</p>
+                                                                <span className="text-xs bg-white/5 text-purple-300 px-2 py-1 rounded truncate hidden md:inline-block w-fit text-center">
+                                                                    {member.subCategory || member.category}
+                                                                </span>
+                                                            </div>
+                                                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                <button onClick={() => handleEditTeamMember(member)} className="p-2 hover:bg-white/10 rounded text-gray-300 hover:text-white"><FaFont size={14} /></button>
+                                                                <button onClick={() => handleDeleteTeamMember(member._id!)} className="p-2 hover:bg-red-500/20 rounded text-red-400"><FaTrash size={14} /></button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </Draggable>
+                                            ))}
+                                            {provided.placeholder}
                                         </div>
-                                        <div className="flex-1 min-w-0">
-                                            <h4 className="font-bold text-white text-sm truncate">{member.name}</h4>
-                                            <p className="text-xs text-gray-400 truncate">{member.role}</p>
-                                        </div>
-                                        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button onClick={() => handleEditTeamMember(member)} className="p-1.5 hover:bg-white/10 rounded text-gray-300 hover:text-white"><FaFont size={14} /></button>
-                                            <button onClick={() => handleDeleteTeamMember(member._id!)} className="p-1.5 hover:bg-red-500/20 rounded text-red-400"><FaTrash size={14} /></button>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                                    )}
+                                </Droppable>
+                            </DragDropContext>
                         </div>
                     )}
 

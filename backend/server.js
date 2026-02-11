@@ -186,11 +186,8 @@ const ContentModel = mongoose.model('Content', ContentSchema);
 const TeamMemberSchema = new mongoose.Schema({
   name: String,
   role: String,
-  category: {
-    type: String,
-    enum: ['Faculty Coordinators', 'Student Coordinators', 'Vistara Club Members', 'Cultural Team', 'Technical Team', 'Design & Media Team', 'Volunteers / Core Committee'],
-    default: 'Volunteers / Core Committee'
-  },
+  category: { type: String, required: false }, // Explicitly allow any string
+  subCategory: { type: String, required: false },
   image: MediaAssetSchema, // Re-added image field
   isActive: { type: Boolean, default: true },
   instagram: String,
