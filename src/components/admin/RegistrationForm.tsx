@@ -511,6 +511,13 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                     <FaCreditCard className="text-purple-500" /> Payment Details
                                 </label>
                                 <div className="bg-black/40 p-4 md:p-6 rounded-lg border border-white/5 space-y-4">
+                                    {selectedEvent?.entryFee && selectedEvent.entryFee > 0 && (
+                                        <div className="p-3 bg-purple-900/20 border border-purple-500/50 rounded-lg text-center mb-4">
+                                            <p className="text-purple-300 text-xs font-bold uppercase tracking-wider mb-1">Amount to Pay</p>
+                                            <p className="text-2xl md:text-3xl text-white font-bold font-mono">₹ {selectedEvent.entryFee}</p>
+                                            <p className="text-xs text-gray-400 mt-1">(Inclusive of GST)</p>
+                                        </div>
+                                    )}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
                                             <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">ACC NO:</p>

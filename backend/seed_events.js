@@ -143,7 +143,9 @@ const events = [
         time: "10:00 AM",
         registeredCount: 0,
         maxSlots: 40,
-        ticketTiers: ["Free"]
+        ticketTiers: [],
+        entryFee: 354,
+        isPassEvent: false
     },
     {
         id: "6",
@@ -163,7 +165,9 @@ const events = [
         time: "04:00 PM",
         registeredCount: 0,
         maxSlots: 20,
-        ticketTiers: ["Free"]
+        ticketTiers: [],
+        entryFee: 354,
+        isPassEvent: false
     }
 ];
 

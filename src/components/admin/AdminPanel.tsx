@@ -848,7 +848,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                             type="checkbox"
                                             className="toggle-checkbox hidden"
                                             checked={!!newEvent.isPassEvent}
-                                            onChange={(e) => setNewEvent({ ...newEvent, isPassEvent: e.target.checked })}
+                                            onChange={(e) => {
+                                                const isPass = e.target.checked;
+                                                let fee = newEvent.entryFee;
+                                                if (!isPass) {
+                                                    // Auto-set standard fees when switching to manual
+                                                    fee = newEvent.participationType === 'Team' ? 354 : 118;
+                                                }
+                                                setNewEvent({ ...newEvent, isPassEvent: isPass, entryFee: fee });
+                                            }}
                                         />
                                         <div className={`w-12 h-6 rounded-full p-1 transition-colors ${newEvent.isPassEvent ? 'bg-purple-600' : 'bg-gray-600'}`}>
                                             <div className={`w-4 h-4 bg-white rounded-full transition-transform ${newEvent.isPassEvent ? 'translate-x-6' : 'translate-x-0'}`} />
@@ -945,7 +953,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                 type="radio"
                                                 checked={newEvent.participationType === 'Solo'}
                                                 onChange={() =>
-                                                    setNewEvent({ ...newEvent, participationType: 'Solo', teamSize: '' })}
+                                                    setNewEvent({
+                                                        ...newEvent,
+                                                        participationType: 'Solo',
+                                                        teamSize: '',
+                                                        // Auto-update fee if manual pricing is active
+                                                        entryFee: !newEvent.isPassEvent ? 118 : newEvent.entryFee
+                                                    })}
                                                 className="accent-purple-500"
                                             />
                                             <span className="text-white">Solo</span>
@@ -955,7 +969,12 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                 type="radio"
                                                 checked={newEvent.participationType === 'Team'}
                                                 onChange={() =>
-                                                    setNewEvent({ ...newEvent, participationType: 'Team' })}
+                                                    setNewEvent({
+                                                        ...newEvent,
+                                                        participationType: 'Team',
+                                                        // Auto-update fee if manual pricing is active
+                                                        entryFee: !newEvent.isPassEvent ? 354 : newEvent.entryFee
+                                                    })}
                                                 className="accent-purple-500"
                                             />
                                             <span className="text-white">Team</span>
