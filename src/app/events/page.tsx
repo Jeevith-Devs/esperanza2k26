@@ -31,7 +31,7 @@ const mapBackendEventToFrontend = (beEvent: any): Event => {
     id: beEvent.id || beEvent._id,
     title: beEvent.title,
     category: beEvent.category,
-    img: (beEvent.image?.type === 'image' ? beEvent.image.url : null) || "/images/events/default.jpg",
+    img: (beEvent.image?.type === 'image' ? beEvent.image.url : null) || "/assets/mascot/mascot_normal.svg",
     desc: beEvent.description,
     rules: beEvent.rules || [],
     contact: beEvent.coordinatorPhone || "Events Team",
@@ -198,7 +198,8 @@ export default function EventsPage() {
         <div className="relative inline-block group">
           {/* Main Button Container */}
           <a
-            href="#"
+            href="/brochure/Esperanza-Brochure.pdf"
+            download="Esperanza-Brochure.pdf"
             target="_blank"
             rel="noopener noreferrer"
             className="relative px-6 py-3 md:px-12 md:py-5 rounded-full block overflow-hidden transform hover:scale-[1.02] transition-transform duration-300"

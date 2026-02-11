@@ -14,6 +14,7 @@ import { ArrowRight, Repeat2 } from "lucide-react";
 import { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { useInView } from "framer-motion";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export interface CardFlipProps {
   title?: string;
@@ -39,14 +40,15 @@ export default function CardFlip({
   const [isFlipped, setIsFlipped] = useState(false);
   const containerRef = useRef(null);
   const isInView = useInView(containerRef, { once: true, margin: "100px" });
+  const isMobile = useIsMobile();
 
   return (
     <div
       ref={containerRef}
       className="group relative h-[380px] w-full [perspective:2000px]"
-      onMouseEnter={() => setIsFlipped(true)}
-      onMouseLeave={() => setIsFlipped(false)}
-      onClick={() => setIsFlipped(true)}
+      onMouseEnter={() => !isMobile && setIsFlipped(true)}
+      onMouseLeave={() => !isMobile && setIsFlipped(false)}
+      onClick={() => setIsFlipped((prev) => !prev)}
     >
       <div
         className={cn(
@@ -64,7 +66,7 @@ export default function CardFlip({
             "[backface-visibility:hidden] [transform:rotateY(0deg)]",
             "overflow-hidden rounded-2xl",
             "bg-gradient-to-br from-white/20 via-zinc-500/20 to-purple-500/20", // Premium Gradient Border
-            "p-[1.5px]", // Slightly thinner border for elegance
+            "p-[2px]", // border-2
             "shadow-xl shadow-purple-500/5",
             "transition-all duration-700",
             "group-hover:shadow-purple-500/10",
@@ -158,7 +160,7 @@ export default function CardFlip({
           className={cn(
             "absolute inset-0 h-full w-full",
             "[backface-visibility:hidden] [transform:rotateY(180deg)]",
-            "rounded-2xl p-[1.5px]", 
+            "rounded-2xl p-[2px]", 
             "bg-gradient-to-br from-white/20 via-zinc-500/20 to-purple-500/20",
             "shadow-xl shadow-purple-500/5",
             "flex flex-col",
