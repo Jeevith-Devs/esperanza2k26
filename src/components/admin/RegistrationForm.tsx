@@ -518,7 +518,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                         </div>
                                         <div>
                                             <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">IFSC:</p>
-                                            <p className="text-xl md:text-2xl font-bold text-white font-mono tracking-wide">BARB0VJVELT</p>
+                                            <p className="text-xl md:text-2xl font-bold text-white font-mono tracking-wide">BARBOVJVELT</p>
                                         </div>
                                     </div>
                                 </div>
