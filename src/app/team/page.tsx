@@ -42,7 +42,7 @@ interface TeamSection {
 }
 
 type TeamSections = Record<string, TeamSection>;
-type SectionKey = 'faculty' | 'students' | 'vistara';
+type SectionKey = 'faculty' | 'students' | 'vistara' | 'volunteers';
 
 export default function TeamPage() {
   const [teamSections, setTeamSections] = useState<TeamSections | null>(null);
@@ -67,7 +67,8 @@ export default function TeamPage() {
           const sections: TeamSections = {
             faculty: { title: "Faculty Coordinators", groups: [] },
             students: { title: "Student Coordinators", groups: [] },
-            vistara: { title: "Vistara Club Members", groups: [] }
+            vistara: { title: "Vistara Club Members", groups: [] },
+            volunteers: { title: "Volunteers", groups: [] }
           };
 
           // Helper to find or create group
@@ -87,6 +88,8 @@ export default function TeamPage() {
               getGroup('faculty', '').members.push(memberObj);
             } else if (m.category === 'Vistara Club Members') {
               getGroup('vistara', m.subCategory || 'General Members').members.push(memberObj);
+            } else if (m.category === 'Volunteers' || m.category === 'Volunteers / Core Committee') {
+              getGroup('volunteers', '').members.push(memberObj);
             } else {
               // All others go to 'students' section, grouped by their backend category or subCategory
               getGroup('students', m.subCategory || m.category).members.push(memberObj);
@@ -171,7 +174,7 @@ export default function TeamPage() {
     return () => clearTimeout(timer);
   }, []); // Run only once
 
-  const sections: SectionKey[] = ['faculty', 'students', 'vistara'];
+  const sections: SectionKey[] = ['faculty', 'students', 'vistara', 'volunteers'];
 
   return (
     <div className="relative min-h-screen bg-black text-white overflow-hidden caret-transparent">

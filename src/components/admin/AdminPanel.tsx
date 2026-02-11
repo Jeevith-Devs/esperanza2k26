@@ -43,7 +43,7 @@ const emptyEvent: Event = {
 const emptyTeamMember: TeamMember = {
     name: '',
     role: '',
-    category: 'Volunteers / Core Committee',
+    category: 'Volunteers',
     subCategory: '',
     image: null,
     instagram: '',
