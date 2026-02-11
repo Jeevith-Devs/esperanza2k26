@@ -69,7 +69,7 @@ const Footer = ({ onBackToTop }: { onBackToTop?: () => void }) => {
         {/* Cinematic Title */}
         <motion.div variants={itemVariants} className="mb-10 md:mb-16 flex justify-center">
           <h1
-            className="text-[11vw] lg:text-[180px] font-black tracking-tight leading-none text-center select-none bg-gradient-to-b from-white via-[#C0C0C0] to-purple-500 bg-clip-text text-transparent mix-blend-screen drop-shadow-[0_0_30px_rgba(255,255,255,0.15)] uppercase font-bricolage px-2"
+            className="text-[11vw] lg:text-[180px] font-black tracking-tight leading-none text-center select-none bg-gradient-to-b from-white via-[#C0C0C0] to-[#505050] bg-clip-text text-transparent mix-blend-screen drop-shadow-[0_0_30px_rgba(255,255,255,0.15)] uppercase font-bricolage px-2"
             style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
           >
             Esperanza&apos;26

@@ -41,11 +41,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
         // If string contains '%', 'GST', or '+' we assume 18% GST needs to be added for the final total
         if (feeStr.toLowerCase().includes('gst') || feeStr.includes('18%') || feeStr.includes('+')) {
             const total = Math.round(base * 1.18);
-            return `₹${total}`;
+            return `₹ ${total}`;
         }
         
         // If it's already a clean number, just add ₹
-        return feeStr.includes('₹') ? feeStr : `₹${feeStr}`;
+        return feeStr.includes('₹') ? feeStr.replace('₹', '₹ ') : `₹ ${feeStr}`;
     };
 
     const [formData, setFormData] = useState({
@@ -211,25 +211,50 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                     <form onSubmit={handleSubmit} className="p-4 md:p-8 space-y-6 md:space-y-10">
                         {/* Premium Registration Fee Card */}
                         <div className="relative group overflow-hidden px-1">
-                            <div className="absolute inset-0 bg-gradient-to-br from-purple-600/5 via-transparent to-white/5 opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
-                            <div className="relative bg-[#0a0a0a]/40 backdrop-blur-md border-2 border-zinc-800/50 rounded-2xl p-6 md:p-8 flex items-center justify-between shadow-[0_0_50px_-12px_rgba(0,0,0,0.5)]">
-                                <div className="space-y-3">
-                                    <div className="flex items-center gap-2">
-                                        <div className="w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_15px_#A855F7] animate-pulse" />
-                                        <p className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-[0.3em]">Official Entry Fee</p>
+                            {/* Animated Background Glows */}
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/10 blur-[60px] animate-pulse" />
+                            <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-600/10 blur-[60px] animate-pulse delay-700" />
+                            
+                            <div className="relative bg-[#0d0d0d]/80 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 md:p-10 flex flex-col md:flex-row items-center justify-between shadow-[0_20px_50px_-15px_rgba(0,0,0,0.7)] overflow-hidden">
+                                {/* Subtle Grid Pattern Overlay */}
+                                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
+                                
+                                <div className="space-y-4 relative z-10 w-full md:w-auto">
+                                    <div className="flex items-center gap-3">
+                                        <div className="relative">
+                                            <div className="w-2.5 h-2.5 rounded-full bg-purple-500 shadow-[0_0_20px_#A855F7] animate-pulse" />
+                                            <div className="absolute inset-0 w-full h-full rounded-full bg-purple-500/50 animate-ping" />
+                                        </div>
+                                        <p className="text-[10px] md:text-xs font-black text-purple-400 uppercase tracking-[0.4em] drop-shadow-sm">Official Entry Fee</p>
                                     </div>
-                                    <h3 className="text-4xl md:text-6xl font-black bg-gradient-to-b from-white via-[#C0C0C0] to-[#808080] bg-clip-text text-transparent font-bricolage tracking-tighter leading-none py-1">
-                                        {calculateTotalFee(selectedEvent?.entryFee)}
-                                    </h3>
-                                    <p className="text-[10px] md:text-xs text-zinc-500 font-bold uppercase tracking-[0.2em] flex items-center gap-2">
-                                        <span className="w-8 h-[1px] bg-zinc-800" />
-                                        Valid for 1 {selectedEvent?.participationType === 'Solo' ? 'Person' : 'Team'}
-                                    </p>
+                                    
+                                    <div className="relative inline-block">
+                                        <h3 className="text-5xl md:text-8xl font-black bg-gradient-to-b from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent font-bricolage tracking-tighter leading-none py-1 drop-shadow-2xl">
+                                            {calculateTotalFee(selectedEvent?.entryFee)}
+                                        </h3>
+                                        <div className="absolute -bottom-1 left-0 w-full h-[2px] bg-gradient-to-r from-purple-500/0 via-purple-500/40 to-purple-500/0" />
+                                    </div>
+
+                                    <div className="flex flex-col gap-1">
+                                        <p className="text-[10px] md:text-xs text-zinc-400 font-bold uppercase tracking-[0.2em] flex items-center gap-2">
+                                            <span className="w-10 h-[1px] bg-zinc-800" />
+                                            Valid for 1 {selectedEvent?.participationType === 'Solo' ? 'Person' : 'Team'}
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="relative group/icon">
-                                    <div className="absolute -inset-4 bg-purple-500/10 blur-2xl rounded-full opacity-0 group-hover/icon:opacity-100 transition-opacity duration-500" />
-                                    <div className="relative bg-gradient-to-br from-zinc-800/50 to-zinc-950 p-5 md:p-6 rounded-2xl border-2 border-white/10 shadow-2xl transform group-hover/icon:scale-110 transition-transform duration-500">
-                                        <FaCreditCard className="text-zinc-400 group-hover:text-white transition-colors text-3xl md:text-4xl" />
+
+                                {/* Premium Visual Element (Right Side) */}
+                                <div className="hidden md:flex flex-col items-end text-right gap-4 relative z-10">
+                                    <div className="relative group/icon">
+                                        <div className="absolute -inset-4 bg-purple-500/20 blur-2xl rounded-full opacity-0 group-hover/icon:opacity-100 transition-opacity duration-500" />
+                                        <div className="relative bg-gradient-to-br from-white/10 to-white/5 p-6 rounded-2xl border border-white/20 shadow-2xl transform group-hover/icon:scale-110 transition-all duration-500 backdrop-blur-xl">
+                                            <FaCreditCard className="text-white text-4xl" />
+                                        </div>
+                                    </div>
+                                    <div className="text-[10px] text-zinc-500 font-bold tracking-widest uppercase flex items-center gap-2">
+                                        <span>Official</span>
+                                        <div className="w-1 h-1 rounded-full bg-zinc-700" />
+                                        <span>Secure</span>
                                     </div>
                                 </div>
                             </div>

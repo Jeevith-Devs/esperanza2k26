@@ -72,8 +72,6 @@ interface MobileNavProps {
 }
 
 const MobileNav = ({ onRegister }: MobileNavProps) => {
-    const [isOpen, setIsOpen] = useState(false);
-
     const navLinks = [
         { name: 'HOME', href: '/' },
         { name: 'EVENTS', href: '/events' },
@@ -100,6 +98,17 @@ const MobileNav = ({ onRegister }: MobileNavProps) => {
         }
     ];
 
+    const [isOpen, setIsOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
     const toggleMenu = () => setIsOpen(!isOpen);
 
     // Prevent scrolling when menu is open
@@ -117,26 +126,26 @@ const MobileNav = ({ onRegister }: MobileNavProps) => {
     return (
         <>
             {/* Mobile Nav Toggle Bar */}
-            <div className={`fixed top-0 left-0 right-0 z-[210] p-4 flex justify-between items-center md:hidden pointer-events-none transition-all duration-300 ${isOpen ? 'mix-blend-difference' : ''}`}>
+            <div className={`fixed top-0 left-0 right-0 z-[210] p-4 flex justify-between items-center md:hidden transition-all duration-300 ${isOpen ? 'mix-blend-difference' : ''} ${scrolled ? 'bg-black/60 backdrop-blur-xl border-b border-white/5 py-3' : 'bg-transparent pointer-events-none'}`}>
                 {/* Logo - click through permitted */}
-                <Link href="/" className="pointer-events-auto">
+                <Link href="/" className="pointer-events-auto transition-transform active:scale-95">
                     <Image
                         src="/logo.svg"
                         alt="Esperanza Logo"
                         width={100}
                         height={40}
-                        className="w-[100px] h-auto object-contain drop-shadow-lg"
+                        className={`w-[90px] h-auto object-contain drop-shadow-lg transition-all ${scrolled ? 'opacity-100' : 'opacity-90'}`}
                     />
                 </Link>
 
                 {/* Menu Button - click through permitted */}
                 <button
                     onClick={toggleMenu}
-                    className="pointer-events-auto relative group p-3 rounded-full bg-black/50 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all active:scale-95"
+                    className={`pointer-events-auto relative group p-2.5 rounded-full transition-all active:scale-90 ${scrolled ? 'bg-white/10 hover:bg-white/20 border border-white/20' : 'bg-black/40 backdrop-blur-md border border-white/10'}`}
                     aria-label="Toggle menu"
                 >
-                    <div className="relative w-6 h-6 flex flex-col justify-center items-center gap-1.5 overflow-hidden">
-                        {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+                    <div className="relative w-5 h-5 flex flex-col justify-center items-center overflow-hidden text-white">
+                        {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
                     </div>
                 </button>
             </div>
