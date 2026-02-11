@@ -24,7 +24,6 @@ export interface CardFlipProps {
   onAction?: () => void;
   videoSrc?: string;
   imageSrc?: string;
-  fee?: string;
 }
 
 export default function CardFlip({
@@ -36,7 +35,6 @@ export default function CardFlip({
   onAction,
   videoSrc,
   imageSrc,
-  fee,
 }: CardFlipProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const containerRef = useRef(null);
@@ -139,16 +137,7 @@ export default function CardFlip({
                   >
                     {subtitle}
                   </p>
-                  {fee && (
-                    <p className={cn(
-                      "text-sm font-semibold tracking-wide transition-all delay-[75ms] duration-500 ease-out-expo group-hover:translate-y-[-4px]",
-                      "text-orange-500 font-bricolage"
-                    )}
-                      style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
-                    >
-                      {fee}
-                    </p>
-                  )}
+
                 </div>
                 <div className="group/icon relative">
                   <div

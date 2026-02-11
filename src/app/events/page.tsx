@@ -21,32 +21,11 @@ interface Event {
   rules: string[];
   contact: string;
   videoSrc?: string;
-  fee: string;
 }
 
 // Map backend 'Event' to frontend 'Event'
 // Map backend 'Event' to frontend 'Event'
 const mapBackendEventToFrontend = (beEvent: any): Event => {
-
-  let fee = `₹ ${beEvent.entryFee || 0} (included gst)`;
-
-  // Priority 1: Check for explicit entryFee (Manual Price)
-  const entryFee = Number(beEvent.entryFee);
-  if (!isNaN(entryFee) && entryFee > 0) {
-    fee = `₹ ${entryFee} (included gst)`;
-  }
-  // Priority 2: Check for Ticket Tiers (Pass Event) - ONLY if entry fee is not valid
-  else if (beEvent.ticketTiers && beEvent.ticketTiers.length > 0) {
-    const tier = beEvent.ticketTiers[0];
-    if (tier && typeof tier === 'string') {
-      const numericPrice = parseFloat(tier.replace(/[^0-9.]/g, ''));
-      if (!isNaN(numericPrice) && numericPrice > 0) {
-        fee = `₹ ${numericPrice} (included gst)`;
-      } else {
-        fee = tier;
-      }
-    }
-  }
 
   return {
     id: beEvent.id || beEvent._id,
@@ -56,8 +35,7 @@ const mapBackendEventToFrontend = (beEvent: any): Event => {
     desc: beEvent.description,
     rules: beEvent.rules || [],
     contact: beEvent.coordinatorPhone || "Events Team",
-    videoSrc: beEvent.image?.type === 'video' ? beEvent.image.url : undefined,
-    fee
+    videoSrc: beEvent.image?.type === 'video' ? beEvent.image.url : undefined
   };
 };
 
@@ -206,7 +184,6 @@ export default function EventsPage() {
                   onAction={() => setSelectedEvent(event)}
                   videoSrc={event.videoSrc}
                   imageSrc={event.img}
-                  fee={event.fee}
                 />
               </div>
             ))

@@ -52,7 +52,6 @@ const events = [
         registeredCount: 0,
         maxSlots: 50,
         ticketTiers: [],
-        entryFee: 354,
         isPassEvent: false
     },
     {
@@ -75,7 +74,6 @@ const events = [
         registeredCount: 0,
         maxSlots: 50,
         ticketTiers: [],
-        entryFee: 118,
         isPassEvent: false
     },
     {
@@ -98,7 +96,6 @@ const events = [
         registeredCount: 0,
         maxSlots: 30,
         ticketTiers: [],
-        entryFee: 354,
         isPassEvent: false
     },
     {
@@ -121,7 +118,6 @@ const events = [
         registeredCount: 0,
         maxSlots: 50,
         ticketTiers: [],
-        entryFee: 118,
         isPassEvent: false
     },
     {
@@ -144,7 +140,6 @@ const events = [
         registeredCount: 0,
         maxSlots: 40,
         ticketTiers: [],
-        entryFee: 354,
         isPassEvent: false
     },
     {
@@ -166,7 +161,6 @@ const events = [
         registeredCount: 0,
         maxSlots: 20,
         ticketTiers: [],
-        entryFee: 354,
         isPassEvent: false
     }
 ];

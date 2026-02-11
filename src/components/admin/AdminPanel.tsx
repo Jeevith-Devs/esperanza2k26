@@ -32,7 +32,6 @@ const emptyEvent: Event = {
     coordinatorPhone: '', // Event coordinator contact
     isPassEvent: true, // Default to Pass-based pricing
     ticketTiers: [],
-    entryFee: 0,
     rules: [],
     maxSlots: 100,
     registeredCount: 0
@@ -288,7 +287,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
             registeredCount: event.registeredCount || 0,
             // Ensure defaults for new fields
             isPassEvent: event.isPassEvent !== undefined ? event.isPassEvent : true,
-            entryFee: event.entryFee || 0
         });
         setEditingId(event.id);
         setIsAddingEvent(true);
@@ -836,83 +834,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                 />
                             </div>
 
-                            {/* --- NEW PRICING TOGGLE --- */}
-                            <div className="p-4 bg-[#1a1a1a] rounded-xl border border-white/5 space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <h4 className="font-bold text-white text-sm uppercase tracking-wider text-purple-400">
-                                        Event Pricing Logic
-                                    </h4>
-                                    <label className="flex items-center gap-2 cursor-pointer">
-                                        <span className="text-sm text-gray-400">{newEvent.isPassEvent ? 'Pass-Based (Tiered)' : 'Manual Price'}</span>
-                                        <input
-                                            type="checkbox"
-                                            className="toggle-checkbox hidden"
-                                            checked={!!newEvent.isPassEvent}
-                                            onChange={(e) => {
-                                                const isPass = e.target.checked;
-                                                let fee = newEvent.entryFee;
-                                                if (!isPass) {
-                                                    // Auto-set standard fees when switching to manual
-                                                    fee = newEvent.participationType === 'Team' ? 354 : 118;
-                                                }
-                                                setNewEvent({ ...newEvent, isPassEvent: isPass, entryFee: fee });
-                                            }}
-                                        />
-                                        <div className={`w-12 h-6 rounded-full p-1 transition-colors ${newEvent.isPassEvent ? 'bg-purple-600' : 'bg-gray-600'}`}>
-                                            <div className={`w-4 h-4 bg-white rounded-full transition-transform ${newEvent.isPassEvent ? 'translate-x-6' : 'translate-x-0'}`} />
-                                        </div>
-                                    </label>
-                                </div>
 
-                                {newEvent.isPassEvent ? (
-                                    /* SHOW TICKET TIERS */
-                                    <div className="space-y-3">
-                                        <label className="text-xs text-gray-400">Select which passes grant access to this event:</label>
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                            {['Diamond', 'Gold', 'Silver'].map((tier) => (
-                                                <label
-                                                    key={tier}
-                                                    className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition-all ${newEvent.ticketTiers.includes(tier)
-                                                        ? 'bg-purple-900/20 border-purple-500'
-                                                        : 'bg-[#222] border-white/5 hover:border-white/20'
-                                                        }`}
-                                                >
-                                                    <div
-                                                        className={`w-5 h-5 rounded flex items-center justify-center border ${newEvent.ticketTiers.includes(tier)
-                                                            ? 'bg-purple-600 border-purple-600'
-                                                            : 'border-gray-500'
-                                                            }`}
-                                                    >
-                                                        {newEvent.ticketTiers.includes(tier) && <FaCheck size={12} className="text-white" />}
-                                                    </div>
-                                                    <input
-                                                        type="checkbox"
-                                                        className="hidden"
-                                                        checked={newEvent.ticketTiers.includes(tier)}
-                                                        onChange={() => toggleTicketTier(tier)}
-                                                    />
-                                                    <div>
-                                                        <span className="text-white font-bold block">{tier} Pass</span>
-                                                        <span className="text-gray-500 text-xs">Allow access</span>
-                                                    </div>
-                                                </label>
-                                            ))}
-                                        </div>
-                                    </div>
-                                ) : (
-                                    /* SHOW MANUAL PRICE INPUT */
-                                    <div className="space-y-2">
-                                        <label className="text-gray-400 text-sm">Entry Fee (₹)</label>
-                                        <input
-                                            type="number"
-                                            value={newEvent.entryFee}
-                                            onChange={(e) => setNewEvent({ ...newEvent, entryFee: parseInt(e.target.value) || 0 })}
-                                            className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
-                                            placeholder="0 for Free"
-                                        />
-                                    </div>
-                                )}
-                            </div>
 
                             <div className="p-4 bg-[#1a1a1a] rounded-xl border border-white/5 space-y-4">
                                 <h4 className="font-bold text-white text-sm uppercase tracking-wider text-purple-400 flex items-center gap-2">
@@ -956,9 +878,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                     setNewEvent({
                                                         ...newEvent,
                                                         participationType: 'Solo',
-                                                        teamSize: '',
-                                                        // Auto-update fee if manual pricing is active
-                                                        entryFee: !newEvent.isPassEvent ? 118 : newEvent.entryFee
+                                                        teamSize: ''
                                                     })}
                                                 className="accent-purple-500"
                                             />
@@ -971,9 +891,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                 onChange={() =>
                                                     setNewEvent({
                                                         ...newEvent,
-                                                        participationType: 'Team',
-                                                        // Auto-update fee if manual pricing is active
-                                                        entryFee: !newEvent.isPassEvent ? 354 : newEvent.entryFee
+                                                        participationType: 'Team'
                                                     })}
                                                 className="accent-purple-500"
                                             />
