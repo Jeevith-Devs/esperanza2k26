@@ -170,8 +170,8 @@ export default function CardFlip({
           )}
         >
           <div className="relative h-full w-full rounded-[14px] bg-[#0c0c0c] p-6 flex flex-col">
-            <div className="flex-1 space-y-5">
-              <div className="space-y-2">
+            <div className="flex-1 flex flex-col min-h-0 space-y-4">
+              <div className="space-y-2 shrink-0">
                 <h3 className="font-bold text-xl lg:text-2xl leading-snug tracking-tight transition-all duration-500 ease-out-expo group-hover:translate-y-[-2px] bg-gradient-to-b from-white via-[#C0C0C0] to-purple-500 bg-clip-text text-transparent">
                   {title}
                 </h3>
@@ -183,7 +183,7 @@ export default function CardFlip({
                 </p>
               </div>
 
-              <div className="space-y-3 overflow-y-auto max-h-[150px] pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20 scrollbar-thumb-rounded-full" style={{ fontFamily: '"Inter", sans-serif' }}>
+              <div className="space-y-3 overflow-y-auto flex-1 min-h-0 pr-2 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20 scrollbar-thumb-rounded-full" style={{ fontFamily: '"Inter", sans-serif' }}>
                 {features.map((feature, index) => (
                   <div
                     className="flex items-start gap-2 text-sm lg:text-base text-zinc-300 transition-all duration-500"
