@@ -1,6 +1,9 @@
 "use client";
 
+
 import React, { useState, useRef, useEffect } from 'react';
+import { TEAM_DATA } from '@/data/team';
+
 import { motion, AnimatePresence, useAnimationFrame } from 'framer-motion';
 import Footer from '@/components/sections/footer';
 import Header from '@/components/sections/header';
@@ -19,7 +22,7 @@ import {
 } from 'lucide-react';
 
 
-import config from '@/config';
+
 
 interface TeamMember {
   _id: string;
@@ -54,62 +57,40 @@ export default function TeamPage() {
   const resumeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const fetchTeam = async () => {
-      try {
-        const res = await fetch(`${config.API_URL}/team`);
-        const data = await res.json();
-
-        if (data.success && Array.isArray(data.data)) {
-          const members: TeamMember[] = data.data;
-
-          // Initialize structure
-          const sections: TeamSections = {
-            faculty: { title: "Faculty Coordinators", groups: [] },
-            students: { title: "Student Coordinators", groups: [] },
-            vistara: { title: "Vistara Club Members", groups: [] }
-          };
-
-          // Helper to find or create group
-          const getGroup = (sectionKey: string, categoryName: string) => {
-            let group = sections[sectionKey].groups.find(g => g.category === categoryName);
-            if (!group) {
-              group = { category: categoryName, members: [] };
-              sections[sectionKey].groups.push(group);
-            }
-            return group;
-          };
-
-          members.forEach(m => {
-            const memberObj = { name: m.name, role: m.role };
-
-            if (m.category === 'Faculty Coordinators') {
-              getGroup('faculty', '').members.push(memberObj);
-            } else if (m.category === 'Vistara Club Members') {
-              // For Vistara, maybe use role as sub-category if it looks like a club name? 
-              // Or just put them all in one big list?
-              // The current backend category is just 'Vistara Club Members'. 
-              // Front end expects groups like "Dance Club", "Music Club".
-              // If backend doesn't have that granularity yet, we might put them in a generic "Members" group
-              // or use the 'role' as a grouper if we enforce it. 
-              // For now, let's group by the backend category itself to show *something*.
-              getGroup('vistara', 'General Members').members.push(memberObj);
-            } else {
-              // All others go to 'students' section, grouped by their backend category
-              // e.g. 'Student Coordinators', 'Technical Team', etc.
-              getGroup('students', m.category).members.push(memberObj);
-            }
-          });
-
-          setTeamSections(sections);
-        }
-      } catch (err) {
-        console.error("Failed to fetch team:", err);
-      } finally {
-        setLoading(false);
-      }
+    // Determine sections based on static data
+    const sections: TeamSections = {
+      faculty: { title: "Faculty Coordinators", groups: [] },
+      // We will put Core Team in 'students' for now as the main leadership
+      students: { title: "Student Coordinators", groups: [] },
+      // Clubs go here
+      vistara: { title: "Club Members", groups: [] }
     };
 
-    fetchTeam();
+    // Helper to find or create group
+    const getGroup = (sectionKey: string, categoryName: string) => {
+      let group = sections[sectionKey].groups.find(g => g.category === categoryName);
+      if (!group) {
+        group = { category: categoryName, members: [] };
+        sections[sectionKey].groups.push(group);
+      }
+      return group;
+    };
+
+    // Populate sections from static data
+    TEAM_DATA.forEach(m => {
+      const memberObj = { name: m.name, role: m.role };
+
+      if (m.category === "Core Team") {
+        // Core Team goes to 'students' section (Student Coordinators)
+        getGroup('students', "Core Team").members.push(memberObj);
+      } else {
+        // All other clubs go to 'vistara' section (Club Members)
+        getGroup('vistara', m.category).members.push(memberObj);
+      }
+    });
+
+    setTeamSections(sections);
+    setLoading(false);
   }, []);
 
 
