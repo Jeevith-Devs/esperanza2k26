@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaCloudUploadAlt, FaCheck, FaSpinner, FaPlus, FaTrash } from 'react-icons/fa';
+import { FaCloudUploadAlt, FaCheck, FaSpinner, FaPlus, FaTrash, FaCreditCard } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import config from '../../config';
 import { Event } from '../../types/admin';
@@ -507,22 +507,20 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                         {/* Payment Section - Common for both */}
                         <div className="grid grid-cols-1 gap-3 md:gap-6">
                             <div className="space-y-2">
-                                <label className="text-xs md:text-sm font-bold text-gray-500 uppercase">Payment Information</label>
-                                <div className="bg-black/40 p-3 md:p-4 rounded-lg border border-white/5 space-y-3">
-                                    {qrCodeUrl && (
-                                        <div className="flex justify-center">
-                                            <div className="bg-white p-2 rounded-lg">
-                                                <img src={qrCodeUrl} alt="Payment QR" className="w-28 h-28 md:w-32 md:h-32 object-contain" />
-                                            </div>
+                                <label className="text-xs md:text-sm font-bold text-gray-500 uppercase flex items-center gap-2">
+                                    <FaCreditCard className="text-purple-500" /> Payment Details
+                                </label>
+                                <div className="bg-black/40 p-4 md:p-6 rounded-lg border border-white/5 space-y-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div>
+                                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">ACC NO:</p>
+                                            <p className="text-xl md:text-2xl font-bold text-white font-mono tracking-wide">15330400000010</p>
                                         </div>
-                                    )}
-                                    {upiId && (
-                                        <div className="text-center">
-                                            <p className="text-xs text-gray-400 mb-1">UPI ID</p>
-                                            <p className="font-mono text-sm md:text-base text-purple-300 select-all break-all px-2">{upiId}</p>
+                                        <div>
+                                            <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">IFSC:</p>
+                                            <p className="text-xl md:text-2xl font-bold text-white font-mono tracking-wide">BARB0VJVELT</p>
                                         </div>
-                                    )}
-                                    <p className="text-xs text-gray-500 text-center">Scan QR or use UPI ID to make payment</p>
+                                    </div>
                                 </div>
                             </div>
                             <div className="space-y-2">

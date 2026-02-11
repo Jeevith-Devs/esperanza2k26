@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FaCheck, FaCloudUploadAlt, FaArrowRight, FaShieldAlt, FaTimes, FaQrcode } from 'react-icons/fa';
+import { FaCheck, FaCloudUploadAlt, FaArrowRight, FaShieldAlt, FaTimes, FaCreditCard } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface TicketPrices {
@@ -168,21 +168,20 @@ export const TicketPortal: React.FC<TicketPortalProps> = ({ prices, upiId, qrCod
                                             </p>
                                         </div>
 
-                                        {qrCodeUrl && (
-                                            <div className="flex justify-center mb-4">
-                                                <div className="bg-white p-2 rounded-lg">
-                                                    <img src={qrCodeUrl} alt="Payment QR" className="w-32 h-32 object-contain" />
+                                        <div className="mt-6 bg-black/40 p-4 rounded-lg border border-white/5 space-y-4 text-left">
+                                            <div className="flex items-center gap-2 mb-2 border-b border-white/10 pb-2">
+                                                <FaCreditCard className="text-purple-500" />
+                                                <span className="text-sm font-bold text-gray-300 uppercase">Bank Transfer</span>
+                                            </div>
+                                            <div className="grid grid-cols-1 gap-4">
+                                                <div>
+                                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">ACC NO:</p>
+                                                    <p className="text-xl font-bold text-white font-mono tracking-wide">15330400000010</p>
                                                 </div>
-                                            </div>
-                                        )}
-
-                                        <div className="flex items-center justify-center gap-2 bg-white/5 p-3 rounded-lg border border-white/5">
-                                            <div className="w-8 h-8 rounded-full bg-purple-900/50 flex items-center justify-center">
-                                                <FaQrcode size={16} className="text-purple-400" />
-                                            </div>
-                                            <div>
-                                                <p className="text-xs text-gray-400">UPI ID</p>
-                                                <p className="font-mono text-sm text-purple-300 select-all">{upiId}</p>
+                                                <div>
+                                                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">IFSC:</p>
+                                                    <p className="text-xl font-bold text-white font-mono tracking-wide">BARB0VJVELT</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
