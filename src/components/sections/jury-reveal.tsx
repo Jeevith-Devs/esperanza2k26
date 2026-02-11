@@ -36,7 +36,7 @@ const JuryReveal = () => {
                     Event Jury
                 </motion.h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 md:gap-12 w-full px-4">
+                <div className="flex flex-wrap justify-center gap-8 md:gap-12 w-full px-4">
                     {juryEvents.map((event, index) => (
                         <motion.div
                             key={event.id}
