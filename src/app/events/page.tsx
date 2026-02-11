@@ -31,13 +31,13 @@ const mapBackendEventToFrontend = (beEvent: any): Event => {
   let fee = "Free";
   // Explicitly check for entryFee presence and value
   if (beEvent.entryFee !== undefined && beEvent.entryFee !== null && Number(beEvent.entryFee) > 0) {
-    fee = `₹ ${beEvent.entryFee} (Inc. GST)`;
+    fee = `₹ ${beEvent.entryFee} (included gst)`;
   } else if (beEvent.ticketTiers && beEvent.ticketTiers.length > 0) {
     const tier = beEvent.ticketTiers[0];
     if (tier && typeof tier === 'string' && tier.toLowerCase() !== 'free') {
       const numericPrice = parseFloat(tier.replace(/[^0-9.]/g, ''));
       if (!isNaN(numericPrice) && numericPrice > 0) {
-        fee = `₹ ${numericPrice} (Inc. GST)`;
+        fee = `₹ ${numericPrice} (included gst)`;
       } else {
         fee = tier;
       }

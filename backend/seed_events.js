@@ -51,7 +51,9 @@ const events = [
         time: "10:00 AM",
         registeredCount: 0,
         maxSlots: 50,
-        ticketTiers: ["Free"]
+        ticketTiers: [],
+        entryFee: 354,
+        isPassEvent: false
     },
     {
         id: "2",
@@ -72,7 +74,9 @@ const events = [
         time: "11:00 AM",
         registeredCount: 0,
         maxSlots: 50,
-        ticketTiers: ["Free"]
+        ticketTiers: [],
+        entryFee: 118,
+        isPassEvent: false
     },
     {
         id: "3",
@@ -93,7 +97,9 @@ const events = [
         time: "12:00 PM",
         registeredCount: 0,
         maxSlots: 30,
-        ticketTiers: ["Free"]
+        ticketTiers: [],
+        entryFee: 354,
+        isPassEvent: false
     },
     {
         id: "4",
@@ -114,7 +120,9 @@ const events = [
         time: "02:00 PM",
         registeredCount: 0,
         maxSlots: 50,
-        ticketTiers: ["Free"]
+        ticketTiers: [],
+        entryFee: 118,
+        isPassEvent: false
     },
     {
         id: "5",
