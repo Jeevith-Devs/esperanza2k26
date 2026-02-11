@@ -72,8 +72,6 @@ interface MobileNavProps {
 }
 
 const MobileNav = ({ onRegister }: MobileNavProps) => {
-    const [isOpen, setIsOpen] = useState(false);
-
     const navLinks = [
         { name: 'HOME', href: '/' },
         { name: 'EVENTS', href: '/events' },
@@ -83,22 +81,32 @@ const MobileNav = ({ onRegister }: MobileNavProps) => {
 
     const socialAssets = [
         {
-            name: 'Facebook',
-            url: 'https://www.facebook.com/VibranceVIT/',
-            icon: 'https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/94edbd09-30bd-4628-aeb9-93e9fb6900f8-vitvibrance-com/assets/svgs/fb-colored_5fd5ff7a-13.svg'
+          name: 'vistara',
+          url: 'https://www.instagram.com/vistara_vtmt/',
+          icon: '/vistara.svg'
         },
         {
-            name: 'Instagram',
-            url: 'https://www.instagram.com/vibrancevitchennai/',
-            icon: 'https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/94edbd09-30bd-4628-aeb9-93e9fb6900f8-vitvibrance-com/assets/svgs/insta-colored_b7ce9091-14.svg'
+          name: 'Instagram',
+          url: 'http://instagram.com/esperanza_2k26_/',
+          icon: 'https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/94edbd09-30bd-4628-aeb9-93e9fb6900f8-vitvibrance-com/assets/svgs/insta-colored_b7ce9091-14.svg'
         },
-
         {
-            name: 'X',
-            url: 'https://x.com/vibrancevit',
-            icon: 'https://vitvibrance.com/_next/static/media/X.8c0fc61f.svg'
-        }
+          name: 'vtmt',
+          url: 'https://www.veltechmultitech.org/',
+          icon: '/vtmt.ico'
+        },
     ];
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -117,26 +125,26 @@ const MobileNav = ({ onRegister }: MobileNavProps) => {
     return (
         <>
             {/* Mobile Nav Toggle Bar */}
-            <div className={`fixed top-0 left-0 right-0 z-[100] p-4 flex justify-between items-center sm:hidden pointer-events-none transition-all duration-300 ${isOpen ? 'mix-blend-difference' : ''}`}>
+            <div className={`fixed top-0 left-0 right-0 z-[210] p-4 flex justify-between items-center md:hidden transition-all duration-300 ${isOpen ? 'mix-blend-difference' : ''} ${scrolled ? 'bg-black/60 backdrop-blur-xl border-b border-white/5 py-3' : 'bg-transparent pointer-events-none'}`}>
                 {/* Logo - click through permitted */}
-                <Link href="/" className="pointer-events-auto">
+                <Link href="/" className="pointer-events-auto transition-transform active:scale-95">
                     <Image
                         src="/logo.svg"
                         alt="Esperanza Logo"
                         width={100}
                         height={40}
-                        className="w-[100px] h-auto object-contain drop-shadow-lg"
+                        className={`w-[90px] h-auto object-contain drop-shadow-lg transition-all ${scrolled ? 'opacity-100' : 'opacity-90'}`}
                     />
                 </Link>
 
                 {/* Menu Button - click through permitted */}
                 <button
                     onClick={toggleMenu}
-                    className="pointer-events-auto relative group p-3 rounded-full bg-black/50 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all active:scale-95"
+                    className={`pointer-events-auto relative group p-2.5 rounded-full transition-all active:scale-90 ${scrolled ? 'bg-white/10 hover:bg-white/20 border border-white/20' : 'bg-black/40 backdrop-blur-md border border-white/10'}`}
                     aria-label="Toggle menu"
                 >
-                    <div className="relative w-6 h-6 flex flex-col justify-center items-center gap-1.5 overflow-hidden">
-                        {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
+                    <div className="relative w-5 h-5 flex flex-col justify-center items-center overflow-hidden text-white">
+                        {isOpen ? <FaTimes size={20} /> : <FaBars size={20} />}
                     </div>
                 </button>
             </div>
@@ -149,10 +157,10 @@ const MobileNav = ({ onRegister }: MobileNavProps) => {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.95 }}
                         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                        className="fixed inset-0 z-[99] bg-black sm:hidden flex flex-col items-center justify-center overflow-hidden"
+                        className="fixed inset-0 z-[99] bg-black/80 backdrop-blur-xl md:hidden flex flex-col items-center justify-center overflow-hidden"
                     >
                         {/* Background Elements */}
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-900/20 via-black to-black" />
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-purple-900/30 via-transparent to-transparent" />
 
                         {/* Content Container */}
                         <div className="relative flex flex-col h-full w-full max-w-sm mx-auto px-6 pt-32 pb-20 justify-center items-center">

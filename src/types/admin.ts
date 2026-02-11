@@ -42,6 +42,7 @@ export interface Event {
     isPassEvent?: boolean; // New toggle
     ticketTiers: string[];
     // Manual pricing
+    entryFee?: string;
     rules: string[];
 }
 

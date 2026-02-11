@@ -32,6 +32,7 @@ const emptyEvent: Event = {
     coordinatorPhone: '', // Event coordinator contact
     isPassEvent: true, // Default to Pass-based pricing
     ticketTiers: [],
+    entryFee: '',
     rules: [],
     maxSlots: 100,
     registeredCount: 0
@@ -287,6 +288,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
             registeredCount: event.registeredCount || 0,
             // Ensure defaults for new fields
             isPassEvent: event.isPassEvent !== undefined ? event.isPassEvent : true,
+            entryFee: event.entryFee || '',
         });
         setEditingId(event.id);
         setIsAddingEvent(true);
@@ -910,6 +912,61 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                         </div>
                                     )}
                                 </div>
+                            
+                            {/* --- PRICING & PASSES --- */}
+                            <div className="p-4 bg-[#1a1a1a] rounded-xl border border-white/5 space-y-4">
+                                <h4 className="font-bold text-white text-sm uppercase tracking-wider text-purple-400">
+                                    Pricing & Passes
+                                </h4>
+                                
+                                <div className="flex items-center justify-between p-3 bg-[#222] rounded-lg border border-white/5">
+                                    <div>
+                                        <h5 className="font-bold text-sm text-white">Use Pass System?</h5>
+                                        <p className="text-[10px] text-gray-500 uppercase tracking-tighter font-black">Link this event to Diamond/Gold/Silver passes</p>
+                                    </div>
+                                    <label className="relative inline-flex items-center cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            className="sr-only peer"
+                                            checked={newEvent.isPassEvent}
+                                            onChange={(e) => setNewEvent({ ...newEvent, isPassEvent: e.target.checked })}
+                                        />
+                                        <div className="w-11 h-6 bg-gray-700 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
+                                    </label>
+                                </div>
+
+                                {newEvent.isPassEvent ? (
+                                    <div className="space-y-3">
+                                        <label className="text-gray-400 text-xs uppercase font-bold">Select Applicable Passes:</label>
+                                        <div className="flex flex-wrap gap-3">
+                                            {['Diamond', 'Gold', 'Silver'].map((tier) => (
+                                                <button
+                                                    key={tier}
+                                                    onClick={() => toggleTicketTier(tier)}
+                                                    className={`px-4 py-2 rounded-lg text-sm font-bold border transition-all ${
+                                                        newEvent.ticketTiers?.includes(tier)
+                                                            ? 'bg-purple-600 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                                                            : 'bg-white/5 border-white/10 text-gray-400 hover:border-white/20'
+                                                    }`}
+                                                >
+                                                    {tier}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div className="space-y-2">
+                                        <label className="text-gray-400 text-sm">Entry Fee (Manual)</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Ex: 100 + 18% (GST)"
+                                            value={newEvent.entryFee || ''}
+                                            onChange={(e) => setNewEvent({ ...newEvent, entryFee: e.target.value })}
+                                            className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
+                                        />
+                                    </div>
+                                )}
+                            </div>
                             </div>
 
                             <div className="space-y-2">
