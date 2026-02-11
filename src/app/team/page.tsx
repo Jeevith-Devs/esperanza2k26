@@ -1,5 +1,6 @@
 "use client";
 
+
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useAnimationFrame } from 'framer-motion';
 import Footer from '@/components/sections/footer';
@@ -17,9 +18,8 @@ import {
   Hash,
   Gem
 } from 'lucide-react';
-
-
 import config from '@/config';
+
 
 interface TeamMember {
   _id: string;
@@ -81,7 +81,7 @@ export default function TeamPage() {
           };
 
           members.forEach(m => {
-            const memberObj = { name: m.name, role: m.role };
+            const memberObj = { name: m.name, role: m.role || '' }; // Ensure role is string
 
             if (m.category === 'Faculty Coordinators') {
               getGroup('faculty', '').members.push(memberObj);
@@ -426,4 +426,3 @@ function FloatingIcon({
     </motion.div>
   );
 }
-
