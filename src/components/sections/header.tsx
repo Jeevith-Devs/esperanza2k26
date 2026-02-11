@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 
+import Link from "next/link";
+
 interface HeaderProps {
   isOpaque?: boolean;
   onRegister?: () => void;
@@ -44,17 +46,17 @@ const Header = ({ isOpaque = false, onRegister }: HeaderProps) => {
         <nav className="hidden w-full items-center justify-center md:flex lg:flex">
           <div className="flex flex-1 justify-end items-center gap-2 lg:gap-4">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.name}
                 href={link.href}
                 className={`px-2 py-2 text-[21px] transition duration-300 ease-in-out hover:scale-[110%] hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] lg:px-3 text-white ${link.weight} ${link.extraClasses || ""} font-bricolage`}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
 
-          <a className="flex-shrink-0 mx-6 lg:mx-10" href="/">
+          <Link className="flex-shrink-0 mx-6 lg:mx-10" href="/">
             <div className="relative group">
               {/* Optional glow effect around logo like in screenshot */}
               <div className="absolute inset-0 rounded-full bg-[#29B463] blur-md opacity-0 group-hover:opacity-40 transition-opacity duration-300"></div>
@@ -67,17 +69,17 @@ const Header = ({ isOpaque = false, onRegister }: HeaderProps) => {
                 priority
               />
             </div>
-          </a>
+          </Link>
 
           <div className="flex flex-1 justify-start items-center gap-2 lg:gap-4">
             {navLinksRight.map((link) => (
-              <a
+              <Link
                 key={link.name}
                 href={link.href}
                 className={`px-2 py-2 text-[21px] transition duration-300 ease-in-out hover:scale-[110%] hover:drop-shadow-[0_0_10px_rgba(255,255,255,0.8)] lg:px-3 text-white ${link.weight} font-bricolage`}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
         </nav>
