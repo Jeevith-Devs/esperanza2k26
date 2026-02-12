@@ -400,6 +400,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
         cancelTeamEdit();
     };
 
+    const handleDeleteAllTeamMembers = async () => {
+        if (window.confirm("ARE YOU SURE? This will delete ALL team members permanently. This action cannot be undone.")) {
+            setTeamMembers([]);
+            await saveTeamToBackend([]);
+            await fetchTeamMembers();
+        }
+    };
+
     const handleOnDragEnd = async (result: DropResult) => {
         if (!result.destination) return;
 
@@ -1115,12 +1123,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                         <div className="space-y-6">
                             <div className="flex items-center justify-between">
                                 <h3 className="text-lg font-bold text-white">Team Members</h3>
-                                <button
-                                    onClick={() => { cancelTeamEdit(); setIsAddingTeamMember(true); }}
-                                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-bold"
-                                >
-                                    <FaPlus size={18} /> Add Member
-                                </button>
+                                <div className="flex gap-2">
+                                    <button
+                                        onClick={handleDeleteAllTeamMembers}
+                                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-bold"
+                                        title="Delete All Team Members"
+                                    >
+                                        <FaTrash size={16} /> Delete All
+                                    </button>
+                                    <button
+                                        onClick={() => { cancelTeamEdit(); setIsAddingTeamMember(true); }}
+                                        className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-bold"
+                                    >
+                                        <FaPlus size={18} /> Add Member
+                                    </button>
+                                </div>
                             </div>
                             <DragDropContext onDragEnd={handleOnDragEnd}>
                                 <Droppable droppableId="team-members">
