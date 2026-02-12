@@ -212,10 +212,10 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                         {/* Premium Registration Fee Card */}
                         <div className="relative group overflow-hidden px-1">
                             {/* Animated Background Glows */}
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/10 blur-[60px] animate-pulse" />
-                            <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-600/10 blur-[60px] animate-pulse delay-700" />
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/10 blur-[60px]" />
+                            <div className="absolute bottom-0 left-0 w-32 h-32 bg-indigo-600/10 blur-[60px]" />
                             
-                            <div className="relative bg-[#0d0d0d]/80 backdrop-blur-2xl border border-white/10 rounded-2xl p-6 md:p-10 flex flex-col md:flex-row items-center justify-between shadow-[0_20px_50px_-15px_rgba(0,0,0,0.7)] overflow-hidden">
+                            <div className="relative bg-[#0d0d0d]/80 backdrop-blur-2xl border-2 border-white/10 rounded-2xl p-6 md:p-10 flex flex-col md:flex-row items-center justify-between shadow-[0_20px_50px_-15px_rgba(0,0,0,0.7)] overflow-hidden">
                                 {/* Subtle Grid Pattern Overlay */}
                                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)', backgroundSize: '24px 24px' }} />
                                 

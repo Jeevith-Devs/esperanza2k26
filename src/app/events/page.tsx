@@ -68,6 +68,32 @@ export default function EventsPage() {
         if (Array.isArray(data)) {
           setBackendEvents(data); // Store full backend events
           const formattedEvents = data.map(mapBackendEventToFrontend);
+          
+          // Define custom order
+          const eventOrder = [
+            "ANYBODY CAN DANCE (Group)",
+            "ANYBODY CAN DANCE (Solo)",
+            "VOICE QUEST (Group)",
+            "VOICE QUEST (Solo)",
+            "FRAME BY FRAME",
+            "The Walk of Fame"
+          ];
+
+          // Sort events based on the custom order
+          formattedEvents.sort((a, b) => {
+            const indexA = eventOrder.indexOf(a.title);
+            const indexB = eventOrder.indexOf(b.title);
+            
+            // If both events are in the list, sort by their index
+            if (indexA !== -1 && indexB !== -1) return indexA - indexB;
+            
+            // If only one is in the list, prioritize it
+            if (indexA !== -1) return -1;
+            if (indexB !== -1) return 1;
+            
+            return 0;
+          });
+
           setEvents(formattedEvents);
         }
       })
@@ -292,15 +318,20 @@ export default function EventsPage() {
                 </ul>
 
                 {/* Contact Card (Coordinator) */}
-                <div className="mt-2 mb-4 flex items-center gap-3 text-zinc-400 text-xs sm:text-sm p-4 bg-zinc-900/30 rounded-xl border-2 border-white/5">
+                <a 
+                  href={`tel:${selectedEvent.contact}`}
+                  className="mt-2 mb-4 flex items-center gap-3 text-zinc-400 text-xs sm:text-sm p-4 bg-zinc-900/30 rounded-xl border-2 border-white/5 hover:bg-zinc-900/50 hover:border-[#A855F7]/30 transition-all cursor-pointer group"
+                >
                   <div className="bg-[#A855F7]/10 p-2 rounded-lg">
                     <FaPhone className="h-4 w-4 text-[#A855F7]" />
                   </div>
-                  <div className="flex flex-col">
+                  <div className="flex flex-col text-left">
                     <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold font-bricolage">Coordinator</span>
-                    <span className="font-bold text-zinc-200">{selectedEvent.contact}</span>
+                    <span className="font-bold text-zinc-200 group-hover:text-[#A855F7] transition-colors">
+                      {selectedEvent.contact}
+                    </span>
                   </div>
-                </div>
+                </a>
 
                 {/* Registration Fee Card */}
                 <div className="mb-4 flex items-center gap-3 text-zinc-400 text-xs sm:text-sm p-4 bg-zinc-900/30 rounded-xl border-2 border-white/5">

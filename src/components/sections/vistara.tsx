@@ -2,11 +2,146 @@
 
 import { useRef, useEffect, useState } from 'react';
 import Image from 'next/image';
-import { motion, useScroll, useTransform, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView, AnimatePresence, useMotionValue, useSpring } from 'framer-motion';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const VistaraButton = () => {
+  const ref = useRef<HTMLDivElement>(null);
+
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseX = useSpring(x, { stiffness: 500, damping: 100 });
+  const mouseY = useSpring(y, { stiffness: 500, damping: 100 });
+
+  const rotateX = useTransform(mouseY, [-0.5, 0.5], ["15deg", "-15deg"]);
+  const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-15deg", "15deg"]);
+
+  const shineRotateX = useTransform(mouseY, [-0.5, 0.5], ["-30deg", "30deg"]);
+  const shineRotateY = useTransform(mouseX, [-0.5, 0.5], ["30deg", "-30deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!ref.current) return;
+    const rect = ref.current.getBoundingClientRect();
+
+    const width = rect.width;
+    const height = rect.height;
+
+    const mouseXFromCenter = e.clientX - rect.left - width / 2;
+    const mouseYFromCenter = e.clientY - rect.top - height / 2;
+
+    x.set(mouseXFromCenter / width);
+    y.set(mouseYFromCenter / height);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  const [clicks, setClicks] = useState<{id: number, x: number, y: number}[]>([]);
+
+  const handleClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const newClick = { id: Date.now(), x, y };
+    setClicks(prev => [...prev, newClick]);
+    
+    setTimeout(() => {
+      setClicks(prev => prev.filter(c => c.id !== newClick.id));
+    }, 600);
+  };
+
+  return (
+    <div className="flex justify-center mb-16 md:mb-20 perspective-1000">
+      <motion.div
+        ref={ref}
+        onClick={handleClick}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          rotateX,
+          rotateY,
+          transformStyle: "preserve-3d",
+        }}
+        className="relative cursor-pointer group tap-highlight-transparent"
+      >
+        <motion.div
+          style={{
+            transformStyle: "preserve-3d",
+            transform: "translateZ(20px)",
+          }}
+          className="relative rounded-full border-2 border-slate-600/50 bg-[linear-gradient(110deg,#000103,45%,#3B1344,55%,#000103)] bg-[length:200%_100%] animate-shimmer px-6 py-3 md:px-12 md:py-5 lg:px-24 lg:py-6 shadow-[0_0_0_1px_rgba(255,255,255,0.1)] transition-colors duration-500 group-hover:border-purple-500/50 group-hover:shadow-[0_0_30px_rgba(168,85,247,0.3)] overflow-hidden"
+        >
+            {/* Click Glow Effect */}
+            <AnimatePresence>
+              {clicks.map(click => (
+                <motion.div
+                  key={click.id}
+                  initial={{ opacity: 0.8, scale: 0 }}
+                  animate={{ opacity: 0, scale: 4 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.6, ease: "easeOut" }}
+                  style={{
+                    position: 'absolute',
+                    top: click.y,
+                    left: click.x,
+                    width: 100,
+                    height: 100,
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle, rgba(168, 85, 247, 0.8) 0%, rgba(168, 85, 247, 0) 70%)',
+                    transform: 'translate(-50%, -50%)',
+                    pointerEvents: 'none',
+                    zIndex: 20,
+                  }}
+                />
+              ))}
+            </AnimatePresence>
+
+            {/* Animated Gradient Border Shine */}
+          <div className="absolute inset-0 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 overflow-hidden">
+             <div className="absolute inset-[-100%] bg-gradient-to-r from-transparent via-purple-500/20 to-transparent animate-[shimmer_2s_infinite] rotate-45" />
+          </div>
+
+
+          {/* Text Content */}
+          <motion.span
+            style={{
+               transform: "translateZ(30px)",
+               fontFamily: "var(--font-bricolage)",
+               letterSpacing: '-0.05em'
+            }}
+            className="block font-bricolage text-xl md:text-3xl lg:text-5xl font-black text-slate-300 group-hover:text-white transition-colors duration-300"
+          >
+            Vistara Student Club
+          </motion.span>
+          
+           {/* Inner Glow/Shine effect moving opposite to mouse */}
+           <motion.div
+             style={{
+                rotateX: shineRotateX,
+                rotateY: shineRotateY,
+                zIndex: 10,
+             }}
+             className="absolute inset-0 rounded-full bg-gradient-to-tr from-white/0 via-white/5 to-white/0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-500 mix-blend-overlay"
+           />
+
+        </motion.div>
+
+        {/* Floating Particles/Orbs behind */}
+        <div className="absolute -z-10 inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-700">
+             <div className="w-[120%] h-[150%] bg-purple-600/20 blur-[60px] rounded-full absolute" />
+        </div>
+
+      </motion.div>
+    </div>
+  );
+};
 
 const Vistara = () => {
   const sectionRef = useRef<HTMLElement>(null);
@@ -217,24 +352,8 @@ const Vistara = () => {
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 md:px-8">
 
-        {/* Button */}
-        <motion.div
-          ref={buttonRef}
-          style={{ y: buttonY }}
-          className="flex justify-center mb-16 md:mb-20"
-        >
-          <motion.button
-            initial={{ opacity: 0, scale: 0.5, rotateX: 90 }}
-            animate={isButtonInView ? { opacity: 1, scale: 1, rotateX: 0 } : {}}
-            transition={{ duration: 1.2, ease: [0.34, 1.56, 0.64, 1] }}
-            whileHover={{ scale: 1.05, boxShadow: "0 0 60px rgba(138, 43, 226, 0.5)" }}
-            className="group relative animate-shimmer rounded-full border-2 border-slate-400 bg-[linear-gradient(110deg,#000103,45%,#3B1344,55%,#000103)] bg-[length:200%_100%] px-6 py-3 md:px-12 md:py-5 lg:px-24 lg:py-6 font-bricolage text-xl md:text-3xl lg:text-5xl font-black text-slate-400 transition-all focus:outline-none"
-            style={{ fontFamily: "var(--font-bricolage)", letterSpacing: '-0.05em', transformStyle: 'preserve-3d' }}
-          >
-            <span className="relative z-10">Vistara Student Club</span>
-            <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500/0 via-purple-500/30 to-purple-500/0 opacity-0 group-hover:opacity-100 blur-xl animate-[spin_3s_linear_infinite]" />
-          </motion.button>
-        </motion.div>
+        {/* Unique 3D Hover Button */}
+        <VistaraButton />
 
         {/* 2 Unique GSAP Cards with Optimized Spacing */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 lg:gap-10">

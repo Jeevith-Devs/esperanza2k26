@@ -87,7 +87,7 @@ const MobileNav = ({ onRegister }: MobileNavProps) => {
         },
         {
           name: 'Instagram',
-          url: 'http://instagram.com/esperanza_2k26_/',
+          url: 'https://www.instagram.com/esperanza_2k26_/',
           icon: 'https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/94edbd09-30bd-4628-aeb9-93e9fb6900f8-vitvibrance-com/assets/svgs/insta-colored_b7ce9091-14.svg'
         },
         {
@@ -186,15 +186,13 @@ const MobileNav = ({ onRegister }: MobileNavProps) => {
                                 className="flex flex-col gap-8 w-full items-center"
                             >
                                 <div className="flex gap-4 w-full justify-center">
-                                    <button
-                                        onClick={() => {
-                                            setIsOpen(false);
-                                            if (onRegister) onRegister();
-                                        }}
-                                        className="flex-1 py-4 bg-white text-black font-black font-bricolage uppercase tracking-wider rounded-xl hover:bg-gray-200 transition-colors max-w-[160px]"
-                                    >
-                                        Register
-                                    </button>
+                                    <Link href="/events" className="flex-1 max-w-[160px]" onClick={() => setIsOpen(false)}>
+                                        <button
+                                            className="w-full py-4 bg-white text-black font-black font-bricolage uppercase tracking-wider rounded-xl hover:bg-gray-200 transition-colors"
+                                        >
+                                            Register
+                                        </button>
+                                    </Link>
                                     <Link href="/admin" className="flex-1 max-w-[160px]">
                                         <button className="w-full py-4 border-2 border-white/20 text-white font-black font-bricolage uppercase tracking-wider rounded-xl hover:bg-white/10 transition-colors">
                                             Login

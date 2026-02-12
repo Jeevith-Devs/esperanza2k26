@@ -409,7 +409,7 @@ const HeroSection: React.FC = () => {
 
 
                     {/* Mobile - #VISTARA Bottom Right */}
-                    <h1
+                    <div
                         className="sm:hidden absolute bottom-6 right-4 z-40 font-extrabold select-none text-xs font-bricolage bg-gradient-to-b from-white via-[#E9D5FF] to-[#A855F7] bg-clip-text text-transparent mix-blend-screen drop-shadow-[0_0_30px_rgba(168,85,247,0.15)]"
                         style={{
                             fontFamily: "var(--font-bricolage)",
@@ -418,10 +418,10 @@ const HeroSection: React.FC = () => {
                         }}
                     >
                         #<b>V</b>ISTARA
-                    </h1>
+                    </div>
 
                     {/* Desktop - #VISTARA Bottom Right */}
-                    <h1
+                    <div
                         className="hidden sm:block absolute bottom-6 right-4 sm:bottom-8 sm:right-5 z-40 font-extrabold select-none text-sm sm:text-base md:text-lg font-bricolage bg-gradient-to-b from-white via-[#E9D5FF] to-[#A855F7] bg-clip-text text-transparent mix-blend-screen drop-shadow-[0_0_30px_rgba(168,85,247,0.15)]"
                         style={{
                             fontFamily: "var(--font-bricolage)",
@@ -430,7 +430,7 @@ const HeroSection: React.FC = () => {
                         }}
                     >
                         #<b>V</b>ISTARA
-                    </h1>
+                    </div>
 
                     {/* Desktop - Interactive Center Video */}
                     <div

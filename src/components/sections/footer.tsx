@@ -47,7 +47,7 @@ const Footer = ({ onBackToTop }: { onBackToTop?: () => void }) => {
     },
     {
       name: 'Instagram',
-      url: 'http://instagram.com/esperanza_2k26_/',
+      url: 'https://www.instagram.com/esperanza_2k26_/',
       icon: 'https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/test-clones/94edbd09-30bd-4628-aeb9-93e9fb6900f8-vitvibrance-com/assets/svgs/insta-colored_b7ce9091-14.svg'
     },
     {
