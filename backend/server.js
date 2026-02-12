@@ -20,6 +20,7 @@ app.use(cors({
 
     const allowedOrigins = [
       'http://localhost:3000',
+      'http://127.0.0.1:3000',
       'https://esparanza.vercel.app',
       'https://esparanza-git-main-esparanzas-projects.vercel.app'
     ];
@@ -338,10 +339,12 @@ app.post('/api/team/update', async (req, res) => {
     // We replace the entire collection or specific logic. 
     // To keep it simple and consistent with Events/Content approaches in this codebase:
     await TeamMemberModel.deleteMany({});
-    if (teamMembers.length > 0) {
-      // Direct insert - schemas on frontend and backend are now aligned to handle MediaAsset objects
-      await TeamMemberModel.insertMany(teamMembers);
-    }
+      // Sanitize: Remove _id to prevent duplicate key errors (let Mongo generate fresh IDs)
+      const sanitizedMembers = teamMembers.map(m => {
+        const { _id, ...rest } = m;
+        return rest;
+      });
+      await TeamMemberModel.insertMany(sanitizedMembers);
     res.json({ success: true, message: "Team list updated successfully!" });
   } catch (error) {
     console.error("❌ Error in /api/team/update:", error);
