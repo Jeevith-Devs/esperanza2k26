@@ -9,6 +9,7 @@ import IntroTextSection from "@/components/sections/intro-text";
 import JuryReveal from "@/components/sections/jury-reveal";
 import TeaserVideo from "@/components/sections/teaser-video";
 import Vistara from "@/components/sections/vistara";
+import FAQs from "@/components/sections/faqs-3";
 import Sponsors from "@/components/sections/sponsors";
 import Inauguration from "@/components/sections/inauguration";
 import Valedictory from "@/components/sections/valedictory";
@@ -64,6 +65,7 @@ export default function Home() {
         <JuryReveal />
         <TeaserVideo />
         <Vistara />
+        <FAQs />
         <Footer />
 
         {showTicketPortal && content && (

@@ -92,7 +92,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
 
     const [newGalleryUrl, setNewGalleryUrl] = useState('');
     const [newRule, setNewRule] = useState('');
-    const [newFaq, setNewFaq] = useState({ question: '', answer: '' });
+
 
     const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
     const [newTeamMember, setNewTeamMember] = useState<TeamMember>(emptyTeamMember);
@@ -270,22 +270,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
         }
     };
 
-    const handleAddFaq = () => {
-        if (newFaq.question.trim() && newFaq.answer.trim()) {
-            const currentFaqs = content.faqs || [];
-            const updatedFaqs = [...currentFaqs, newFaq];
-            const newContentObj = { ...content, faqs: updatedFaqs };
-            setContent(newContentObj);
-            setNewFaq({ question: '', answer: '' });
-        }
-    };
 
-    const handleDeleteFaq = (index: number) => {
-        const currentFaqs = content.faqs || [];
-        const updatedFaqs = currentFaqs.filter((_, i) => i !== index);
-        const newContentObj = { ...content, faqs: updatedFaqs };
-        setContent(newContentObj);
-    };
 
     const handleDeleteEvent = async (id: string) => {
         if (window.confirm("Are you sure you want to delete this event?")) {
@@ -469,7 +454,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                 {/* NAVIGATION TABS */}
                 {!isAddingEvent && !isAddingTeamMember && (
                     <div className="flex border-b border-white/10 overflow-x-auto">
-                        {['general', 'events', 'registrations', 'team', 'faq'].map((tab) => (
+                        {['general', 'events', 'registrations', 'team'].map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
@@ -478,7 +463,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                     : 'text-gray-400 hover:text-white'
                                     }`}
                             >
-                                {tab === 'general' ? 'General Settings' : tab === 'faq' ? 'Manage FAQs' : tab}
+                                {tab === 'general' ? 'General Settings' : tab}
                             </button>
                         ))}
                     </div>

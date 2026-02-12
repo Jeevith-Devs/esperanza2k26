@@ -177,7 +177,7 @@ const ContentSchema = new mongoose.Schema({
   upiId: String,
   qrCodeUrl: String,
   galleryImages: [MediaAssetSchema], // Updated to array of MediaAssets
-  faqs: [{ question: String, answer: String }],
+
   isTicketPassEnabled: { type: Boolean, default: true }
 });
 const ContentModel = mongoose.model('Content', ContentSchema);

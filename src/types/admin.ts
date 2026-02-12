@@ -21,7 +21,7 @@ export interface Content {
     upiId: string;
     qrCodeUrl: string;
     galleryImages: MediaAsset[];
-    faqs: { question: string; answer: string }[];
+
     isTicketPassEnabled?: boolean;
 }
 

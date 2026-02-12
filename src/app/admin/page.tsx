@@ -18,7 +18,7 @@ export default function AdminPage() {
         upiId: '',
         qrCodeUrl: '',
         galleryImages: [],
-        faqs: []
+
     });
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
