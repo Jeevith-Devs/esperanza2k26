@@ -12,23 +12,28 @@ const faqItems = [
     },
     {
         id: 'item-2',
-        question: 'What events are available?',
-        answer: "6 events - Solo/Group Dance, Solo/Group Singing, Short Film, and Ramp Walk.",
+        question: 'Can I participate in more than one event?',
+        answer: "Yes! You can participate in multiple events, provided there are no scheduling conflicts. Please coordinate with the respective event heads.",
     },
     {
         id: 'item-3',
-        question: 'How do I register?',
-        answer: "Contact event coordinators: Jervin (Dance), Darshan (Singing), Sai Santhosh (Media), Silviya (Ramp Walk).",
+        question: 'Will all participants receive certificates?',
+        answer: "Yes! All registered participants receive a Certificate of Participation. Winners and runners-up will also receive Merit Certificates.",
     },
     {
         id: 'item-4',
-        question: 'Who organizes this festival?',
-        answer: "Vistara Club at VTMT, led by President Ganesh K and General Secretary Arshandhan S U.",
+        question: 'Whom should I contact for queries or technical support?',
+        answer: "Contact event coordinators: Jervin (Dance), Darshan (Singing), Sai Santhosh (Media), Silvya (Ramp Walk).",
     },
     {
         id: 'item-5',
         question: 'Where can I find event details?',
         answer: "Visit our Events page for complete rules, timings, and downloadable brochure with all information.",
+    },
+    {
+        id: 'item-6',
+        question: 'What is the prize pool?',
+        answer: "Each event features a ₹10,000 prize pool, certificates, and rewards. Check the brochure on the events page for more details.",
     },
 ]
 
