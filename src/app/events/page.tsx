@@ -319,7 +319,7 @@ export default function EventsPage() {
 
                 {/* Contact Card (Coordinator) */}
                 <a 
-                  href={`tel:${selectedEvent.contact}`}
+                  href={`tel:${selectedEvent.contact.split(/[|/,]/)[0].replace(/[^\d+]/g, "")}`}
                   className="mt-2 mb-4 flex items-center gap-3 text-zinc-400 text-xs sm:text-sm p-4 bg-zinc-900/30 rounded-xl border-2 border-white/5 hover:bg-zinc-900/50 hover:border-[#A855F7]/30 transition-all cursor-pointer group"
                 >
                   <div className="bg-[#A855F7]/10 p-2 rounded-lg">

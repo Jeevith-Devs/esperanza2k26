@@ -15,6 +15,7 @@ import {
     FaExternalLinkAlt,
     FaGripVertical
 } from 'react-icons/fa';
+import { toast } from "sonner";
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { FileUploader } from './FileUploader';
 import config from '../../config';
@@ -396,7 +397,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
         setTeamMembers(updatedTeam);
         await saveTeamToBackend(updatedTeam);
         await fetchTeamMembers();
-        alert("Team Member Saved!");
+        toast.success("Team Member Saved!", {
+            description: `${newTeamMember.name} has been added successfully.`,
+        });
         cancelTeamEdit();
     };
 

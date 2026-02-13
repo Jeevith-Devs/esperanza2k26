@@ -5,6 +5,7 @@ import "./globals.css";
 import ErrorReporter from "@/components/ErrorReporter";
 import Script from "next/script";
 import { MenuProvider } from "@/context/MenuContext";
+import { Toaster } from "@/components/ui/sonner";
 
 
 
@@ -127,7 +128,7 @@ export default function RootLayout({
           />
           <JsonLd />
           {children}
-
+          <Toaster />
         </MenuProvider>
       </body>
     </html>
