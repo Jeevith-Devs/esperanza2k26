@@ -212,6 +212,24 @@ export default function EventsPage() {
                   onAction={() => setSelectedEvent(event)}
                   videoSrc={event.videoSrc}
                   imageSrc={event.img}
+                  onSecondaryAction={() => {
+                    const fileName = event.title
+                      .replace(/\(.*\)/g, '') // Remove brackets and their content
+                      .trim()                 // Remove trailing/leading spaces
+                      .split(/\s+/)           // Split by whitespace
+                      .filter(word => word.length > 0)
+                      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+                      .join('_');
+                    
+                    const sourcePath = `/rulebook/${fileName}_Rules.pdf`;
+                    
+                    const link = document.createElement('a');
+                    link.href = sourcePath;
+                    link.download = `${event.title} Rules.pdf`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }}
                 />
               </div>
             ))
@@ -309,12 +327,44 @@ export default function EventsPage() {
               {/* Scrollable Rules Container */}
               <div className="px-5 sm:px-8 overflow-y-auto flex-1 min-h-0 scrollbar-thin scrollbar-track-transparent scrollbar-thumb-white/10 hover:scrollbar-thumb-white/20 scrollbar-thumb-rounded-full">
                 <ul className="space-y-3 sm:space-y-4 text-zinc-300 text-sm sm:text-base mb-6">
-                  {selectedEvent.rules.map((rule, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <FaArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-[#A855F7] mt-1 shrink-0" />
-                      <span className="leading-relaxed">{rule}</span>
-                    </li>
-                  ))}
+                  {selectedEvent.title === "The Walk of Fame" ? (
+                    <>
+                      <li className="flex items-start gap-3">
+                        <FaArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-[#A855F7] mt-1 shrink-0" />
+                        <span className="leading-relaxed">Each team must have a minimum of 5 members and a maximum of 10–20 members.</span>
+                      </li>
+                      <li className="flex flex-col gap-2">
+                        <div className="flex items-start gap-3 text-white font-bold">
+                          <FaArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-[#A855F7] mt-1 shrink-0" />
+                          <span>Judging Criteria:</span>
+                        </div>
+                        <ul className="pl-8 space-y-1 text-zinc-400 text-sm">
+                          <li>• Presentation and showcase of outfits</li>
+                          <li>• Attitude and confidence</li>
+                          <li>• Outfit theme</li>
+                          <li>• Team coordination</li>
+                        </ul>
+                      </li>
+                      <li className="flex flex-col gap-2">
+                        <div className="flex items-start gap-3 text-white font-bold">
+                          <FaArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-[#A855F7] mt-1 shrink-0" />
+                          <span>Event Rules:</span>
+                        </div>
+                        <ul className="pl-8 space-y-2 text-zinc-400 text-sm">
+                          <li>• No inappropriate dresses are allowed.</li>
+                          <li>• Songs must be submitted to the coordinator before the event.</li>
+                          <li>• Teams must inform their theme in advance to avoid repetition and confusion.</li>
+                        </ul>
+                      </li>
+                    </>
+                  ) : (
+                    selectedEvent.rules.map((rule, i) => (
+                      <li key={i} className="flex items-start gap-3">
+                        <FaArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-[#A855F7] mt-1 shrink-0" />
+                        <span className="leading-relaxed">{rule}</span>
+                      </li>
+                    ))
+                  )}
                 </ul>
 
                 {/* Contact Card (Coordinator) */}

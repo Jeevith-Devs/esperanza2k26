@@ -10,7 +10,7 @@
  * @github: https://github.com/kokonut-labs/kokonutui
  */
 
-import { ArrowRight, Repeat2 } from "lucide-react";
+import { ArrowRight, Repeat2, Download } from "lucide-react";
 import { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { useInView } from "framer-motion";
@@ -25,6 +25,8 @@ export interface CardFlipProps {
   onAction?: () => void;
   videoSrc?: string;
   imageSrc?: string;
+  secondaryActionLabel?: string;
+  onSecondaryAction?: () => void;
 }
 
 export default function CardFlip({
@@ -36,6 +38,8 @@ export default function CardFlip({
   onAction,
   videoSrc,
   imageSrc,
+  secondaryActionLabel = "Download Rulebook",
+  onSecondaryAction,
 }: CardFlipProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const containerRef = useRef(null);
@@ -203,33 +207,66 @@ export default function CardFlip({
               </div>
             </div>
 
-            <div className="mt-4">
+            <div className="mt-4 space-y-2">
               <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent mb-5" />
-              <div
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onAction?.();
-                  setIsFlipped(false);
-                }}
-                className={cn(
-                  "group/start relative",
-                  "flex items-center justify-between",
-                  "rounded-xl p-3.5",
-                  "overflow-hidden",
-                  "bg-white/5",
-                  "hover:bg-white/10 transition-colors",
-                  "hover:cursor-pointer"
-                )}
-              >
-                <div className="absolute inset-0 opacity-0 group-hover/start:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-[#A855F7]/20 to-transparent" />
-                <span
-                  className="relative z-10 font-bold text-base text-white transition-colors duration-300 group-hover/start:text-[#A855F7] font-bricolage"
-                  style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
+              <div className="flex flex-col gap-2">
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onAction?.();
+                    setIsFlipped(false);
+                  }}
+                  className={cn(
+                    "group/start relative",
+                    "flex items-center justify-between",
+                    "rounded-xl p-3.5",
+                    "overflow-hidden",
+                    "bg-white/5",
+                    "hover:bg-white/10 transition-colors",
+                    "hover:cursor-pointer border border-white/5"
+                  )}
                 >
-                  {actionLabel}
-                </span>
-                <div className="group/icon relative z-10">
-                  <ArrowRight className="h-5 w-5 text-[#A855F7] transition-all duration-300 group-hover/start:translate-x-0.5 group-hover/start:scale-110" />
+                  <div className="absolute inset-0 opacity-0 group-hover/start:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-[#A855F7]/20 to-transparent" />
+                  <span
+                    className="relative z-10 font-bold text-base text-white transition-colors duration-300 group-hover/start:text-[#A855F7] font-bricolage"
+                    style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
+                  >
+                    {actionLabel}
+                  </span>
+                  <div className="group/icon relative z-10">
+                    <ArrowRight className="h-5 w-5 text-[#A855F7] transition-all duration-300 group-hover/start:translate-x-0.5 group-hover/start:scale-110" />
+                  </div>
+                </div>
+
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (onSecondaryAction) {
+                      onSecondaryAction();
+                    } else {
+                      setIsFlipped(false);
+                    }
+                  }}
+                  className={cn(
+                    "group/rulebook relative",
+                    "flex items-center justify-between",
+                    "rounded-xl p-3.5",
+                    "overflow-hidden",
+                    "bg-[#A855F7]/10",
+                    "hover:bg-[#A855F7]/20 transition-colors",
+                    "hover:cursor-pointer border border-[#A855F7]/20"
+                  )}
+                >
+                  <div className="absolute inset-0 opacity-0 group-hover/rulebook:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-[#A855F7]/20 to-transparent" />
+                  <span
+                    className="relative z-10 font-bold text-base text-white transition-colors duration-300 group-hover/rulebook:text-[#A855F7] font-bricolage"
+                    style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
+                  >
+                    {secondaryActionLabel}
+                  </span>
+                  <div className="group/icon relative z-10">
+                    <Download className="h-5 w-5 text-[#A855F7] transition-all duration-300 group-hover/rulebook:translate-y-0.5 group-hover/rulebook:scale-110" />
+                  </div>
                 </div>
               </div>
             </div>
