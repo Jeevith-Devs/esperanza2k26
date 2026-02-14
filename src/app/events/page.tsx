@@ -415,6 +415,11 @@ export default function EventsPage() {
                     </div>
                   </div>
                 </div>
+
+                {/* WhatsApp Payment Note */}
+                <p className="mt-2 mb-6 text-xs text-zinc-400 font-semibold text-center animate-pulse tracking-tight px-4 font-inter" style={{ fontFamily: '"Inter", sans-serif' }}>
+                  Payment details will be shared via WhatsApp shortly after registration.
+                </p>
               </div>
 
               {/* Footer / Action */}

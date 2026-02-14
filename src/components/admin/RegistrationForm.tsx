@@ -156,15 +156,15 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
 
         if (isSoloEvent) {
             if (!formData.name || !formData.phone || !formData.college || !formData.department ||
-                !formData.degree || !formData.course || !formData.year || !formData.idCardUrl ||
-                !formData.paymentScreenshotUrl) {
+                !formData.degree || !formData.course || !formData.year || !formData.idCardUrl
+                /* || !formData.paymentScreenshotUrl */) {
                 alert("Please fill all required fields for solo registration");
                 return;
             }
         } else if (isTeamEvent) {
             if (!formData.teamName || !formData.college || !formData.department ||
                 !formData.degree || !formData.course || !formData.year ||
-                !formData.teamLeaderIdCardUrl || !formData.paymentScreenshotUrl) {
+                !formData.teamLeaderIdCardUrl /* || !formData.paymentScreenshotUrl */) {
                 alert("Please fill all required team fields");
                 return;
             }
@@ -599,7 +599,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                         </div>
                                     </div>
                                 </div>
+                                <p className="mt-4 text-xs text-zinc-400 font-semibold text-center animate-pulse tracking-tight px-4 font-inter" style={{ fontFamily: '"Inter", sans-serif' }}>
+                                    Payment details will be shared via WhatsApp shortly after registration.
+                                </p>
                             </div>
+{/* 
                             <div className="space-y-4">
                                 <label className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest">Payment Screenshot *</label>
                                 <div className="relative">
@@ -631,6 +635,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                     </label>
                                 </div>
                             </div>
+*/}
                         </div>
                         <button
                             type="submit"
