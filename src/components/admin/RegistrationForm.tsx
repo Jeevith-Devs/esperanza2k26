@@ -599,7 +599,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                         </div>
                                     </div>
                                 </div>
-                                <p className="mt-4 text-xs text-zinc-400 font-semibold text-center animate-pulse tracking-tight px-4 font-inter" style={{ fontFamily: '"Inter", sans-serif' }}>
+                                <p className="mt-4 text-xs text-red-500 font-semibold text-center animate-pulse tracking-tight px-4 font-inter" style={{ fontFamily: '"Inter", sans-serif' }}>
                                     Payment details will be shared via WhatsApp shortly after registration.
                                 </p>
                             </div>
