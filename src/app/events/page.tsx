@@ -8,7 +8,6 @@ import MobileNav from "@/components/sections/MobileNav";
 import Footer from "@/components/sections/footer";
 import CardFlip from "@/components/kokonutui/card-flip";
 import { RegistrationForm } from "@/components/admin/RegistrationForm";
-import { TicketPortal } from "@/components/admin/TicketPortal";
 import config from "@/config";
 import { Content, Event as AdminEvent } from "@/types/admin";
 
@@ -103,10 +102,6 @@ export default function EventsPage() {
 
   const handleRegisterForEvent = () => {
     setShowRegistration(true);
-  };
-
-  const handleGeneralRegister = () => {
-    setShowTicketPortal(true);
   };
 
   const handleRegistrationSubmit = async (formData: any) => {
@@ -391,7 +386,9 @@ export default function EventsPage() {
                   <div className="flex flex-col">
                     <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold font-bricolage">Registration Fee</span>
                     <span className="font-bold text-zinc-200">
-                      {selectedEvent.entryFee ? (selectedEvent.entryFee.includes('₹') ? selectedEvent.entryFee : `₹${selectedEvent.entryFee}`) : '₹0'}
+                      {(selectedEvent.entryFee && !selectedEvent.entryFee.trim().startsWith('₹')) 
+                        ? `₹${selectedEvent.entryFee}` 
+                        : (selectedEvent.entryFee || '₹0')}
                     </span>
                   </div>
                 </div>
@@ -477,16 +474,6 @@ export default function EventsPage() {
           </div>
         )}
       </AnimatePresence>
-
-      {/* General Ticket Portal */}
-      {showTicketPortal && content && (
-        <TicketPortal
-          prices={content.ticketPrices}
-          upiId={content.upiId}
-          qrCodeUrl={content.qrCodeUrl}
-          onClose={() => setShowTicketPortal(false)}
-        />
-      )}
 
       <Footer />
     </main>

@@ -33,6 +33,13 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
     // Helper to calculate total including GST for the form
     const calculateTotalFee = (feeStr: string | undefined): string => {
         if (!feeStr) return "0";
+
+        // If the string contains an '=' sign, extract strictly the part after it for the form
+        if (feeStr.includes('=')) {
+            const parts = feeStr.split('=');
+            return parts[parts.length - 1].trim();
+        }
+
         // Extract the base number (first number found)
         const baseMatch = feeStr.match(/\d+/);
         if (!baseMatch) return feeStr;
@@ -229,7 +236,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                     </div>
                                     
                                     <div className="relative inline-block">
-                                        <h3 className="text-5xl md:text-8xl font-black bg-gradient-to-b from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent font-bricolage tracking-tighter leading-none py-1 drop-shadow-2xl">
+                                        <h3 className="text-4xl md:text-7xl font-black bg-gradient-to-b from-white via-zinc-200 to-zinc-500 bg-clip-text text-transparent font-bricolage tracking-tighter leading-none py-1 drop-shadow-2xl">
                                             {calculateTotalFee(selectedEvent?.entryFee)}
                                         </h3>
                                         <div className="absolute -bottom-1 left-0 w-full h-[2px] bg-gradient-to-r from-purple-500/0 via-purple-500/40 to-purple-500/0" />

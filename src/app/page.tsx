@@ -15,13 +15,11 @@ import Inauguration from "@/components/sections/inauguration";
 import Valedictory from "@/components/sections/valedictory";
 import Footer from "@/components/sections/footer";
 import Loader from "@/components/ui/loader";
-import { TicketPortal } from "@/components/admin/TicketPortal";
 import config from "@/config";
 import { Content } from "@/types/admin";
 
 export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
-  const [showTicketPortal, setShowTicketPortal] = useState(false);
   const [content, setContent] = useState<Content | null>(null);
 
   useEffect(() => {
@@ -43,11 +41,7 @@ export default function Home() {
   const router = useRouter();
 
   const handleRegisterClick = () => {
-    if (content?.isTicketPassEnabled === false) {
-      router.push('/events');
-    } else {
-      setShowTicketPortal(true);
-    }
+    router.push('/events');
   };
 
   return (
@@ -67,15 +61,6 @@ export default function Home() {
         <Vistara />
         <FAQs />
         <Footer />
-
-        {showTicketPortal && content && (
-          <TicketPortal
-            prices={content.ticketPrices}
-            upiId={content.upiId}
-            qrCodeUrl={content.qrCodeUrl}
-            onClose={() => setShowTicketPortal(false)}
-          />
-        )}
       </main>
     </>
   );
