@@ -3,6 +3,7 @@ import { FaCloudUploadAlt, FaCheck, FaSpinner, FaPlus, FaTrash, FaCreditCard, Fa
 import { motion } from 'framer-motion';
 import config from '../../config';
 import { Event } from '../../types/admin';
+import { toast } from 'sonner';
 
 interface RegistrationFormProps {
     email?: string;
@@ -140,11 +141,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                     setFormData(prev => ({ ...prev, paymentScreenshotUrl: fileUrl }));
                 }
             } else {
-                alert("Upload failed. Please try again.");
+                toast.error("Upload failed. Please try again.");
             }
         } catch (error) {
             console.error("Upload error:", error);
-            alert("Error uploading file.");
+            toast.error("Error uploading file.");
         } finally {
             if (type === 'idCard' || type === 'teamLeaderIdCard') setUploadingIdCard(false);
             else setUploadingPayment(false);
@@ -158,20 +159,20 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
             if (!formData.name || !formData.phone || !formData.college || !formData.department ||
                 !formData.degree || !formData.course || !formData.year || !formData.idCardUrl
                 /* || !formData.paymentScreenshotUrl */) {
-                alert("Please fill all required fields for solo registration");
+                toast.warning("Please fill all required fields for solo registration");
                 return;
             }
         } else if (isTeamEvent) {
             if (!formData.teamName || !formData.college || !formData.department ||
                 !formData.degree || !formData.course || !formData.year ||
                 !formData.teamLeaderIdCardUrl /* || !formData.paymentScreenshotUrl */) {
-                alert("Please fill all required team fields");
+                toast.warning("Please fill all required team fields");
                 return;
             }
 
             const allMembersValid = formData.teamMembers.every(member => member.name && member.phone);
             if (!allMembersValid) {
-                alert("Please fill all team member names and phone numbers");
+                toast.warning("Please fill all team member names and phone numbers");
                 return;
             }
         }

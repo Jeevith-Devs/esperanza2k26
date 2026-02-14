@@ -10,6 +10,7 @@ import CardFlip from "@/components/kokonutui/card-flip";
 import { RegistrationForm } from "@/components/admin/RegistrationForm";
 import config from "@/config";
 import { Content, Event as AdminEvent } from "@/types/admin";
+import { toast } from "sonner";
 
 interface Event {
   id: string; // Changed to string to match backend
@@ -113,14 +114,17 @@ export default function EventsPage() {
       });
       const data = await res.json();
       if (data.success) {
-        alert("Registration Successful!");
+        toast.success("Registration completed successfully!", {
+          description: `You have successfully registered for ${formData.eventName || 'the event'}`,
+        });
         setShowRegistration(false);
+        setSelectedEvent(null);
       } else {
-        alert(data.message || "Registration failed.");
+        toast.error(data.message || "Registration failed.");
       }
     } catch (error) {
       console.error("Registration error:", error);
-      alert("Error submitting registration.");
+      toast.error("Error submitting registration. Please try again.");
     }
   };
 

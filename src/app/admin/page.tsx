@@ -61,7 +61,14 @@ export default function AdminPage() {
     };
 
     if (loading) {
-        return <div className="min-h-screen bg-black flex items-center justify-center text-white">Loading Admin...</div>;
+        return (
+            <div className="min-h-screen bg-[#0c0c0c] flex flex-col items-center justify-center gap-4">
+                <div className="h-10 w-10 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                <p className="text-zinc-500 font-bold uppercase tracking-[0.2em] text-xs font-bricolage animate-pulse">
+                    Initializing Dashboard
+                </p>
+            </div>
+        );
     }
 
     if (!isAuthenticated) {
