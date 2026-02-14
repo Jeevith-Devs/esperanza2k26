@@ -13,8 +13,11 @@ import {
     FaFileAlt,
     FaEye,
     FaExternalLinkAlt,
-    FaGripVertical
+    FaGripVertical,
+    FaShieldAlt,
+    FaArrowRight
 } from 'react-icons/fa';
+import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from "sonner";
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { FileUploader } from './FileUploader';
@@ -429,611 +432,776 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
     };
 
     return (
-        <div className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-2 md:p-6 text-white">
-            <div className="bg-[#111] border border-white/10 w-full max-w-6xl h-full md:max-h-[90vh] overflow-hidden rounded-2xl flex flex-col shadow-2xl relative">
-
-                {/* HEADER */}
-                <div className="p-4 md:p-6 border-b border-white/10 flex justify-between items-center bg-[#151515]">
-                    <div className="flex items-center gap-3">
+        <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-0 md:p-6 text-white font-bricolage overflow-hidden">
+            {/* Ambient Background Elements */}
+            <div className="absolute inset-0 opacity-[0.02] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0" />
+            <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-purple-600/5 blur-[150px] animate-pulse rounded-full pointer-events-none z-0" />
+            
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.98, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                className="bg-[#080808] border-2 border-zinc-900 rounded-none md:rounded-[32px] w-full max-w-7xl h-full md:h-[90vh] flex flex-col shadow-[0_0_100px_rgba(0,0,0,0.8)] relative z-10 overflow-hidden"
+            >
+                {/* HEADER - Cyber Console Style */}
+                <div className="px-6 py-6 border-b border-white/5 flex justify-between items-center bg-[#0c0c0c] relative z-20">
+                    <div className="flex items-center gap-6">
                         {isAddingEvent && (
                             <button
                                 onClick={resetForm}
-                                className="p-1 hover:bg-white/10 rounded-full transition-colors"
-                                title="Back"
+                                className="group h-10 w-10 bg-zinc-900 border border-white/10 rounded-xl flex items-center justify-center hover:bg-white hover:text-black transition-all active:scale-90"
                             >
-                                <FaArrowLeft size={20} className="text-gray-400" />
+                                <FaArrowLeft size={16} />
                             </button>
                         )}
-                        <div>
-                            <h2 className="text-xl font-bold text-white">
-                                {isAddingEvent ? (editingId ? 'Edit Event' : 'Create New Event') : 'Admin Dashboard'}
-                            </h2>
-                            <p className="text-gray-400 text-xs md:text-sm">
-                                {isAddingEvent ? 'Enter event details below' : 'Manage website content dynamically'}
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-3">
+                                <div className="h-2 w-2 rounded-full bg-purple-500 shadow-[0_0_10px_#A855F7]" />
+                                <h2 
+                                    className="text-2xl font-black uppercase tracking-tight bg-gradient-to-b from-white to-zinc-500 bg-clip-text text-transparent"
+                                    style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
+                                >
+                                    {isAddingEvent ? (editingId ? 'Module_Edit' : 'Module_Create') : 'System_Dashboard'}
+                                </h2>
+                            </div>
+                            <p className="text-[10px] font-black text-zinc-600 uppercase tracking-[0.2em]">
+                                {isAddingEvent ? 'Modifying internal event parameters' : 'Vistara Administrative Control Interface'}
                             </p>
                         </div>
                     </div>
-                    <button
-                        onClick={onClose}
-                        className="p-2 hover:bg-white/10 rounded-full transition-colors text-white"
-                        title="Close"
-                    >
-                        <FaTimes size={24} />
-                    </button>
+
+                    <div className="flex items-center gap-4">
+                        <div className="hidden md:flex flex-col items-end mr-4">
+                            <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest leading-none">Status: Uplink_Active</span>
+                            <span className="text-[9px] font-black text-purple-500 uppercase tracking-widest mt-1">Auth: Level_4</span>
+                        </div>
+                        <button
+                            onClick={onClose}
+                            className="h-10 w-10 bg-zinc-900 border border-white/10 rounded-xl flex items-center justify-center hover:bg-red-500 hover:border-red-500 transition-all active:scale-90"
+                        >
+                            <FaTimes size={18} />
+                        </button>
+                    </div>
                 </div>
 
-                {/* NAVIGATION TABS */}
+                {/* NAVIGATION TABS - Minimalist Line Style */}
                 {!isAddingEvent && !isAddingTeamMember && (
-                    <div className="flex border-b border-white/10 overflow-x-auto">
+                    <div className="flex px-6 bg-[#0c0c0c] border-b border-white/5 overflow-x-auto no-scrollbar">
                         {['general', 'events', 'registrations', 'team'].map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
-                                className={`flex-1 min-w-[120px] py-4 text-sm font-medium transition-colors capitalize ${activeTab === tab
-                                    ? 'bg-purple-600/20 text-purple-400 border-b-2 border-purple-500'
-                                    : 'text-gray-400 hover:text-white'
+                                className={`relative py-5 px-6 text-[10px] font-black uppercase tracking-[0.2em] transition-all whitespace-nowrap ${activeTab === tab
+                                    ? 'text-white'
+                                    : 'text-zinc-600 hover:text-zinc-400'
                                     }`}
                             >
-                                {tab === 'general' ? 'General Settings' : tab}
+                                {tab === 'general' ? 'Core_Config' : tab.replace('s', '') + '_Registry'}
+                                {activeTab === tab && (
+                                    <motion.div 
+                                        layoutId="activeTab" 
+                                        className="absolute bottom-0 left-0 right-0 h-[2px] bg-purple-500 shadow-[0_0_10px_#A855F7]" 
+                                    />
+                                )}
                             </button>
                         ))}
                     </div>
                 )}
 
                 {/* CONTENT AREA */}
-                <div className="flex-1 overflow-y-auto p-4 md:p-6 bg-[#0f0f0f]">
+                <div className="flex-1 overflow-y-auto p-6 md:p-10 bg-[#080808] custom-scrollbar">
                     {/* --- GENERAL SETTINGS --- */}
                     {activeTab === 'general' && (
-                        <div className="space-y-6 max-w-4xl mx-auto">
-                            <div className="p-6 bg-[#1a1a1a] rounded-xl border border-white/5 space-y-4">
-                                 <h3 className="text-xl font-bold text-white mb-4">Support & Configuration</h3>
-                                 <p className="text-sm text-gray-400">Configure global payment details and assets used across the platform.</p>
-                             </div>
+                        <div className="space-y-12 max-w-4xl">
+                            <header className="space-y-3">
+                                <h3 className="text-3xl font-black text-white uppercase tracking-tighter font-bricolage">Core Configuration</h3>
+                                <p className="text-zinc-500 text-sm max-w-xl leading-relaxed">System-wide parameters for payment processing, visual branding, and essential assets.</p>
+                            </header>
 
-                            {/* Payment Configuration */}
-                            <div className="p-6 bg-[#1a1a1a] rounded-xl border border-white/5 space-y-4">
-                                <h3 className="text-xl font-bold text-white mb-4">Payment Configuration</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {/* Payment Configuration */}
+                                <div className="p-8 bg-zinc-900/30 border border-white/5 rounded-3xl space-y-8 relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                                        <FaSave size={40} />
+                                    </div>
+                                    
+                                    <div className="space-y-1">
+                                        <h4 className="text-sm font-black text-white uppercase tracking-widest">Financial Gateway</h4>
+                                        <p className="text-xs text-zinc-600 uppercase font-black tracking-tight">Standard Payment Parameters</p>
+                                    </div>
 
-                                <div className="space-y-2">
-                                    <label className="text-gray-400 text-sm">UPI ID</label>
-                                    <input
-                                        type="text"
-                                        value={content.upiId || ''}
-                                        onChange={(e) => {
-                                            const newContent = { ...content, upiId: e.target.value };
-                                            setContent(newContent);
-                                            saveContentToBackend(newContent, true);
-                                        }}
-                                        className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
-                                        placeholder="yourname@upi"
-                                    />
+                                    <div className="space-y-6">
+                                        <div className="space-y-2.5">
+                                            <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">UPI Endpoint</label>
+                                            <div className="relative">
+                                                <input
+                                                    type="text"
+                                                    value={content.upiId || ''}
+                                                    onChange={(e) => {
+                                                        const newContent = { ...content, upiId: e.target.value };
+                                                        setContent(newContent);
+                                                        saveContentToBackend(newContent, true);
+                                                    }}
+                                                    className="w-full bg-black/50 border-2 border-zinc-800 rounded-2xl py-4 px-5 text-white placeholder:text-zinc-700 focus:outline-none focus:border-purple-500/50 transition-all font-inter"
+                                                    placeholder="identifier@upi"
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-2.5">
+                                            <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Visual Auth (QR)</label>
+                                            <div className="bg-black/50 border-2 border-zinc-800 rounded-2xl p-6 flex flex-col items-center gap-6">
+                                                <div className="relative group/qr">
+                                                    {content.qrCodeUrl ? (
+                                                        <div className="relative">
+                                                            <div className="absolute -inset-4 bg-white/5 blur-xl rounded-full opacity-0 group-hover/qr:opacity-100 transition-opacity" />
+                                                            <img 
+                                                                src={content.qrCodeUrl} 
+                                                                alt="Payment QR" 
+                                                                className="relative w-40 h-40 object-contain bg-white rounded-xl p-2 shadow-2xl transition-transform hover:scale-105" 
+                                                            />
+                                                        </div>
+                                                    ) : (
+                                                        <div className="w-40 h-40 bg-zinc-900 border-2 border-dashed border-zinc-800 rounded-xl flex items-center justify-center text-zinc-600">
+                                                            <FaImage size={30} />
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                
+                                                <div className="w-full">
+                                                    <FileUploader
+                                                        label="Update QR Asset"
+                                                        initialUrl={content.qrCodeUrl ? { url: content.qrCodeUrl, type: 'image' } : null}
+                                                        onUpload={(asset) => {
+                                                            if (asset) {
+                                                                const newContent = { ...content, qrCodeUrl: asset.url };
+                                                                setContent(newContent);
+                                                                saveContentToBackend(newContent, true);
+                                                            }
+                                                        }}
+                                                        folder="payment"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div className="space-y-2">
-                                    <FileUploader
-                                        label="Payment QR Code"
-                                        initialUrl={content.qrCodeUrl ? { url: content.qrCodeUrl, type: 'image' } : null}
-                                        onUpload={(asset) => {
-                                            if (asset) {
-                                                const newContent = { ...content, qrCodeUrl: asset.url };
-                                                setContent(newContent);
-                                                saveContentToBackend(newContent, true);
-                                            }
-                                        }}
-                                        folder="payment"
-                                    />
-                                    {content.qrCodeUrl && (
-                                        <div className="mt-2">
-                                            <p className="text-xs text-gray-400 mb-2">Current QR Code:</p>
-                                            <img src={content.qrCodeUrl} alt="Payment QR" className="w-48 h-48 object-contain bg-white rounded-lg p-2" />
-                                        </div>
-                                    )}
+                                {/* Placeholder for other config or info */}
+                                <div className="p-8 bg-zinc-900/30 border border-white/5 rounded-3xl flex flex-col justify-center items-center text-center space-y-6">
+                                    <div className="h-16 w-16 bg-purple-500/10 rounded-full flex items-center justify-center">
+                                        <FaShieldAlt className="text-purple-500 text-2xl" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <h4 className="text-white font-black uppercase tracking-widest text-sm">Integrity Shield</h4>
+                                        <p className="text-zinc-600 text-xs px-8 leading-relaxed uppercase font-black tracking-tight">
+                                            All changes are logged and synchronized across the secure Esperanza blockchain infrastructure.
+                                        </p>
+                                    </div>
                                 </div>
                             </div>
 
-                            {/* Save Button */}
-                            <div className="flex justify-end pt-4">
+                            {/* Global Save Button */}
+                            <div className="flex justify-start pt-8 pb-10">
                                 <button
                                     onClick={() => saveContentToBackend(content)}
-                                    className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl font-bold text-white shadow-lg shadow-purple-900/40 hover:scale-105 transition-transform flex items-center gap-2"
+                                    className="group relative h-16 px-12 bg-white rounded-2xl overflow-hidden transition-all hover:scale-[1.02] active:scale-[0.98]"
                                 >
-                                    <FaSave size={20} /> Save All Changes
+                                    <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-10 transition-opacity" />
+                                    <div className="relative flex items-center gap-3 text-black font-black uppercase text-sm tracking-tight">
+                                        <FaSave size={18} />
+                                        Save Changes
+                                    </div>
                                 </button>
                             </div>
                         </div>
                     )}
 
-
                     {/* --- REGISTRATION LIST VIEW --- */}
                     {activeTab === 'registrations' && !isAddingEvent && !isAddingTeamMember && (
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-xl font-bold">
-                                    {selectedEventFilter === 'all'
-                                        ? `All Registrations (${registrations.length})`
-                                        : `${events.find(e => e.id === selectedEventFilter)?.title || 'Event'} Registrations (${registrations.filter(r => r.eventId === selectedEventFilter).length})`
-                                    }
-                                </h3>
-                                <div className="flex gap-2">
+                        <div className="space-y-10">
+                            <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                                <div className="space-y-3">
+                                    <h3 className="text-3xl font-black text-white uppercase tracking-tighter font-bricolage">
+                                        {selectedEventFilter === 'all' ? 'All Registrations' : 'Event Registrations'}
+                                    </h3>
+                                    <p className="text-zinc-600 text-[10px] font-black uppercase tracking-[0.2em]">
+                                        {selectedEventFilter === 'all' 
+                                            ? `Viewing ${registrations.length} registrations`
+                                            : `Filtering by event: ${events.find(e => e.id === selectedEventFilter)?.title || 'Unknown'}`
+                                        }
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-3">
                                     {selectedEventFilter !== 'all' && (
                                         <button
                                             onClick={() => setSelectedEventFilter('all')}
-                                            className="text-sm bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded transition-colors"
+                                            className="h-12 px-6 bg-zinc-900 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all"
                                         >
-                                            ← Back to Events
+                                            Reset Filter
                                         </button>
                                     )}
                                     <button
                                         onClick={fetchRegistrations}
-                                        className="text-sm bg-white/10 px-3 py-1 rounded hover:bg-white/20 transition-colors"
+                                        className="h-12 px-6 bg-purple-500 rounded-xl text-[10px] font-black uppercase tracking-widest text-white hover:bg-purple-600 transition-all shadow-[0_0_20px_rgba(168,85,247,0.3)] flex items-center gap-2"
                                     >
-                                        Refresh
+                                        <div className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                                        Refresh Data
                                     </button>
                                 </div>
-                            </div>
+                            </header>
 
                             {isLoadingRegs ? (
-                                <div className="text-center py-20 text-gray-400">Loading registrations...</div>
+                                <div className="h-64 flex flex-col items-center justify-center gap-4 border-2 border-dashed border-zinc-900 rounded-[32px]">
+                                    <div className="h-8 w-8 border-2 border-purple-500 border-t-transparent rounded-full animate-spin" />
+                                    <p className="text-zinc-600 text-[9px] font-black uppercase tracking-widest">Loading...</p>
+                                </div>
                             ) : selectedEventFilter === 'all' ? (
-                                /* SHOW EVENT CARDS */
-                                <div>
-                                    <p className="text-gray-400 text-sm mb-4">Select an event to view its registrations</p>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                        {/* All Registrations Card */}
-                                        <div
-                                            onClick={() => setSelectedEventFilter('all-list')}
-                                            className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-xl p-6 cursor-pointer hover:scale-105 transition-transform group"
-                                        >
-                                            <div className="flex items-center justify-between mb-3">
-                                                <h4 className="font-bold text-white text-lg">All Registrations</h4>
-                                                <FaList className="text-purple-400 text-2xl" />
+                                /* SHOW EVENT CARDS - GRID REDESIGN */
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                    {/* All Registrations Summary */}
+                                    <div
+                                        onClick={() => setSelectedEventFilter('all-list')}
+                                        className="relative p-8 bg-white rounded-3xl cursor-pointer group transition-all hover:scale-[1.02] overflow-hidden"
+                                    >
+                                        <div className="absolute top-0 right-0 p-6 text-black/5 group-hover:text-black/10 transition-colors">
+                                            <FaList size={60} />
+                                        </div>
+                                        <div className="relative z-10 space-y-4">
+                                            <h4 className="text-black font-black uppercase tracking-tighter text-sm">Overview</h4>
+                                            <div>
+                                                <p className="text-5xl font-black text-black tracking-tighter leading-none mb-1">{registrations.length}</p>
+                                                <p className="text-[10px] font-black text-black/40 uppercase tracking-widest">Total Registry Entries</p>
                                             </div>
-                                            <p className="text-3xl font-bold text-white mb-2">{registrations.length}</p>
-                                            <p className="text-sm text-gray-300">Total registrations across all events</p>
-                                            <div className="mt-4 flex items-center gap-2 text-purple-300 text-sm group-hover:text-purple-200">
-                                                <span>View All</span>
-                                                <FaArrowLeft className="rotate-180" />
+                                            <div className="flex items-center gap-2 text-black/40 group-hover:text-black transition-colors pt-4">
+                                                <span className="text-[9px] font-black uppercase tracking-widest">View Details</span>
+                                                <FaArrowRight size={10} className="group-hover:translate-x-1 transition-transform" />
                                             </div>
                                         </div>
+                                    </div>
 
-                                        {/* Individual Event Cards */}
-                                        {events.map((event, index) => {
-                                            const eventRegs = registrations.filter(r => r.eventId === event.id);
-                                            const verifiedCount = eventRegs.filter(r => r.isActive).length;
-                                            const pendingCount = eventRegs.length - verifiedCount;
+                                    {/* Individual Event Log Cards */}
+                                    {events.map((event, index) => {
+                                        const eventRegs = registrations.filter(r => r.eventId === event.id);
+                                        const verifiedCount = eventRegs.filter(r => r.isActive).length;
 
-                                            return (
-                                                <div
-                                                    key={event.id || index}
-                                                    onClick={() => setSelectedEventFilter(event.id)}
-                                                    className="bg-[#1a1a1a] border border-white/10 rounded-xl p-6 cursor-pointer hover:border-purple-500/50 hover:scale-105 transition-all group"
-                                                >
-                                                    <div className="flex items-start justify-between mb-3">
-                                                        <div className="flex-1">
-                                                            <h4 className="font-bold text-white text-lg mb-1 line-clamp-1">{event.title}</h4>
-                                                            <span className="text-xs bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded uppercase tracking-wider">
-                                                                {event.category}
-                                                            </span>
-                                                        </div>
-                                                        <FaUsers className="text-gray-400 text-xl ml-2" />
-                                                    </div>
-
-                                                    <div className="space-y-2 mb-4">
-                                                        <div className="flex items-center justify-between">
-                                                            <span className="text-2xl font-bold text-white">{eventRegs.length}</span>
-                                                            <span className="text-xs text-gray-400">registrations</span>
-                                                        </div>
-                                                        <div className="flex gap-2 text-xs">
-                                                            <span className="text-green-400">✓ {verifiedCount} verified</span>
-                                                            <span className="text-yellow-400">⏳ {pendingCount} pending</span>
+                                        return (
+                                            <div
+                                                key={event.id || index}
+                                                onClick={() => setSelectedEventFilter(event.id)}
+                                                className="relative p-8 bg-zinc-900/30 border-2 border-zinc-800 rounded-3xl cursor-pointer group transition-all hover:border-purple-500/30 hover:bg-zinc-900/50"
+                                            >
+                                                <div className="space-y-6">
+                                                    <div className="space-y-1">
+                                                        <h4 className="text-white font-black uppercase tracking-tight text-xs truncate group-hover:text-purple-400 transition-colors">{event.title}</h4>
+                                                        <div className="flex items-center gap-2">
+                                                            <div className="h-1 w-1 rounded-full bg-purple-500" />
+                                                            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">{event.category}</span>
                                                         </div>
                                                     </div>
 
-                                                    <div className="flex items-center gap-2 text-purple-400 text-sm group-hover:text-purple-300">
-                                                        <span>View Registrations</span>
-                                                        <FaArrowLeft className="rotate-180" />
+                                                    <div className="flex items-end justify-between">
+                                                        <div>
+                                                            <p className="text-3xl font-black text-white tracking-tighter leading-none mb-1">{eventRegs.length}</p>
+                                                            <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">Registrations</p>
+                                                        </div>
+                                                        <div className="text-right">
+                                                            <p className="text-xs font-black text-green-500/80 uppercase tracking-tight leading-none mb-1">{verifiedCount}</p>
+                                                            <p className="text-[7px] font-black text-zinc-700 uppercase tracking-[0.2em]">Verified</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="h-1.5 w-full bg-black/40 rounded-full overflow-hidden border border-white/5">
+                                                        <div 
+                                                            className="h-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-[0_0_10px_rgba(168,85,247,0.4)]" 
+                                                            style={{ width: `${(eventRegs.length / (event.maxSlots || 100)) * 100}%` }}
+                                                        />
                                                     </div>
                                                 </div>
-                                            );
-                                        })}
-                                    </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                             ) : (
-                                /* SHOW REGISTRATION TABLE FOR SELECTED EVENT */
-                                <div className="overflow-x-auto">
-                                    <table className="w-full text-left border-collapse">
-                                        <thead>
-                                            <tr className="border-b border-white/10 text-gray-500 text-sm">
-                                                <th className="p-3">Name</th>
-                                                <th className="p-3">College</th>
-                                                <th className="p-3">Event/Pass</th>
-                                                <th className="p-3">Status</th>
-                                                <th className="p-3">Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {(selectedEventFilter === 'all-list'
-                                                ? registrations
-                                                : registrations.filter(r => r.eventId === selectedEventFilter)
-                                            ).map((reg, index) => (
-                                                <tr key={reg._id || index} className="border-b border-white/5 hover:bg-white/5 transition-colors">
-                                                    <td className="p-3 font-medium">{reg.name}</td>
-                                                    <td className="p-3 text-sm text-gray-400">{reg.college}</td>
-                                                    <td className="p-3 text-sm text-purple-400">{reg.eventName || 'N/A'}</td>
-                                                    <td className="p-3">
-                                                        {reg.isActive ? (
-                                                            <span className="text-green-500 text-xs px-2 py-1 bg-green-500/10 rounded-full font-bold">Verified</span>
-                                                        ) : (
-                                                            <span className="text-yellow-500 text-xs px-2 py-1 bg-yellow-500/10 rounded-full font-bold">Pending</span>
-                                                        )}
-                                                    </td>
-                                                    <td className="p-3">
-                                                        <button
-                                                            onClick={() => setSelectedRegistration(reg)}
-                                                            className="p-2 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 rounded-lg flex items-center gap-2 text-xs transition-colors"
-                                                        >
-                                                            <FaEye size={14} /> View Details
-                                                        </button>
-                                                    </td>
+                                /* SHOW REGISTRATION TABLE - CYBER REDESIGN */
+                                <div className="bg-zinc-900/20 border border-white/5 rounded-[32px] overflow-hidden backdrop-blur-sm">
+                                    <div className="overflow-x-auto no-scrollbar">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead>
+                                                <tr className="border-b border-white/5 bg-zinc-900/40">
+                                                    <th className="p-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Name</th>
+                                                    <th className="p-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">College</th>
+                                                    <th className="p-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Event</th>
+                                                    <th className="p-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Status</th>
+                                                    <th className="p-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] text-right">Action</th>
                                                 </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                    {(selectedEventFilter === 'all-list'
-                                        ? registrations
-                                        : registrations.filter(r => r.eventId === selectedEventFilter)
-                                    ).length === 0 && (
-                                            <div className="text-center py-10 text-gray-500">
-                                                No registrations found for this event yet.
-                                            </div>
-                                        )}
+                                            </thead>
+                                            <tbody className="divide-y divide-white/5">
+                                                {(selectedEventFilter === 'all-list'
+                                                    ? registrations
+                                                    : registrations.filter(r => r.eventId === selectedEventFilter)
+                                                ).map((reg, index) => (
+                                                    <tr key={reg._id || index} className="group hover:bg-white/[0.02] transition-colors">
+                                                        <td className="p-6">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="h-10 w-10 bg-zinc-800 border border-white/10 rounded-xl flex items-center justify-center text-xs font-black text-zinc-500">
+                                                                    {reg.name.substring(0, 2).toUpperCase()}
+                                                                </div>
+                                                                <div>
+                                                                    <p className="text-sm font-black text-white tracking-tight uppercase leading-none mb-1">{reg.name}</p>
+                                                                    <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">{reg.phone}</p>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="p-6">
+                                                            <p className="text-xs font-black text-zinc-500 uppercase tracking-tight">{reg.college}</p>
+                                                        </td>
+                                                        <td className="p-6">
+                                                            <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest bg-purple-500/10 px-3 py-1.5 rounded-full border border-purple-500/20">
+                                                                {reg.eventName || 'SYSTEM_CORE'}
+                                                            </span>
+                                                        </td>
+                                                        <td className="p-6">
+                                                            <div className="flex items-center gap-2">
+                                                                <div className={`h-1.5 w-1.5 rounded-full ${reg.isActive ? 'bg-green-500 shadow-[0_0_8px_#22c55e]' : 'bg-yellow-500 shadow-[0_0_8px_#eab308]'}`} />
+                                                                <span className={`text-[9px] font-black uppercase tracking-widest ${reg.isActive ? 'text-green-500' : 'text-yellow-500'}`}>
+                                                                    {reg.isActive ? 'Verified' : 'Pending'}
+                                                                </span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="p-6 text-right">
+                                                            <button
+                                                                onClick={() => setSelectedRegistration(reg)}
+                                                                className="h-10 px-5 bg-zinc-900 border border-white/5 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center gap-2 ml-auto"
+                                                            >
+                                                                <FaEye size={12} /> View Details
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
+                                        {(selectedEventFilter === 'all-list'
+                                            ? registrations
+                                            : registrations.filter(r => r.eventId === selectedEventFilter)
+                                        ).length === 0 && (
+                                                <div className="p-20 text-center space-y-4">
+                                                    <div className="h-16 w-16 bg-zinc-900 border border-white/5 rounded-3xl flex items-center justify-center mx-auto opacity-20">
+                                                        <FaUsers size={30} />
+                                                    </div>
+                                                    <p className="text-zinc-700 text-[10px] font-black uppercase tracking-[0.3em]">No Registrations Found.</p>
+                                                </div>
+                                            )}
+                                    </div>
                                 </div>
                             )}
                         </div>
                     )}
 
                     {/* --- TEAM MEMBER FORM --- */}
-                    {isAddingTeamMember ? (
-                        <div className="space-y-6 max-w-3xl mx-auto">
-                            <h3 className="text-xl font-bold text-white mb-4">{editingTeamId ? 'Edit Team Member' : 'Add Team Member'}</h3>
+                    {isAddingTeamMember && (
+                        <div className="space-y-12 max-w-4xl">
+                            <header className="space-y-3">
+                                <h3 className="text-3xl font-black text-white uppercase tracking-tighter font-bricolage">
+                                    {editingTeamId ? 'Edit Member' : 'Add New Member'}
+                                </h3>
+                                <p className="text-zinc-500 text-sm uppercase font-black tracking-widest">Team Management</p>
+                            </header>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-gray-400 text-sm">Full Name</label>
-                                    <input
-                                        type="text"
-                                        value={newTeamMember.name}
-                                        onChange={(e) => setNewTeamMember({ ...newTeamMember, name: e.target.value })}
-                                        className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
-                                    />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div className="space-y-8">
+                                    <div className="space-y-2.5">
+                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Full Name</label>
+                                        <input
+                                            type="text"
+                                            value={newTeamMember.name}
+                                            onChange={(e) => setNewTeamMember({ ...newTeamMember, name: e.target.value })}
+                                            className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter"
+                                            placeholder="Full Name"
+                                        />
+                                    </div>
+                                    <div className="space-y-2.5">
+                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Role</label>
+                                        <input
+                                            type="text"
+                                            list="roleOptionsList"
+                                            value={newTeamMember.role}
+                                            onChange={(e) => setNewTeamMember({ ...newTeamMember, role: e.target.value })}
+                                            className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter"
+                                            placeholder="Ex: Technical Lead"
+                                        />
+                                        <datalist id="roleOptionsList">
+                                            {roleOptions.map(role => <option key={role} value={role} />)}
+                                        </datalist>
+                                    </div>
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div className="space-y-2.5">
+                                            <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Category</label>
+                                            <select
+                                                value={newTeamMember.category}
+                                                onChange={(e) => setNewTeamMember({ ...newTeamMember, category: e.target.value })}
+                                                className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter appearance-none"
+                                            >
+                                                {teamCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                                            </select>
+                                        </div>
+                                        <div className="space-y-2.5">
+                                            <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Sub Category</label>
+                                            <input
+                                                type="text"
+                                                list="subCategoryOptionsList"
+                                                value={newTeamMember.subCategory || ''}
+                                                onChange={(e) => setNewTeamMember({ ...newTeamMember, subCategory: e.target.value })}
+                                                className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter"
+                                                placeholder="Sub-Category"
+                                            />
+                                            <datalist id="subCategoryOptionsList">
+                                                {subCategoryOptions.map(sub => <option key={sub} value={sub} />)}
+                                            </datalist>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-gray-400 text-sm">Role / Designation (Optional)</label>
-                                    <input
-                                        type="text"
-                                        list="roleOptionsList"
-                                        value={newTeamMember.role}
-                                        onChange={(e) => setNewTeamMember({ ...newTeamMember, role: e.target.value })}
-                                        className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
-                                    />
-                                    <datalist id="roleOptionsList">
-                                        {roleOptions.map(role => <option key={role} value={role} />)}
-                                    </datalist>
+
+                                <div className="space-y-8">
+                                    <div className="space-y-2.5">
+                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Profile Picture</label>
+                                        <div className="bg-zinc-900/30 border-2 border-zinc-800 rounded-[32px] p-6 flex flex-col items-center gap-4">
+                                            <div className="h-32 w-32 rounded-full overflow-hidden border-2 border-zinc-800 bg-black">
+                                                {newTeamMember.image?.url ? (
+                                                    <img src={newTeamMember.image.url} className="w-full h-full object-cover" />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-zinc-800">
+                                                        <FaUsers size={40} />
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <FileUploader
+                                                label="Upload Image"
+                                                initialUrl={newTeamMember.image}
+                                                onUpload={(asset) => setNewTeamMember({ ...newTeamMember, image: asset })}
+                                                folder="team"
+                                            />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Social Links</label>
+                                        <div className="space-y-3">
+                                            <input
+                                                type="text"
+                                                placeholder="Instagram URL"
+                                                value={newTeamMember.instagram}
+                                                onChange={(e) => setNewTeamMember({ ...newTeamMember, instagram: e.target.value })}
+                                                className="w-full bg-zinc-900/30 border border-white/5 rounded-xl py-3 px-4 text-xs text-zinc-400 focus:text-white transition-all"
+                                            />
+                                            <input
+                                                type="text"
+                                                placeholder="LinkedIn URL"
+                                                value={newTeamMember.linkedin}
+                                                onChange={(e) => setNewTeamMember({ ...newTeamMember, linkedin: e.target.value })}
+                                                className="w-full bg-zinc-900/30 border border-white/5 rounded-xl py-3 px-4 text-xs text-zinc-400 focus:text-white transition-all"
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-gray-400 text-sm">Category</label>
-                                <select
-                                    value={newTeamMember.category}
-                                    onChange={(e) => setNewTeamMember({ ...newTeamMember, category: e.target.value })}
-                                    className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
-                                >
-                                    {teamCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                                </select>
-                            </div>
-                            
-                            <div className="space-y-2">
-                                <label className="text-gray-400 text-sm">Sub Category (Optional)</label>
-                                <input
-                                    type="text"
-                                    list="subCategoryOptionsList"
-                                    placeholder="Ex: Core Team, Lead, etc."
-                                    value={newTeamMember.subCategory || ''}
-                                    onChange={(e) => setNewTeamMember({ ...newTeamMember, subCategory: e.target.value })}
-                                    className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
-                                />
-                                <datalist id="subCategoryOptionsList">
-                                    {subCategoryOptions.map(sub => <option key={sub} value={sub} />)}
-                                </datalist>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-gray-400 text-sm">Instagram Link (Optional)</label>
+                            <div className="flex items-center gap-4 p-6 bg-purple-500/5 border border-purple-500/10 rounded-2xl">
+                                <div className="relative">
                                     <input
-                                        type="text"
-                                        value={newTeamMember.instagram}
-                                        onChange={(e) => setNewTeamMember({ ...newTeamMember, instagram: e.target.value })}
-                                        className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
+                                        type="checkbox"
+                                        id="isActiveParams"
+                                        checked={newTeamMember.isActive !== false}
+                                        onChange={(e) => setNewTeamMember({ ...newTeamMember, isActive: e.target.checked })}
+                                        className="peer hidden"
                                     />
+                                    <label 
+                                        htmlFor="isActiveParams"
+                                        className="h-6 w-11 bg-zinc-800 rounded-full flex items-center px-1 cursor-pointer transition-colors peer-checked:bg-purple-500"
+                                    >
+                                        <div className="h-4 w-4 bg-white rounded-full transition-transform peer-checked:translate-x-5" />
+                                    </label>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-gray-400 text-sm">LinkedIn Link (Optional)</label>
-                                    <input
-                                        type="text"
-                                        value={newTeamMember.linkedin}
-                                        onChange={(e) => setNewTeamMember({ ...newTeamMember, linkedin: e.target.value })}
-                                        className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
-                                    <FileUploader
-                                        label="Profile Photo"
-                                        initialUrl={newTeamMember.image}
-                                        onUpload={(asset) => setNewTeamMember({ ...newTeamMember, image: asset })}
-                                        folder="team"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-3 bg-[#1a1a1a] p-3 rounded-lg border border-white/5">
-                                <input
-                                    type="checkbox"
-                                    id="isActiveParams"
-                                    checked={newTeamMember.isActive !== false}
-                                    onChange={(e) => setNewTeamMember({ ...newTeamMember, isActive: e.target.checked })}
-                                    className="w-5 h-5 accent-purple-600 rounded cursor-pointer"
-                                />
-                                <label htmlFor="isActiveParams" className="text-white font-medium cursor-pointer">
-                                    Is Active Member?
+                                <label htmlFor="isActiveParams" className="text-[10px] font-black text-zinc-400 uppercase tracking-widest cursor-pointer peer-checked:text-white">
+                                    Status: Active
                                 </label>
                             </div>
 
-                            <div className="flex gap-4 pt-4">
-                                <button onClick={cancelTeamEdit} className="px-6 py-3 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors">Cancel</button>
-                                <button onClick={handleSaveTeamMember} className="px-6 py-3 bg-purple-600 rounded-lg hover:bg-purple-700 flex items-center gap-2 font-bold transition-colors">
-                                    <FaSave size={18} /> Save Team Member
+                            <div className="flex gap-4 pt-4 pb-20">
+                                <button 
+                                    onClick={cancelTeamEdit} 
+                                    className="h-14 px-8 bg-zinc-900 text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-white border border-white/5 rounded-2xl transition-all"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    onClick={handleSaveTeamMember} 
+                                    className="h-14 px-10 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-purple-500 hover:text-white transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)] flex items-center gap-3"
+                                >
+                                    <FaSave size={14} /> Save Member
                                 </button>
                             </div>
                         </div>
-                    ) : isAddingEvent ? (
-                        /* --- EVENT FORM --- */
-                        <div className="space-y-6 max-w-3xl mx-auto">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <label className="text-gray-400 text-sm">Event Title *</label>
-                                    <input
-                                        type="text"
-                                        value={newEvent.title}
-                                        onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-                                        className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
-                                    />
+                    )}
+
+                    {isAddingEvent && (
+                        /* --- EVENT FORM REDESIGN --- */
+                        <div className="space-y-12 max-w-4xl">
+                            <header className="space-y-3">
+                                <h3 className="text-3xl font-black text-white uppercase tracking-tighter font-bricolage">
+                                    {editingId ? 'Edit Event' : 'Create Event'}
+                                </h3>
+                                <p className="text-zinc-500 text-sm uppercase font-black tracking-widest">Event Management</p>
+                            </header>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div className="space-y-8">
+                                    <div className="space-y-2.5">
+                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Event Title</label>
+                                        <input
+                                            type="text"
+                                            value={newEvent.title}
+                                            onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                                            className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter"
+                                            placeholder="Event Title"
+                                        />
+                                    </div>
+                                    <div className="space-y-2.5">
+                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Category</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Ex: Technical_Symphony"
+                                            value={newEvent.category}
+                                            onChange={(e) => setNewEvent({ ...newEvent, category: e.target.value })}
+                                            className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter"
+                                        />
+                                    </div>
+                                    <div className="space-y-2.5">
+                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Coordinator Phone</label>
+                                        <input
+                                            type="tel"
+                                            placeholder="+91 XXXXX XXXXX"
+                                            value={newEvent.coordinatorPhone || ''}
+                                            onChange={(e) => setNewEvent({ ...newEvent, coordinatorPhone: e.target.value })}
+                                            className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter"
+                                        />
+                                    </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <label className="text-gray-400 text-sm">Category *</label>
-                                    <input
-                                        type="text"
-                                        placeholder="Ex: Cultural, Technical, Workshop, etc."
-                                        value={newEvent.category}
-                                        onChange={(e) => setNewEvent({ ...newEvent, category: e.target.value })}
-                                        className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white placeholder:text-gray-600 focus:outline-none focus:border-purple-500"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <label className="text-gray-400 text-sm">Coordinator Phone</label>
-                                    <input
-                                        type="tel"
-                                        placeholder="Ex: +91 9876543210"
-                                        value={newEvent.coordinatorPhone || ''}
-                                        onChange={(e) => setNewEvent({ ...newEvent, coordinatorPhone: e.target.value })}
-                                        className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white placeholder:text-gray-600 focus:outline-none focus:border-purple-500"
-                                    />
+
+                                <div className="space-y-8">
+                                    <div className="space-y-2.5">
+                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Description</label>
+                                        <textarea
+                                            value={newEvent.description}
+                                            onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+                                            className="w-full h-[188px] bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-sm text-zinc-300 focus:border-purple-500/50 transition-all font-inter resize-none"
+                                            placeholder="Enter event details..."
+                                        />
+                                    </div>
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <FileUploader
-                                    label="Event Media (Image/Video)"
-                                    initialUrl={newEvent.image}
-                                    onUpload={(asset) => setNewEvent({ ...newEvent, image: asset })}
-                                    folder="events"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-gray-400 text-sm">Description *</label>
-                                <textarea
-                                    value={newEvent.description}
-                                    onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
-                                    className="w-full h-32 bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500 resize-none"
-                                />
-                            </div>
+                            <div className="p-8 bg-zinc-900/30 border-2 border-zinc-800 rounded-[32px] space-y-10">
+                                <div className="flex items-center gap-3">
+                                    <div className="h-1.5 w-1.5 rounded-full bg-purple-500 shadow-[0_0_10px_#A855F7]" />
+                                    <h4 className="text-xs font-black text-white uppercase tracking-[0.2em]">Registration Details</h4>
+                                </div>
 
-
-
-                            <div className="p-4 bg-[#1a1a1a] rounded-xl border border-white/5 space-y-4">
-                                <h4 className="font-bold text-white text-sm uppercase tracking-wider text-purple-400 flex items-center gap-2">
-                                    <FaUsers size={16} /> Registration Limits
-                                </h4>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <label className="text-gray-400 text-sm">Max Slots (Capacity)</label>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                                    <div className="space-y-2.5">
+                                        <label className="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Max Capacity</label>
                                         <input
                                             type="number"
                                             value={newEvent.maxSlots}
-                                            onChange={(e) =>
-                                                setNewEvent({ ...newEvent, maxSlots: parseInt(e.target.value) || 0 })}
-                                            className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
+                                            onChange={(e) => setNewEvent({ ...newEvent, maxSlots: parseInt(e.target.value) || 0 })}
+                                            className="w-full bg-black/40 border border-white/5 rounded-xl py-3 px-4 text-white font-mono text-sm"
                                         />
                                     </div>
-                                    <div className="space-y-2">
-                                        <label className="text-gray-400 text-sm">Current Registrations (Simulate)</label>
+                                    <div className="space-y-2.5">
+                                        <label className="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Registered Count</label>
                                         <input
                                             type="number"
                                             value={newEvent.registeredCount}
-                                            onChange={(e) =>
-                                                setNewEvent({ ...newEvent, registeredCount: parseInt(e.target.value) || 0 })}
-                                            className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
+                                            onChange={(e) => setNewEvent({ ...newEvent, registeredCount: parseInt(e.target.value) || 0 })}
+                                            className="w-full bg-black/40 border border-white/5 rounded-xl py-3 px-4 text-white font-mono text-sm"
+                                        />
+                                    </div>
+                                    <div className="space-y-2.5">
+                                        <label className="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Entry Fee</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Ex: 500 Credits"
+                                            value={newEvent.entryFee || ''}
+                                            onChange={(e) => setNewEvent({ ...newEvent, entryFee: e.target.value })}
+                                            className="w-full bg-black/40 border border-white/5 rounded-xl py-3 px-4 text-white font-mono text-sm"
                                         />
                                     </div>
                                 </div>
-                            </div>
 
-                            <div className="p-4 bg-[#1a1a1a] rounded-xl border border-white/5 space-y-4">
-                                <h4 className="font-bold text-white text-sm uppercase tracking-wider text-purple-400">
-                                    Participation Details
-                                </h4>
-                                <div className="flex flex-col md:flex-row gap-6">
-                                    <div className="flex items-center gap-6">
-                                        <label className="flex items-center gap-2 cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                checked={newEvent.participationType === 'Solo'}
-                                                onChange={() =>
-                                                    setNewEvent({
-                                                        ...newEvent,
-                                                        participationType: 'Solo',
-                                                        teamSize: ''
-                                                    })}
-                                                className="accent-purple-500"
-                                            />
-                                            <span className="text-white">Solo</span>
-                                        </label>
-                                        <label className="flex items-center gap-2 cursor-pointer">
-                                            <input
-                                                type="radio"
-                                                checked={newEvent.participationType === 'Team'}
-                                                onChange={() =>
-                                                    setNewEvent({
-                                                        ...newEvent,
-                                                        participationType: 'Team'
-                                                    })}
-                                                className="accent-purple-500"
-                                            />
-                                            <span className="text-white">Team</span>
-                                        </label>
+                                <div className="space-y-6">
+                                    <div className="flex items-center gap-8">
+                                        <button 
+                                            onClick={() => setNewEvent({ ...newEvent, participationType: 'Solo', teamSize: '' })}
+                                            className={`flex-1 h-14 rounded-2xl border-2 transition-all flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest ${newEvent.participationType === 'Solo' ? 'bg-white text-black border-white' : 'bg-transparent text-zinc-600 border-zinc-800 hover:border-zinc-700'}`}
+                                        >
+                                            Solo Participation
+                                        </button>
+                                        <button 
+                                            onClick={() => setNewEvent({ ...newEvent, participationType: 'Team' })}
+                                            className={`flex-1 h-14 rounded-2xl border-2 transition-all flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest ${newEvent.participationType === 'Team' ? 'bg-white text-black border-white' : 'bg-transparent text-zinc-600 border-zinc-800 hover:border-zinc-700'}`}
+                                        >
+                                            Team Participation
+                                        </button>
                                     </div>
                                     {newEvent.participationType === 'Team' && (
-                                        <div className="flex-1">
+                                        <motion.div 
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            className="space-y-2.5"
+                                        >
+                                            <label className="text-[9px] font-black text-zinc-600 uppercase tracking-widest ml-1">Team Size</label>
                                             <input
                                                 type="text"
                                                 value={newEvent.teamSize || ''}
                                                 onChange={(e) => setNewEvent({ ...newEvent, teamSize: e.target.value })}
-                                                placeholder="Ex: 2-6 members"
-                                                className="w-full bg-[#222] border border-white/10 rounded-lg p-2 text-white text-sm focus:outline-none focus:border-purple-500"
+                                                placeholder="Ex: 2 - 6 Units"
+                                                className="w-full bg-black/40 border border-white/5 rounded-xl py-4 px-6 text-white font-inter"
                                             />
-                                        </div>
+                                        </motion.div>
                                     )}
                                 </div>
-                            
-                            <div className="p-4 bg-[#1a1a1a] rounded-xl border border-white/5 space-y-4">
-                                <h4 className="font-bold text-white text-sm uppercase tracking-wider text-purple-400">
-                                    Event Pricing
-                                </h4>
-                                
-                                <div className="space-y-2">
-                                    <label className="text-gray-400 text-sm">Entry Fee</label>
-                                    <input
-                                        type="text"
-                                        placeholder="Ex: 100, Free, or 100 + 18% GST"
-                                        value={newEvent.entryFee || ''}
-                                        onChange={(e) => setNewEvent({ ...newEvent, entryFee: e.target.value, isPassEvent: false })}
-                                        className="w-full bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
-                                    />
-                                    <p className="text-[10px] text-gray-500 uppercase font-bold">Registration will require this fee payment</p>
-                                </div>
-                            </div>
                             </div>
 
-                            <div className="space-y-2">
-                                <label className="text-gray-400 text-sm flex items-center gap-2">
-                                    <FaList size={16} /> Rules & Guidelines
-                                </label>
-                                <div className="flex gap-2">
-                                    <input
-                                        type="text"
-                                        value={newRule}
-                                        onChange={(e) => setNewRule(e.target.value)}
-                                        onKeyDown={(e) => e.key === 'Enter' && handleAddRule()}
-                                        placeholder="Enter a rule..."
-                                        className="flex-1 bg-[#222] border border-white/10 rounded-lg p-3 text-white focus:outline-none focus:border-purple-500"
-                                    />
-                                    <button
-                                        onClick={handleAddRule}
-                                        className="px-4 bg-white/10 hover:bg-white/20 text-white rounded-lg flex items-center justify-center"
-                                    >
-                                        <FaPlus size={20} />
-                                    </button>
-                                </div>
-                                {newEvent.rules && newEvent.rules.length > 0 && (
-                                    <div className="mt-2 space-y-2">
-                                        {newEvent.rules.map((rule, index) => (
-                                            <div
-                                                key={index}
-                                                className="flex items-center gap-3 bg-[#1a1a1a] p-3 rounded-lg border border-white/5"
-                                            >
-                                                <span className="text-purple-500 font-bold">•</span>
-                                                <p className="flex-1 text-sm text-gray-300">{rule}</p>
-                                                <button
-                                                    onClick={() => handleRemoveRule(index)}
-                                                    className="text-red-500 hover:text-red-400 p-1"
-                                                >
-                                                    <FaTrash size={16} />
-                                                </button>
-                                            </div>
-                                        ))}
+                            <div className="space-y-8">
+                                <div className="space-y-2.5">
+                                    <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Event Image</label>
+                                    <div className="bg-zinc-900/30 border-2 border-zinc-800 rounded-[32px] p-8">
+                                        <FileUploader
+                                            label="Upload Event Image"
+                                            initialUrl={newEvent.image}
+                                            onUpload={(asset) => setNewEvent({ ...newEvent, image: asset })}
+                                            folder="events"
+                                        />
                                     </div>
-                                )}
+                                </div>
+
+                                <div className="space-y-6">
+                                    <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Rules</label>
+                                    <div className="flex gap-4">
+                                        <input
+                                            type="text"
+                                            value={newRule}
+                                            onChange={(e) => setNewRule(e.target.value)}
+                                            onKeyDown={(e) => e.key === 'Enter' && handleAddRule()}
+                                            placeholder="Add a rule..."
+                                            className="flex-1 bg-zinc-900/50 border border-white/10 rounded-2xl px-6 py-4 text-sm focus:border-purple-500/50 transition-all"
+                                        />
+                                        <button
+                                            onClick={handleAddRule}
+                                            className="h-14 w-14 bg-white text-black rounded-2xl flex items-center justify-center hover:bg-purple-500 hover:text-white transition-all shadow-[0_0_20px_rgba(255,255,255,0.1)]"
+                                        >
+                                            <FaPlus size={16} />
+                                        </button>
+                                    </div>
+                                    <AnimatePresence>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            {newEvent.rules?.map((rule, index) => (
+                                                <motion.div
+                                                    key={index}
+                                                    initial={{ opacity: 0, x: -20 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    exit={{ opacity: 0, scale: 0.95 }}
+                                                    className="flex items-center gap-4 bg-zinc-900/40 p-5 rounded-2xl border border-white/5 group"
+                                                >
+                                                    <span className="text-purple-500 font-black font-mono">[{index + 1}]</span>
+                                                    <p className="flex-1 text-[11px] font-black text-zinc-400 uppercase tracking-tight">{rule}</p>
+                                                    <button
+                                                        onClick={() => handleRemoveRule(index)}
+                                                        className="h-8 w-8 bg-red-500/10 text-red-500 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 hover:bg-red-500 hover:text-white transition-all"
+                                                    >
+                                                        <FaTrash size={12} />
+                                                    </button>
+                                                </motion.div>
+                                            ))}
+                                        </div>
+                                    </AnimatePresence>
+                                </div>
                             </div>
 
-                            <div className="flex gap-4 pt-4 pb-8">
-                                <button onClick={handleSaveEvent} className="w-full py-4 bg-purple-600 hover:bg-purple-700 rounded-xl font-bold transition-colors">
-                                    Save Event
+                            <div className="flex gap-4 pt-10 pb-20">
+                                <button 
+                                    onClick={handleSaveEvent} 
+                                    className="h-20 w-full bg-white text-black text-xs font-black uppercase tracking-[0.3em] rounded-[32px] hover:bg-purple-500 hover:text-white transition-all shadow-[0_0_40px_rgba(255,255,255,0.1)] flex items-center justify-center gap-4"
+                                >
+                                    <FaSave size={18} /> Save Event
                                 </button>
                             </div>
                         </div>
-                    ) : (
-                        <>
-                        </>
                     )}
 
                     {/* --- EVENTS LIST --- */}
                     {activeTab === 'events' && !isAddingEvent && (
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-bold text-white">Manage Events</h3>
+                        <div className="space-y-10">
+                            <header className="flex items-center justify-between">
+                                <div className="space-y-1">
+                                    <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Event List</h3>
+                                    <p className="text-zinc-600 text-[9px] font-black uppercase tracking-widest">Manage all events</p>
+                                </div>
                                 <button
                                     onClick={() => { resetForm(); setIsAddingEvent(true); }}
-                                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-bold"
+                                    className="h-12 px-6 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-purple-500 hover:text-white transition-all flex items-center gap-2"
                                 >
-                                    <FaPlus size={18} /> Add Event
+                                    <FaPlus size={12} /> Add New Event
                                 </button>
-                            </div>
+                            </header>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                                 {events.map((event, index) => (
-                                    <div key={event.id || index} className="bg-[#1a1a1a] border border-white/5 rounded-xl overflow-hidden group hover:border-purple-500/50 transition-colors">
-                                        <div className="h-40 bg-black/50 relative overflow-hidden">
+                                    <div 
+                                        key={event.id || index} 
+                                        className="bg-[#0c0c0c] border-2 border-zinc-900 rounded-[32px] overflow-hidden group hover:border-purple-500/30 transition-all flex flex-col"
+                                    >
+                                        <div className="h-48 bg-zinc-900 relative overflow-hidden">
                                             {event.image?.url ? (
-                                                <img src={event.image.url} alt={event.title} className="w-full h-full object-cover" />
+                                                <img src={event.image.url} alt={event.title} className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 transition-all duration-500 group-hover:scale-110" />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-gray-600">No Image</div>
+                                                <div className="w-full h-full flex items-center justify-center text-zinc-800">
+                                                    <FaImage size={40} />
+                                                </div>
                                             )}
-                                            <div className="absolute top-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                <button onClick={() => handleEditEvent(event)} className="p-2 bg-white/10 backdrop-blur-md rounded-lg hover:bg-white/20 text-white"><FaFont size={14} /></button>
-                                                <button onClick={() => handleDeleteEvent(event.id)} className="p-2 bg-red-500/80 backdrop-blur-md rounded-lg hover:bg-red-600 text-white"><FaTrash size={14} /></button>
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60" />
+                                            <div className="absolute top-4 right-4 flex gap-2 translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+                                                <button 
+                                                    onClick={() => handleEditEvent(event)} 
+                                                    className="h-9 w-9 bg-white/10 backdrop-blur-md border border-white/10 rounded-xl hover:bg-white hover:text-black transition-all flex items-center justify-center"
+                                                >
+                                                    <FaFont size={12} />
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleDeleteEvent(event.id)} 
+                                                    className="h-9 w-9 bg-red-500/20 backdrop-blur-md border border-red-500/20 rounded-xl hover:bg-red-500 text-white transition-all flex items-center justify-center"
+                                                >
+                                                    <FaTrash size={12} />
+                                                </button>
+                                            </div>
+                                            <div className="absolute bottom-4 left-6">
+                                                <span className="text-[9px] font-black text-white/60 uppercase tracking-widest bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/5">
+                                                    {event.category}
+                                                </span>
                                             </div>
                                         </div>
-                                        <div className="p-4">
-                                            <div className="flex items-start justify-between mb-2">
-                                                <h4 className="font-bold text-white truncate">{event.title}</h4>
-                                                <span className="text-xs bg-purple-500/10 text-purple-400 px-2 py-0.5 rounded uppercase tracking-wider">{event.category}</span>
-                                            </div>
-                                            <p className="text-gray-400 text-xs line-clamp-2 mb-3">{event.description}</p>
-                                            <div className="flex items-center gap-4 text-xs text-gray-400">
-                                                <span>📅 {event.date}</span>
-                                                <span>👥 {event.registeredCount}/{event.maxSlots}</span>
+                                        <div className="p-8 space-y-4 flex-1 flex flex-col">
+                                            <h4 className="font-black text-white text-lg uppercase tracking-tight line-clamp-1">{event.title}</h4>
+                                            <p className="text-zinc-600 text-xs line-clamp-2 leading-relaxed font-inter">{event.description}</p>
+                                            
+                                            <div className="pt-4 mt-auto grid grid-cols-2 gap-4 border-t border-white/5">
+                                                <div className="space-y-1">
+                                                    <p className="text-[8px] font-black text-zinc-700 uppercase tracking-widest leading-none">Registrations</p>
+                                                    <p className="text-xs font-black text-zinc-400 uppercase tracking-tight">{event.registeredCount}/{event.maxSlots}</p>
+                                                </div>
+                                                <div className="space-y-1">
+                                                    <p className="text-[8px] font-black text-zinc-700 uppercase tracking-widest leading-none">Date</p>
+                                                    <p className="text-xs font-black text-purple-500/80 uppercase tracking-tight">{event.date || 'TBA'}</p>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -1044,32 +1212,35 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
 
                     {/* --- TEAM LIST --- */}
                     {activeTab === 'team' && !isAddingTeamMember && (
-                        <div className="space-y-6">
-                            <div className="flex items-center justify-between">
-                                <h3 className="text-lg font-bold text-white">Team Members</h3>
-                                <div className="flex gap-2">
+                        <div className="space-y-10">
+                            <header className="flex items-center justify-between">
+                                <div className="space-y-1">
+                                    <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Team Members</h3>
+                                    <p className="text-zinc-600 text-[9px] font-black uppercase tracking-widest">Manage team members</p>
+                                </div>
+                                <div className="flex gap-3">
                                     <button
                                         onClick={handleDeleteAllTeamMembers}
-                                        className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-bold"
-                                        title="Delete All Team Members"
+                                        className="h-12 px-6 bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-red-500 hover:text-white transition-all"
                                     >
-                                        <FaTrash size={16} /> Delete All
+                                        WIPE_ALL_NODES
                                     </button>
                                     <button
                                         onClick={() => { cancelTeamEdit(); setIsAddingTeamMember(true); }}
-                                        className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors font-bold"
+                                        className="h-12 px-6 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-purple-500 hover:text-white transition-all flex items-center gap-2"
                                     >
-                                        <FaPlus size={18} /> Add Member
+                                        <FaPlus size={12} /> Inject_New_Node
                                     </button>
                                 </div>
-                            </div>
+                            </header>
+
                             <DragDropContext onDragEnd={handleOnDragEnd}>
                                 <Droppable droppableId="team-members">
                                     {(provided) => (
                                         <div
                                             {...provided.droppableProps}
                                             ref={provided.innerRef}
-                                            className="space-y-2"
+                                            className="space-y-4"
                                         >
                                             {teamMembers.map((member, index) => (
                                                 <Draggable
@@ -1081,25 +1252,43 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                         <div
                                                             ref={provided.innerRef}
                                                             {...provided.draggableProps}
-                                                            {...provided.dragHandleProps}
-                                                            className="bg-[#1a1a1a] border border-white/5 rounded-lg p-3 flex items-center gap-4 group hover:border-purple-500/50 transition-colors cursor-move"
+                                                            className="bg-zinc-900/20 border border-white/5 rounded-3xl p-4 md:p-6 flex items-center gap-6 group hover:border-purple-500/20 hover:bg-zinc-900/40 transition-all"
                                                         >
-                                                            <div className="text-gray-600 hover:text-white cursor-grab active:cursor-grabbing px-2">
+                                                            <div 
+                                                                {...provided.dragHandleProps}
+                                                                className="text-zinc-800 group-hover:text-zinc-600 transition-colors cursor-grab active:cursor-grabbing p-2"
+                                                            >
                                                                 <FaGripVertical />
                                                             </div>
-                                                            <div className={`w-10 h-10 rounded-full overflow-hidden border-2 flex-shrink-0 ${member.isActive ? 'border-green-500' : 'border-gray-600'}`}>
-                                                                {member.image?.url ? <img src={member.image.url} alt={member.name} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-gray-700" />}
+                                                            <div className={`h-16 w-16 rounded-full overflow-hidden border-2 flex-shrink-0 transition-colors ${member.isActive ? 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)]' : 'border-zinc-800 grayscale'}`}>
+                                                                {member.image?.url ? (
+                                                                    <img src={member.image.url} alt={member.name} className="w-full h-full object-cover" />
+                                                                ) : (
+                                                                    <div className="w-full h-full bg-zinc-900 flex items-center justify-center text-zinc-800">
+                                                                        <FaUsers size={20} />
+                                                                    </div>
+                                                                )}
                                                             </div>
-                                                            <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                                                                <h4 className="font-bold text-white text-sm truncate">{member.name}</h4>
-                                                                <p className="text-xs text-gray-400 truncate hidden md:block">{member.role || '-'}</p>
-                                                                <span className="text-xs bg-white/5 text-purple-300 px-2 py-1 rounded truncate hidden md:inline-block w-fit text-center">
-                                                                    {member.subCategory || member.category}
-                                                                </span>
+                                                            <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                                                                <div>
+                                                                    <p className="text-sm font-black text-white uppercase tracking-tight leading-none mb-1">{member.name}</p>
+                                                                    <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">ID: {member._id?.substring(0, 8) || 'TEMP'}</p>
+                                                                </div>
+                                                                <div className="hidden md:block">
+                                                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">{member.role || 'Member'}</p>
+                                                                    <div className="h-1 w-12 bg-zinc-800 rounded-full overflow-hidden">
+                                                                        <div className="h-full w-2/3 bg-purple-500/50" />
+                                                                    </div>
+                                                                </div>
+                                                                <div className="hidden md:flex justify-end pr-6">
+                                                                    <span className="text-[9px] font-black text-purple-400 uppercase tracking-widest bg-purple-500/5 px-3 py-1.5 rounded-full border border-purple-500/10">
+                                                                        {member.subCategory || member.category}
+                                                                    </span>
+                                                                </div>
                                                             </div>
-                                                            <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                                <button onClick={() => handleEditTeamMember(member)} className="p-2 hover:bg-white/10 rounded text-gray-300 hover:text-white"><FaFont size={14} /></button>
-                                                                <button onClick={() => handleDeleteTeamMember(member._id!)} className="p-2 hover:bg-red-500/20 rounded text-red-400"><FaTrash size={14} /></button>
+                                                            <div className="flex gap-2">
+                                                                <button onClick={() => handleEditTeamMember(member)} className="h-10 w-10 bg-zinc-900 border border-white/5 rounded-xl flex items-center justify-center text-zinc-500 hover:text-white hover:bg-zinc-800 transition-all"><FaFont size={12} /></button>
+                                                                <button onClick={() => handleDeleteTeamMember(member._id!)} className="h-10 w-10 bg-red-500/10 border border-red-500/10 rounded-xl flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-all"><FaTrash size={12} /></button>
                                                             </div>
                                                         </div>
                                                     )}
@@ -1114,92 +1303,187 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                     )}
 
                 </div>
-            </div>
+            </motion.div>
 
             {/* --- REGISTRATION DETAILS MODAL --- */}
-            {
-                selectedRegistration && (
-                    <div className="fixed inset-0 z-[150] bg-black/80 flex items-center justify-center p-4">
-                        <div className="bg-[#181818] border border-white/10 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
-                            <div className="p-6 border-b border-white/10 flex justify-between items-center">
-                                <h3 className="text-xl font-bold">Registration Details</h3>
-                                <button onClick={() => setSelectedRegistration(null)} className="p-2 hover:bg-white/10 rounded-full"><FaTimes size={20} /></button>
-                            </div>
-                            <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="space-y-4">
-                                    <div>
-                                        <label className="text-xs text-gray-500 uppercase">Applicant</label>
-                                        <p className="text-lg font-bold">{selectedRegistration.name}</p>
-                                        <p className="text-sm text-gray-400">{selectedRegistration.email}</p>
-                                        <p className="text-sm text-gray-400">{selectedRegistration.phone}</p>
-                                    </div>
-                                    <div className="p-4 bg-white/5 rounded-lg">
-                                        <label className="text-xs text-gray-500 uppercase mb-2 block">College Info</label>
-                                        <p className="text-sm font-bold text-white mb-1">{selectedRegistration.college}</p>
-                                        <p className="text-xs text-gray-400">{selectedRegistration.degree} - {selectedRegistration.course} ({selectedRegistration.year})</p>
-                                        {selectedRegistration.isVeltechStudent && (
-                                            <p className="mt-2 text-xs text-purple-400 font-mono">ID: {selectedRegistration.vmNumber}</p>
-                                        )}
-                                    </div>
-                                    <div className="p-4 bg-purple-900/10 border border-purple-500/20 rounded-lg">
-                                        <label className="text-xs text-purple-400 uppercase mb-1 block">Registered For</label>
-                                        <p className="font-bold text-white text-lg">{selectedRegistration.eventName || 'Legacy Registration'}</p>
-                                        <p className="text-xs text-gray-500 font-mono">{selectedRegistration.eventId}</p>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <label className="text-xs text-gray-500 uppercase">Payment Proof / ID Card</label>
-                                    {selectedRegistration.paymentScreenshotUrl ? (
-                                        <div className="rounded-xl overflow-hidden border border-white/10 group relative">
-                                            <img
-                                                src={selectedRegistration.paymentScreenshotUrl}
-                                                alt="Payment Screenshot"
-                                                className="w-full h-auto object-contain bg-black"
-                                            />
-                                            <a
-                                                href={selectedRegistration.paymentScreenshotUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                className="absolute bottom-2 right-2 bg-black/60 text-white text-xs px-3 py-1 rounded-full flex items-center gap-1 hover:bg-black/80"
-                                            >
-                                                Open Full <FaExternalLinkAlt size={12} />
-                                            </a>
+            <AnimatePresence>
+                {selectedRegistration && (
+                    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 md:p-8">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedRegistration(null)}
+                            className="absolute inset-0 bg-black/95 backdrop-blur-2xl"
+                        />
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 30 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 30 }}
+                            className="relative w-full max-w-4xl bg-[#080808] border-2 border-zinc-800 rounded-[48px] overflow-hidden shadow-[0_0_120px_rgba(0,0,0,1)]"
+                        >
+                            <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+                            
+                            <div className="relative p-10 md:p-14 max-h-[90vh] overflow-y-auto custom-scrollbar">
+                                <header className="flex items-start justify-between mb-12">
+                                    <div className="space-y-4">
+                                        <div className="flex items-center gap-3">
+                                            <span className="h-1.5 w-1.5 rounded-full bg-purple-500 animate-pulse" />
+                                            <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.4em]">Registration Details</span>
                                         </div>
-                                    ) : (
-                                        <div className="h-40 bg-white/5 rounded-xl flex items-center justify-center text-gray-500 text-sm">
-                                            No Payment Screenshot
+                                        <h3 className="text-4xl md:text-5xl font-black text-white uppercase tracking-tighter font-bricolage leading-tight">
+                                            {selectedRegistration.name}
+                                        </h3>
+                                        <div className="flex flex-wrap gap-3">
+                                            <span className="px-4 py-1.5 bg-white text-black text-[9px] font-black uppercase tracking-widest rounded-full">
+                                                {selectedRegistration.eventName || 'Legacy_Entry'}
+                                            </span>
+                                            <span className={`px-4 py-1.5 text-[9px] font-black uppercase tracking-widest rounded-full border-2 ${selectedRegistration.isActive ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'}`}>
+                                                Status: {selectedRegistration.isActive ? 'VERIFIED' : 'PENDING'}
+                                            </span>
                                         </div>
-                                    )}
-
-                                    {selectedRegistration.idCardUrl && (
-                                        <div className="mt-4">
-                                            <label className="text-xs text-gray-500 uppercase mb-2 block">College ID</label>
-                                            <div className="h-24 rounded-lg overflow-hidden border border-white/10 relative">
-                                                <img src={selectedRegistration.idCardUrl} alt="ID Card" className="w-full h-full object-cover" />
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="p-6 border-t border-white/10 flex justify-end gap-3 bg-[#151515]">
-                                {selectedRegistration.isActive ? (
-                                    <span className="px-4 py-3 bg-green-500/20 text-green-500 font-bold rounded-xl flex items-center gap-2">
-                                        <FaCheck size={18} /> Verified
-                                    </span>
-                                ) : (
-                                    <button
-                                        onClick={() => handleVerifyRegistration(selectedRegistration)}
-                                        className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl flex items-center gap-2 transition-colors shadow-lg shadow-green-900/20"
+                                    </div>
+                                    <button 
+                                        onClick={() => setSelectedRegistration(null)}
+                                        className="h-14 w-14 bg-zinc-900 border border-white/5 rounded-[22px] flex items-center justify-center text-zinc-500 hover:text-white hover:bg-zinc-800 transition-all group"
                                     >
-                                        <FaCheck size={18} /> Verify & Activate User
+                                        <FaTimes size={18} className="group-hover:rotate-90 transition-transform duration-300" />
                                     </button>
-                                )}
+                                </header>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+                                    <div className="space-y-12">
+                                        <section className="space-y-8">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-px flex-1 bg-white/5" />
+                                                <h4 className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em]">Personal Information</h4>
+                                                <div className="h-px flex-1 bg-white/5" />
+                                            </div>
+                                            <div className="space-y-6">
+                                                <div className="flex justify-between items-center bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                    <span className="text-zinc-600 text-[10px] font-black uppercase tracking-widest">Email</span>
+                                                    <span className="text-white text-xs font-bold tracking-tight">{selectedRegistration.email}</span>
+                                                </div>
+                                                <div className="flex justify-between items-center bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                    <span className="text-zinc-600 text-[10px] font-black uppercase tracking-widest">Phone</span>
+                                                    <span className="text-white text-xs font-bold tracking-tight">{selectedRegistration.phone}</span>
+                                                </div>
+                                                <div className="flex justify-between items-center bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                    <span className="text-zinc-600 text-[10px] font-black uppercase tracking-widest">Institution</span>
+                                                    <span className="text-white text-xs font-bold tracking-tight">{selectedRegistration.college}</span>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className="bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                        <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-2">Cycle</span>
+                                                        <span className="text-purple-500 text-xs font-bold">{selectedRegistration.year} Year</span>
+                                                    </div>
+                                                    <div className="bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                        <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-1">Code</span>
+                                                        <span className="text-white text-[10px] font-mono opacity-60 truncate block">{(selectedRegistration as any).registrationCode || 'N/A'}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </section>
+
+                                        <section className="space-y-6">
+                                             <div className="flex items-center gap-3">
+                                                <div className="h-px flex-1 bg-white/5" />
+                                                <h4 className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em]">Team Members</h4>
+                                                <div className="h-px flex-1 bg-white/5" />
+                                            </div>
+                                            {(selectedRegistration as any).teamMembers && ((selectedRegistration as any).teamMembers as any[]).length > 0 ? (
+                                                <div className="grid grid-cols-1 gap-2">
+                                                    {((selectedRegistration as any).teamMembers as any[]).map((member: any, i: number) => (
+                                                        <div key={i} className="bg-zinc-900/20 p-4 rounded-xl border border-white/5 flex items-center justify-between">
+                                                            <div className="flex items-center gap-3">
+                                                                <span className="text-purple-500 font-mono text-[10px] opacity-40">[{i+1}]</span>
+                                                                <span className="text-zinc-300 text-[11px] font-black uppercase tracking-tight">{member.name}</span>
+                                                            </div>
+                                                            <div className="h-1 w-8 bg-zinc-800 rounded-full" />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="text-center py-6 border-2 border-dashed border-zinc-900 rounded-2xl">
+                                                    <p className="text-zinc-700 text-[10px] font-black uppercase tracking-widest">Solo Participant</p>
+                                                </div>
+                                            )}
+                                        </section>
+                                    </div>
+
+                                    <div className="space-y-12">
+                                        <section className="space-y-8">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-px flex-1 bg-white/5" />
+                                                <h4 className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em]">Payment Proof</h4>
+                                                <div className="h-px flex-1 bg-white/5" />
+                                            </div>
+                                            <div className="aspect-[4/5] bg-zinc-950 rounded-[40px] overflow-hidden border-2 border-zinc-900 group relative">
+                                                {(selectedRegistration.paymentScreenshotUrl) ? (
+                                                    <>
+                                                        <img 
+                                                            src={selectedRegistration.paymentScreenshotUrl} 
+                                                            alt="Payment Proof" 
+                                                            className="w-full h-full object-cover grayscale opacity-50 transition-all duration-700 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105"
+                                                        />
+                                                        <div className="absolute inset-x-0 bottom-0 p-8 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                                                            <a 
+                                                                href={selectedRegistration.paymentScreenshotUrl} 
+                                                                target="_blank" 
+                                                                rel="noopener noreferrer"
+                                                                className="w-full h-16 bg-white text-black rounded-2xl flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest shadow-2xl"
+                                                            >
+                                                                <FaExternalLinkAlt size={14} /> View Full Image
+                                                            </a>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <div className="w-full h-full flex flex-col items-center justify-center text-zinc-800 gap-6">
+                                                        <div className="h-20 w-20 rounded-full border-2 border-zinc-900 flex items-center justify-center">
+                                                            <FaFileAlt size={32} />
+                                                        </div>
+                                                        <span className="text-[10px] font-black uppercase tracking-widest border border-zinc-900 px-4 py-2 rounded-full">No Proof Found</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </section>
+
+                                        <div className="pt-2">
+                                            {!selectedRegistration.isActive && (
+                                                <button 
+                                                    onClick={() => handleVerifyRegistration(selectedRegistration!)}
+                                                    className="group h-24 w-full bg-white rounded-[32px] overflow-hidden relative transition-all active:scale-[0.98]"
+                                                >
+                                                    <div className="absolute inset-0 bg-green-500 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                                                    <div className="relative flex flex-col items-center justify-center gap-1">
+                                                        <span className="text-black group-hover:text-white text-[10px] font-black uppercase tracking-[0.4em] transition-colors">VERIFY REGISTRATION</span>
+                                                        <div className="flex items-center gap-2 text-zinc-400 group-hover:text-white/80 transition-colors">
+                                                            <span className="h-px w-8 bg-zinc-200 group-hover:bg-white/30" />
+                                                            <FaCheck size={12} />
+                                                            <span className="h-px w-8 bg-zinc-200 group-hover:bg-white/30" />
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            )}
+                                            {selectedRegistration.isActive && (
+                                                <div className="h-24 w-full bg-zinc-900/40 border-2 border-green-500/20 rounded-[32px] flex items-center justify-center gap-4">
+                                                    <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 border border-green-500/20">
+                                                        <FaCheck size={16} />
+                                                    </div>
+                                                    <span className="text-white text-[11px] font-black uppercase tracking-[0.3em]">Verified</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        </motion.div>
                     </div>
-                )
-            }
-        </div >
+                )}
+            </AnimatePresence>
+
+            {/* Grain Texture Overlay */}
+            <div className="fixed inset-0 pointer-events-none opacity-[0.03] z-[999] bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
+        </div>
     );
 };

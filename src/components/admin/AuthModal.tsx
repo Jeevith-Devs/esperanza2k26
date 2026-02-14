@@ -103,7 +103,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onLoginSuccess }) 
                     <div className="bg-[#0c0c0c] border border-white/5 rounded-[26px] overflow-hidden relative">
                         
                         {/* Scanline Effect */}
-                        <div className="absolute top-0 left-0 right-0 pointer-events-none bg-gradient-to-b from-transparent via-white/5 to-transparent h-[100px] -translate-y-full animate-[scan_4s_linear_infinite] z-0" />
+                        <motion.div 
+                            className="absolute top-0 left-0 right-0 pointer-events-none bg-gradient-to-b from-transparent via-white/5 to-transparent h-[100px] z-0"
+                            initial={{ y: "-100%" }}
+                            animate={{ y: "400%" }}
+                            transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                        />
 
                         {/* Content Wrapper explicitly on top */}
                         <div className="p-8 sm:p-10 relative z-30">
@@ -146,7 +151,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onLoginSuccess }) 
                                             onChange={(e) => setPassword(e.target.value)}
                                             className="w-full bg-black/60 border-2 border-zinc-800 rounded-xl py-4 pl-6 pr-14 text-white placeholder:text-zinc-700 focus:outline-none focus:border-purple-500/40 transition-all font-inter text-lg relative z-10"
                                             placeholder="Enter password"
-                                            autoFocus
                                             autoComplete="current-password"
                                         />
                                         <div className="absolute right-5 top-1/2 -translate-y-1/2 z-20 pointer-events-none">
@@ -188,13 +192,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onLoginSuccess }) 
                     </div>
                 </div>
             </motion.div>
-
-            <style jsx global>{`
-                @keyframes scan {
-                    from { transform: translateY(-100%); }
-                    to { transform: translateY(400%); }
-                }
-            `}</style>
         </div>
     );
 };
