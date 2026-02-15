@@ -152,6 +152,37 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
         }
     };
 
+    const isFormFilled = React.useMemo(() => {
+        if (isSoloEvent) {
+            return !!(
+                formData.name &&
+                formData.phone &&
+                formData.email &&
+                formData.college &&
+                formData.department &&
+                formData.degree &&
+                formData.course &&
+                formData.year &&
+                formData.idCardUrl
+            );
+        }
+        if (isTeamEvent) {
+            const basicCheck = !!(
+                formData.teamName &&
+                formData.email &&
+                formData.college &&
+                formData.department &&
+                formData.degree &&
+                formData.course &&
+                formData.year &&
+                formData.teamLeaderIdCardUrl
+            );
+            const membersCheck = formData.teamMembers.every(m => m.name && m.phone);
+            return basicCheck && membersCheck;
+        }
+        return false;
+    }, [formData, isSoloEvent, isTeamEvent]);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -652,8 +683,12 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                         </div>
                         <button
                             type="submit"
-                            disabled={uploadingIdCard || uploadingPayment}
-                            className="w-full bg-white text-black font-bold py-3.5 md:py-4 text-sm md:text-base rounded-md hover:bg-gray-200 transition-all flex items-center justify-center gap-2 mt-4 disabled:opacity-50 active:scale-[0.98] touch-manipulation"
+                            disabled={uploadingIdCard || uploadingPayment || !isFormFilled}
+                            className={`w-full font-bold py-3.5 md:py-4 text-sm md:text-base rounded-md transition-all flex items-center justify-center gap-2 mt-4 active:scale-[0.98] touch-manipulation ${
+                                uploadingIdCard || uploadingPayment || !isFormFilled
+                                    ? 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
+                                    : 'bg-white text-black hover:bg-gray-200'
+                            }`}
                         >
                             {uploadingIdCard || uploadingPayment ? 'Uploading Files...' : 'Submit Registration'}
                         </button>
