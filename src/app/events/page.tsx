@@ -226,7 +226,7 @@ export default function EventsPage() {
                     }
 
                     // Special mapping for Anybody Can Dance
-                    if (event.title.includes("ANYBODY CAN DANCE")) {
+                    if (event.title.toUpperCase().includes("ANYBODY CAN DANCE")) {
                       fileName = "Anybody_Can_Dance";
                     }
                     
