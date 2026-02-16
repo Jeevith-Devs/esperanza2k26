@@ -212,13 +212,23 @@ export default function EventsPage() {
                   videoSrc={event.videoSrc}
                   imageSrc={event.img}
                   onSecondaryAction={() => {
-                    const fileName = event.title
+                    let fileName = event.title
                       .replace(/\(.*\)/g, '') // Remove brackets and their content
                       .trim()                 // Remove trailing/leading spaces
                       .split(/\s+/)           // Split by whitespace
                       .filter(word => word.length > 0)
                       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
                       .join('_');
+                    
+                    // Special mapping for The Walk of Fame
+                    if (event.title === "The Walk of Fame") {
+                      fileName = "Ramp_Walk";
+                    }
+
+                    // Special mapping for Anybody Can Dance
+                    if (event.title.includes("ANYBODY CAN DANCE")) {
+                      fileName = "Anybody_Can_Dance";
+                    }
                     
                     const sourcePath = `/rulebook/${fileName}_Rules.pdf`;
                     
