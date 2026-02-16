@@ -227,7 +227,14 @@ export default function EventsPage() {
 
                     // Special mapping for Anybody Can Dance
                     if (event.title.toUpperCase().includes("ANYBODY CAN DANCE")) {
-                      fileName = "anybody_can_dance";
+                      const sourcePath = `/rulebook/ANYBODY CAN DANCE - RULES AND REGULATIONS.pdf`;
+                      const link = document.createElement('a');
+                      link.href = sourcePath;
+                      link.download = `ANYBODY CAN DANCE - RULES.pdf`;
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      return; // Exit early since we handled the download
                     }
                     
                     const sourcePath = `/rulebook/${fileName}_Rules.pdf`;
