@@ -76,7 +76,12 @@ const subCategoryOptions = [
     'Dance Club',
     'Compering Club',
     'Media Club',
-    'Fashion Club'
+    'Fashion Club',
+    'Spokesperson Club',
+    'Logistics',
+    'Hospitality',
+    'Organizing Committee',
+    'Volunteers'
 ];
 
 interface AdminPanelProps {
@@ -389,12 +394,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
         let updatedTeam;
         if (editingTeamId) {
             updatedTeam = teamMembers.map((m) =>
-                (m._id || m.id) === editingTeamId ? { ...newTeamMember, _id: editingTeamId } : m
+                (m._id || m.id) === editingTeamId 
+                    ? { ...newTeamMember, _id: editingTeamId, subCategory: newTeamMember.subCategory || '' } 
+                    : m
             );
         } else {
             // Append new member to the END of the list with correct order
             const newOrder = teamMembers.length;
-            updatedTeam = [...teamMembers, { ...newTeamMember, order: newOrder }];
+            // Generate temp ID to ensure key stability until backend refresh
+            const tempId = Date.now().toString();
+            updatedTeam = [...teamMembers, { ...newTeamMember, order: newOrder, _id: tempId, subCategory: newTeamMember.subCategory || '' }];
         }
 
         setTeamMembers(updatedTeam);
@@ -846,14 +855,37 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                         </div>
                                         <div className="space-y-2.5">
                                             <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Sub Category</label>
-                                            <input
-                                                type="text"
-                                                list="subCategoryOptionsList"
-                                                value={newTeamMember.subCategory || ''}
-                                                onChange={(e) => setNewTeamMember({ ...newTeamMember, subCategory: e.target.value })}
-                                                className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter"
-                                                placeholder="Sub-Category"
-                                            />
+                                            
+                                            {newTeamMember.category === 'Vistara Club Members' ? (
+                                                <div className="relative">
+                                                     <select
+                                                        value={newTeamMember.subCategory || ''}
+                                                        onChange={(e) => setNewTeamMember({ ...newTeamMember, subCategory: e.target.value })}
+                                                        className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter appearance-none cursor-pointer"
+                                                    >
+                                                        <option value="">Select Club / Division</option>
+                                                        {subCategoryOptions.map(sub => (
+                                                            <option key={sub} value={sub}>{sub}</option>
+                                                        ))}
+                                                        <option value="General Members">General Members</option>
+                                                        <option value="Other">Other (Type Custom)</option>
+                                                    </select>
+                                                    <div className="absolute right-6 top-1/2 -translate-y-1/2 event-none pointer-events-none text-zinc-500">
+                                                        <FaGripVertical size={12} className="rotate-90" />
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <input
+                                                    type="text"
+                                                    list="subCategoryOptionsList"
+                                                    autoComplete="off"
+                                                    value={newTeamMember.subCategory || ''}
+                                                    onChange={(e) => setNewTeamMember({ ...newTeamMember, subCategory: e.target.value })}
+                                                    className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter"
+                                                    placeholder="Sub Category (e.g., Core Team)"
+                                                />
+                                            )}
+                                            
                                             <datalist id="subCategoryOptionsList">
                                                 {subCategoryOptions.map(sub => <option key={sub} value={sub} />)}
                                             </datalist>
@@ -1280,10 +1312,15 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                                         <div className="h-full w-2/3 bg-purple-500/50" />
                                                                     </div>
                                                                 </div>
-                                                                <div className="hidden md:flex justify-end pr-6">
-                                                                    <span className="text-[9px] font-black text-purple-400 uppercase tracking-widest bg-purple-500/5 px-3 py-1.5 rounded-full border border-purple-500/10">
-                                                                        {member.subCategory || member.category}
+                                                                <div className="hidden md:flex flex-col items-end gap-1 pr-6">
+                                                                     <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">
+                                                                        {member.category}
                                                                     </span>
+                                                                    {member.subCategory && (
+                                                                        <span className="text-[9px] font-black text-purple-400 uppercase tracking-widest bg-purple-500/5 px-3 py-1.5 rounded-full border border-purple-500/10">
+                                                                            {member.subCategory}
+                                                                        </span>
+                                                                    )}
                                                                 </div>
                                                             </div>
                                                             <div className="flex gap-2">

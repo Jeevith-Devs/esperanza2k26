@@ -11,8 +11,6 @@ const app = express();
 
 // --- 1. MIDDLEWARE ---
 app.use(express.json());
-// --- 1. MIDDLEWARE ---
-app.use(express.json());
 app.use(cors({
   origin: (origin, callback) => {
     // Allow requests with no origin (like mobile apps or curl requests)
@@ -339,7 +337,8 @@ app.post('/api/team/update', async (req, res) => {
     // We replace the entire collection or specific logic. 
     // To keep it simple and consistent with Events/Content approaches in this codebase:
     await TeamMemberModel.deleteMany({});
-      // Sanitize: Remove _id to prevent duplicate key errors (let Mongo generate fresh IDs)
+    
+    // Sanitize: Remove _id to prevent duplicate key errors (let Mongo generate fresh IDs)
       const sanitizedMembers = teamMembers.map(m => {
         const { _id, ...rest } = m;
         return rest;

@@ -18,7 +18,7 @@ import {
   Hash,
   Gem
 } from 'lucide-react';
-import config from '@/config';
+import { TEAM_MEMBERS } from '@/data/team';
 
 
 interface TeamMember {
@@ -44,6 +44,10 @@ interface TeamSection {
 type TeamSections = Record<string, TeamSection>;
 type SectionKey = 'faculty' | 'students' | 'vistara' | 'volunteers';
 
+// ... (imports)
+
+// Remove TEAM_DATA import
+
 export default function TeamPage() {
   const [teamSections, setTeamSections] = useState<TeamSections | null>(null);
   const [loading, setLoading] = useState(true);
@@ -54,58 +58,80 @@ export default function TeamPage() {
   const contentRef = useRef<HTMLDivElement>(null);
   const resumeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  // ... (keep scrolling state) 
+
   useEffect(() => {
-    const fetchTeam = async () => {
-      try {
-        const res = await fetch(`${config.API_URL}/team`);
-        const data = await res.json();
+    const processTeams = () => {
+      const members = TEAM_MEMBERS;
 
-        if (data.success && Array.isArray(data.data)) {
-          const members: TeamMember[] = data.data;
+      // Initialize structure
+      const sections: TeamSections = {
+        faculty: { title: "Faculty Coordinators", groups: [] },
+        students: { title: "Student Coordinators", groups: [] },
+        vistara: { title: "Vistara Club Members", groups: [] },
+        volunteers: { title: "Volunteers", groups: [] }
+      };
 
-          // Initialize structure
-          const sections: TeamSections = {
-            faculty: { title: "Faculty Coordinators", groups: [] },
-            students: { title: "Student Coordinators", groups: [] },
-            vistara: { title: "Vistara Club Members", groups: [] },
-            volunteers: { title: "Volunteers", groups: [] }
-          };
-
-          // Helper to find or create group
-          const getGroup = (sectionKey: string, categoryName: string) => {
-            let group = sections[sectionKey].groups.find(g => g.category === categoryName);
-            if (!group) {
-              group = { category: categoryName, members: [] };
-              sections[sectionKey].groups.push(group);
-            }
-            return group;
-          };
-
-          members.forEach(m => {
-            const memberObj = { name: m.name, role: m.role || '' }; // Ensure role is string
-
-            if (m.category === 'Faculty Coordinators') {
-              getGroup('faculty', '').members.push(memberObj);
-            } else if (m.category === 'Vistara Club Members') {
-              getGroup('vistara', m.subCategory || 'General Members').members.push(memberObj);
-            } else if (m.category === 'Volunteers' || m.category === 'Volunteers / Core Committee') {
-              getGroup('volunteers', '').members.push(memberObj);
-            } else {
-              // All others go to 'students' section, grouped by their backend category or subCategory
-              getGroup('students', m.subCategory || m.category).members.push(memberObj);
-            }
-          });
-
-          setTeamSections(sections);
+      // Helper to find or create group
+      const getGroup = (sectionKey: string, categoryName: string) => {
+        let group = sections[sectionKey].groups.find(g => g.category === categoryName);
+        if (!group) {
+          group = { category: categoryName, members: [] };
+          sections[sectionKey].groups.push(group);
         }
-      } catch (err) {
-        console.error("Failed to fetch team:", err);
-      } finally {
-        setLoading(false);
-      }
+        return group;
+      };
+
+      const vistaraClubs = ['Tech Club', 'Music Club', 'Dance Club', 'Spokesperson Club', 'Media Club', 'Fashion Club', 'Compering Club'];
+      
+      members.forEach(m => {
+        const memberObj = { name: m.name, role: m.role || '' };
+        const cat = m.category || '';
+        const sub = m.subCategory || '';
+        
+        // 1. Faculty
+        if (cat === 'Faculty Coordinators') {
+          getGroup('faculty', '').members.push(memberObj);
+          return;
+        }
+
+        // 2. Vistara Clubs (Check both Category and SubCategory for robustness)
+        // Case-insensitive check
+        const clubMatch = vistaraClubs.find(c => 
+            cat.toLowerCase().includes(c.toLowerCase()) || 
+            sub.toLowerCase().includes(c.toLowerCase())
+        );
+        
+        if (cat === 'Vistara Club Members' || (clubMatch && cat !== 'Student Coordinators')) {
+             // Use the matched club name (properly cased), or the subCategory, or default to General
+             const groupName = clubMatch || sub || 'General Members';
+             getGroup('vistara', groupName).members.push(memberObj);
+             return;
+        }
+
+        // 3. Core Team (Check both, case insensitive)
+        if (cat.toLowerCase().includes('core team') || sub.toLowerCase().includes('core team')) {
+             getGroup('students', 'Core Team').members.push(memberObj);
+             return;
+        }
+
+        // 4. Volunteers
+        if (cat.toLowerCase().includes('volunteers')) {
+           getGroup('volunteers', '').members.push(memberObj);
+           return;
+        }
+
+        // 5. Default: Student Coordinators
+        // Use subCategory as header if present (e.g. Logistics), else Category if it's not "Student Coordinators"
+        const groupName = sub || (cat !== 'Student Coordinators' ? cat : ''); 
+        getGroup('students', groupName).members.push(memberObj);
+      });
+
+      setTeamSections(sections);
+      setLoading(false);
     };
 
-    fetchTeam();
+    processTeams();
   }, []);
 
 
@@ -353,9 +379,8 @@ function CreditSection({
         className={`absolute ${isLeft ? 'left-[-5%] md:left-[-10%]' : 'right-[-5%] md:right-[-10%]'} top-0 text-white/40 md:text-white/60 -z-10`}
         size={32}
       />
-      {/* Category Header (No longer sticky) - Only show if different from Main Section Title */}
       {group.category && group.category !== sectionTitle && (
-        <div className="relative z-20 mb-4 md:mb-6 mix-blend-difference">
+        <div className="relative z-20 mb-4 md:mb-6">
           <h3 className="text-2xl md:text-4xl font-bold text-white/90 uppercase tracking-wider text-center">
             {group.category}
           </h3>
