@@ -181,19 +181,7 @@ const ContentSchema = new mongoose.Schema({
 });
 const ContentModel = mongoose.model('Content', ContentSchema);
 
-// Team Schema
-const TeamMemberSchema = new mongoose.Schema({
-  name: String,
-  role: String,
-  category: { type: String, required: false }, // Explicitly allow any string
-  subCategory: { type: String, required: false },
-  image: MediaAssetSchema, // Re-added image field
-  isActive: { type: Boolean, default: true },
-  instagram: String,
-  linkedin: String,
-  order: { type: Number, default: 0 }
-});
-const TeamMemberModel = mongoose.model('TeamMember', TeamMemberSchema);
+
 
 
 // --- 5. API ROUTES ---
@@ -317,39 +305,7 @@ app.post('/api/content/update', async (req, res) => {
   }
 });
 
-// --- F. TEAM ROUTES ---
-app.get('/api/team', async (req, res) => {
-  try {
-    const teamMembers = await TeamMemberModel.find().sort({ order: 1 });
-    res.status(200).json({ success: true, data: teamMembers || [] });
-  } catch (error) {
-    res.status(500).json({ success: false, error: "Internal Server Error" });
-  }
-});
 
-app.post('/api/team/update', async (req, res) => {
-  try {
-    const { teamMembers } = req.body;
-    if (!Array.isArray(teamMembers)) {
-      return res.status(400).json({ success: false, error: "Invalid data format: teamMembers must be an array" });
-    }
-
-    // We replace the entire collection or specific logic. 
-    // To keep it simple and consistent with Events/Content approaches in this codebase:
-    await TeamMemberModel.deleteMany({});
-    
-    // Sanitize: Remove _id to prevent duplicate key errors (let Mongo generate fresh IDs)
-      const sanitizedMembers = teamMembers.map(m => {
-        const { _id, ...rest } = m;
-        return rest;
-      });
-      await TeamMemberModel.insertMany(sanitizedMembers);
-    res.json({ success: true, message: "Team list updated successfully!" });
-  } catch (error) {
-    console.error("❌ Error in /api/team/update:", error);
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
 
 // --- START SERVER ---
 const PORT = process.env.PORT || 5000;

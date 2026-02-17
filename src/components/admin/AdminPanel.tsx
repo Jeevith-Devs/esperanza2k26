@@ -22,7 +22,7 @@ import { toast } from "sonner";
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { FileUploader } from './FileUploader';
 import config from '../../config';
-import { Content, Event, TeamMember, Registration, MediaAsset } from '../../types/admin';
+import { Content, Event, Registration, MediaAsset } from '../../types/admin';
 
 // Default / Empty States
 const emptyEvent: Event = {
@@ -44,45 +44,7 @@ const emptyEvent: Event = {
     registeredCount: 0
 };
 
-const emptyTeamMember: TeamMember = {
-    name: '',
-    role: '',
-    category: 'Volunteers',
-    subCategory: '',
-    image: null,
-    instagram: '',
-    linkedin: '',
-    isActive: true,
-    order: 0
-};
 
-const teamCategories = [
-    'Faculty Coordinators',
-    'Student Coordinators',
-    'Vistara Club Members',
-    'Volunteers'
-];
-
-const roleOptions = [
-    'President',
-    'General Secretary',
-    'Secretary'
-];
-
-const subCategoryOptions = [
-    'Core Team',
-    'Tech Club',
-    'Music Club',
-    'Dance Club',
-    'Compering Club',
-    'Media Club',
-    'Fashion Club',
-    'Spokesperson Club',
-    'Logistics',
-    'Hospitality',
-    'Organizing Committee',
-    'Volunteers'
-];
 
 interface AdminPanelProps {
     content: Content;
@@ -103,10 +65,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
     const [newRule, setNewRule] = useState('');
 
 
-    const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
-    const [newTeamMember, setNewTeamMember] = useState<TeamMember>(emptyTeamMember);
-    const [isAddingTeamMember, setIsAddingTeamMember] = useState(false);
-    const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
+
 
     const [registrations, setRegistrations] = useState<Registration[]>([]);
     const [isLoadingRegs, setIsLoadingRegs] = useState(false);
@@ -118,19 +77,11 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
     useEffect(() => {
         if (isOpen) {
             if (activeTab === 'registrations') fetchRegistrations();
-            if (activeTab === 'team') fetchTeamMembers();
+
         }
     }, [isOpen, activeTab]);
 
-    const fetchTeamMembers = async () => {
-        try {
-            const res = await fetch(`${config.API_URL}/team`);
-            const data = await res.json();
-            if (data.success) setTeamMembers(data.data);
-        } catch (error) {
-            console.error("Failed to fetch team", error);
-        }
-    };
+
 
     const fetchRegistrations = async () => {
         setIsLoadingRegs(true);
@@ -201,18 +152,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
         }
     };
 
-    const saveTeamToBackend = async (members: TeamMember[]) => {
-        try {
-            await fetch(`${config.API_URL}/team/update`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ teamMembers: members }),
-            });
-        } catch (error: any) {
-            console.error("Failed to save team", error);
-            alert(`Failed to save team changes: ${error.message}`);
-        }
-    };
+
 
     // --- Registration Verification ---
     const handleVerifyRegistration = async (reg: Registration) => {
@@ -360,85 +300,6 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
 
     // --- TEAM MEMBER LOGIC ---
 
-    const cancelTeamEdit = () => {
-        setIsAddingTeamMember(false);
-        setNewTeamMember(emptyTeamMember);
-        setEditingTeamId(null);
-    };
-
-    const handleEditTeamMember = (member: TeamMember) => {
-        setNewTeamMember({ ...member });
-        setEditingTeamId(member._id || member.id || null);
-        setIsAddingTeamMember(true);
-    };
-
-    const handleDeleteTeamMember = async (id: string) => {
-        if (!id) {
-            alert("This member cannot be deleted yet. Please refresh the page and try again.");
-            return;
-        }
-        if (window.confirm("Are you sure you want to delete this team member?")) {
-            const updatedTeam = teamMembers.filter((m) => (m._id || m.id) !== id);
-            setTeamMembers(updatedTeam);
-            await saveTeamToBackend(updatedTeam);
-            await fetchTeamMembers();
-        }
-    };
-
-    const handleSaveTeamMember = async () => {
-        if (!newTeamMember.name) {
-            alert("Name is required!");
-            return;
-        }
-
-        let updatedTeam;
-        if (editingTeamId) {
-            updatedTeam = teamMembers.map((m) =>
-                (m._id || m.id) === editingTeamId 
-                    ? { ...newTeamMember, _id: editingTeamId, subCategory: newTeamMember.subCategory || '' } 
-                    : m
-            );
-        } else {
-            // Append new member to the END of the list with correct order
-            const newOrder = teamMembers.length;
-            // Generate temp ID to ensure key stability until backend refresh
-            const tempId = Date.now().toString();
-            updatedTeam = [...teamMembers, { ...newTeamMember, order: newOrder, _id: tempId, subCategory: newTeamMember.subCategory || '' }];
-        }
-
-        setTeamMembers(updatedTeam);
-        await saveTeamToBackend(updatedTeam);
-        await fetchTeamMembers();
-        toast.success("Team Member Saved!", {
-            description: `${newTeamMember.name} has been added successfully.`,
-        });
-        cancelTeamEdit();
-    };
-
-    const handleDeleteAllTeamMembers = async () => {
-        if (window.confirm("ARE YOU SURE? This will delete ALL team members permanently. This action cannot be undone.")) {
-            setTeamMembers([]);
-            await saveTeamToBackend([]);
-            await fetchTeamMembers();
-        }
-    };
-
-    const handleOnDragEnd = async (result: DropResult) => {
-        if (!result.destination) return;
-
-        const items = Array.from(teamMembers);
-        const [reorderedItem] = items.splice(result.source.index, 1);
-        items.splice(result.destination.index, 0, reorderedItem);
-
-        // Update order property based on new index
-        const updatedItems = items.map((item, index) => ({
-            ...item,
-            order: index
-        }));
-
-        setTeamMembers(updatedItems);
-        await saveTeamToBackend(updatedItems);
-    };
 
     return (
         <div className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-0 md:p-6 text-white font-bricolage overflow-hidden">
@@ -493,9 +354,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                 </div>
 
                 {/* NAVIGATION TABS - Minimalist Line Style */}
-                {!isAddingEvent && !isAddingTeamMember && (
+                {!isAddingEvent && (
                     <div className="flex px-6 bg-[#0c0c0c] border-b border-white/5 overflow-x-auto no-scrollbar">
-                        {['general', 'events', 'registrations', 'team'].map((tab) => (
+                        {['general', 'events', 'registrations'].map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
@@ -626,7 +487,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                     )}
 
                     {/* --- REGISTRATION LIST VIEW --- */}
-                    {activeTab === 'registrations' && !isAddingEvent && !isAddingTeamMember && (
+                    {activeTab === 'registrations' && !isAddingEvent && (
                         <div className="space-y-10">
                             <header className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                                 <div className="space-y-3">
@@ -806,174 +667,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                         </div>
                     )}
 
-                    {/* --- TEAM MEMBER FORM --- */}
-                    {isAddingTeamMember && (
-                        <div className="space-y-12 max-w-4xl">
-                            <header className="space-y-3">
-                                <h3 className="text-3xl font-black text-white uppercase tracking-tighter font-bricolage">
-                                    {editingTeamId ? 'Edit Member' : 'Add New Member'}
-                                </h3>
-                                <p className="text-zinc-500 text-sm uppercase font-black tracking-widest">Team Management</p>
-                            </header>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                <div className="space-y-8">
-                                    <div className="space-y-2.5">
-                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Full Name</label>
-                                        <input
-                                            type="text"
-                                            value={newTeamMember.name}
-                                            onChange={(e) => setNewTeamMember({ ...newTeamMember, name: e.target.value })}
-                                            className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter"
-                                            placeholder="Full Name"
-                                        />
-                                    </div>
-                                    <div className="space-y-2.5">
-                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Role</label>
-                                        <input
-                                            type="text"
-                                            list="roleOptionsList"
-                                            value={newTeamMember.role}
-                                            onChange={(e) => setNewTeamMember({ ...newTeamMember, role: e.target.value })}
-                                            className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter"
-                                            placeholder="Ex: Technical Lead"
-                                        />
-                                        <datalist id="roleOptionsList">
-                                            {roleOptions.map(role => <option key={role} value={role} />)}
-                                        </datalist>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-6">
-                                        <div className="space-y-2.5">
-                                            <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Category</label>
-                                            <select
-                                                value={newTeamMember.category}
-                                                onChange={(e) => setNewTeamMember({ ...newTeamMember, category: e.target.value })}
-                                                className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter appearance-none"
-                                            >
-                                                {teamCategories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                                            </select>
-                                        </div>
-                                        <div className="space-y-2.5">
-                                            <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Sub Category</label>
-                                            
-                                            {newTeamMember.category === 'Vistara Club Members' ? (
-                                                <div className="relative">
-                                                     <select
-                                                        value={newTeamMember.subCategory || ''}
-                                                        onChange={(e) => setNewTeamMember({ ...newTeamMember, subCategory: e.target.value })}
-                                                        className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter appearance-none cursor-pointer"
-                                                    >
-                                                        <option value="">Select Club / Division</option>
-                                                        {subCategoryOptions.map(sub => (
-                                                            <option key={sub} value={sub}>{sub}</option>
-                                                        ))}
-                                                        <option value="General Members">General Members</option>
-                                                        <option value="Other">Other (Type Custom)</option>
-                                                    </select>
-                                                    <div className="absolute right-6 top-1/2 -translate-y-1/2 event-none pointer-events-none text-zinc-500">
-                                                        <FaGripVertical size={12} className="rotate-90" />
-                                                    </div>
-                                                </div>
-                                            ) : (
-                                                <input
-                                                    type="text"
-                                                    list="subCategoryOptionsList"
-                                                    autoComplete="off"
-                                                    value={newTeamMember.subCategory || ''}
-                                                    onChange={(e) => setNewTeamMember({ ...newTeamMember, subCategory: e.target.value })}
-                                                    className="w-full bg-zinc-900/50 border-2 border-zinc-800 rounded-2xl py-4 px-6 text-white focus:border-purple-500/50 transition-all font-inter"
-                                                    placeholder="Sub Category (e.g., Core Team)"
-                                                />
-                                            )}
-                                            
-                                            <datalist id="subCategoryOptionsList">
-                                                {subCategoryOptions.map(sub => <option key={sub} value={sub} />)}
-                                            </datalist>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-8">
-                                    <div className="space-y-2.5">
-                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Profile Picture</label>
-                                        <div className="bg-zinc-900/30 border-2 border-zinc-800 rounded-[32px] p-6 flex flex-col items-center gap-4">
-                                            <div className="h-32 w-32 rounded-full overflow-hidden border-2 border-zinc-800 bg-black">
-                                                {newTeamMember.image?.url ? (
-                                                    <img src={newTeamMember.image.url} className="w-full h-full object-cover" />
-                                                ) : (
-                                                    <div className="w-full h-full flex items-center justify-center text-zinc-800">
-                                                        <FaUsers size={40} />
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <FileUploader
-                                                label="Upload Image"
-                                                initialUrl={newTeamMember.image}
-                                                onUpload={(asset) => setNewTeamMember({ ...newTeamMember, image: asset })}
-                                                folder="team"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-4">
-                                        <label className="text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] ml-1">Social Links</label>
-                                        <div className="space-y-3">
-                                            <input
-                                                type="text"
-                                                placeholder="Instagram URL"
-                                                value={newTeamMember.instagram}
-                                                onChange={(e) => setNewTeamMember({ ...newTeamMember, instagram: e.target.value })}
-                                                className="w-full bg-zinc-900/30 border border-white/5 rounded-xl py-3 px-4 text-xs text-zinc-400 focus:text-white transition-all"
-                                            />
-                                            <input
-                                                type="text"
-                                                placeholder="LinkedIn URL"
-                                                value={newTeamMember.linkedin}
-                                                onChange={(e) => setNewTeamMember({ ...newTeamMember, linkedin: e.target.value })}
-                                                className="w-full bg-zinc-900/30 border border-white/5 rounded-xl py-3 px-4 text-xs text-zinc-400 focus:text-white transition-all"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex items-center gap-4 p-6 bg-purple-500/5 border border-purple-500/10 rounded-2xl">
-                                <div className="relative">
-                                    <input
-                                        type="checkbox"
-                                        id="isActiveParams"
-                                        checked={newTeamMember.isActive !== false}
-                                        onChange={(e) => setNewTeamMember({ ...newTeamMember, isActive: e.target.checked })}
-                                        className="peer hidden"
-                                    />
-                                    <label 
-                                        htmlFor="isActiveParams"
-                                        className="h-6 w-11 bg-zinc-800 rounded-full flex items-center px-1 cursor-pointer transition-colors peer-checked:bg-purple-500"
-                                    >
-                                        <div className="h-4 w-4 bg-white rounded-full transition-transform peer-checked:translate-x-5" />
-                                    </label>
-                                </div>
-                                <label htmlFor="isActiveParams" className="text-[10px] font-black text-zinc-400 uppercase tracking-widest cursor-pointer peer-checked:text-white">
-                                    Status: Active
-                                </label>
-                            </div>
-
-                            <div className="flex gap-4 pt-4 pb-20">
-                                <button 
-                                    onClick={cancelTeamEdit} 
-                                    className="h-14 px-8 bg-zinc-900 text-[10px] font-black uppercase tracking-widest text-zinc-500 hover:text-white border border-white/5 rounded-2xl transition-all"
-                                >
-                                    Cancel
-                                </button>
-                                <button 
-                                    onClick={handleSaveTeamMember} 
-                                    className="h-14 px-10 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-2xl hover:bg-purple-500 hover:text-white transition-all shadow-[0_0_30px_rgba(255,255,255,0.1)] flex items-center gap-3"
-                                >
-                                    <FaSave size={14} /> Save Member
-                                </button>
-                            </div>
-                        </div>
-                    )}
 
                     {isAddingEvent && (
                         /* --- EVENT FORM REDESIGN --- */
@@ -1242,102 +936,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                         </div>
                     )}
 
-                    {/* --- TEAM LIST --- */}
-                    {activeTab === 'team' && !isAddingTeamMember && (
-                        <div className="space-y-10">
-                            <header className="flex items-center justify-between">
-                                <div className="space-y-1">
-                                    <h3 className="text-2xl font-black text-white uppercase tracking-tighter">Team Members</h3>
-                                    <p className="text-zinc-600 text-[9px] font-black uppercase tracking-widest">Manage team members</p>
-                                </div>
-                                <div className="flex gap-3">
-                                    <button
-                                        onClick={handleDeleteAllTeamMembers}
-                                        className="h-12 px-6 bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-red-500 hover:text-white transition-all"
-                                    >
-                                        WIPE_ALL_NODES
-                                    </button>
-                                    <button
-                                        onClick={() => { cancelTeamEdit(); setIsAddingTeamMember(true); }}
-                                        className="h-12 px-6 bg-white text-black text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-purple-500 hover:text-white transition-all flex items-center gap-2"
-                                    >
-                                        <FaPlus size={12} /> Inject_New_Node
-                                    </button>
-                                </div>
-                            </header>
 
-                            <DragDropContext onDragEnd={handleOnDragEnd}>
-                                <Droppable droppableId="team-members">
-                                    {(provided) => (
-                                        <div
-                                            {...provided.droppableProps}
-                                            ref={provided.innerRef}
-                                            className="space-y-4"
-                                        >
-                                            {teamMembers.map((member, index) => (
-                                                <Draggable
-                                                    key={member._id || member.id || index}
-                                                    draggableId={member._id || member.id || String(index)}
-                                                    index={index}
-                                                >
-                                                    {(provided) => (
-                                                        <div
-                                                            ref={provided.innerRef}
-                                                            {...provided.draggableProps}
-                                                            className="bg-zinc-900/20 border border-white/5 rounded-3xl p-4 md:p-6 flex items-center gap-6 group hover:border-purple-500/20 hover:bg-zinc-900/40 transition-all"
-                                                        >
-                                                            <div 
-                                                                {...provided.dragHandleProps}
-                                                                className="text-zinc-800 group-hover:text-zinc-600 transition-colors cursor-grab active:cursor-grabbing p-2"
-                                                            >
-                                                                <FaGripVertical />
-                                                            </div>
-                                                            <div className={`h-16 w-16 rounded-full overflow-hidden border-2 flex-shrink-0 transition-colors ${member.isActive ? 'border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.3)]' : 'border-zinc-800 grayscale'}`}>
-                                                                {member.image?.url ? (
-                                                                    <img src={member.image.url} alt={member.name} className="w-full h-full object-cover" />
-                                                                ) : (
-                                                                    <div className="w-full h-full bg-zinc-900 flex items-center justify-center text-zinc-800">
-                                                                        <FaUsers size={20} />
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                            <div className="flex-1 min-w-0 grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                                                                <div>
-                                                                    <p className="text-sm font-black text-white uppercase tracking-tight leading-none mb-1">{member.name}</p>
-                                                                    <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">ID: {member._id?.substring(0, 8) || 'TEMP'}</p>
-                                                                </div>
-                                                                <div className="hidden md:block">
-                                                                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-widest mb-1">{member.role || 'Member'}</p>
-                                                                    <div className="h-1 w-12 bg-zinc-800 rounded-full overflow-hidden">
-                                                                        <div className="h-full w-2/3 bg-purple-500/50" />
-                                                                    </div>
-                                                                </div>
-                                                                <div className="hidden md:flex flex-col items-end gap-1 pr-6">
-                                                                     <span className="text-[9px] font-black text-zinc-500 uppercase tracking-widest">
-                                                                        {member.category}
-                                                                    </span>
-                                                                    {member.subCategory && (
-                                                                        <span className="text-[9px] font-black text-purple-400 uppercase tracking-widest bg-purple-500/5 px-3 py-1.5 rounded-full border border-purple-500/10">
-                                                                            {member.subCategory}
-                                                                        </span>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                            <div className="flex gap-2">
-                                                                <button onClick={() => handleEditTeamMember(member)} className="h-10 w-10 bg-zinc-900 border border-white/5 rounded-xl flex items-center justify-center text-zinc-500 hover:text-white hover:bg-zinc-800 transition-all"><FaFont size={12} /></button>
-                                                                <button onClick={() => handleDeleteTeamMember(member._id!)} className="h-10 w-10 bg-red-500/10 border border-red-500/10 rounded-xl flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-all"><FaTrash size={12} /></button>
-                                                            </div>
-                                                        </div>
-                                                    )}
-                                                </Draggable>
-                                            ))}
-                                            {provided.placeholder}
-                                        </div>
-                                    )}
-                                </Droppable>
-                            </DragDropContext>
-                        </div>
-                    )}
 
                 </div>
             </motion.div>

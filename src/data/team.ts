@@ -270,5 +270,15 @@ export const TEAM_MEMBERS: TeamMember[] = [
   { id: "103", name: "Santhosh", role: "Member", category: "Vistara Club Members", subCategory: "Tech Club", image: null, order: 7 },
   { id: "104", name: "Jerlin Jaspher", role: "Member", category: "Vistara Club Members", subCategory: "Tech Club", image: null, order: 8 },
   { id: "105", name: "Arjun", role: "Member", category: "Vistara Club Members", subCategory: "Tech Club", image: null, order: 9 },
-  { id: "106", name: "Chezhiyan", role: "Member", category: "Vistara Club Members", subCategory: "Tech Club", image: null, order: 10 }
+  { id: "106", name: "Chezhiyan", role: "Member", category: "Vistara Club Members", subCategory: "Tech Club", image: null, order: 10 },
+  // Vistara Club Members - Fashion Club
+  { id: "107", name: "Yuvan Raj", role: "Member", category: "Vistara Club Members", subCategory: "Fashion Club", image: null, order: 1 },
+  { id: "108", name: "Raheem M", role: "Member", category: "Vistara Club Members", subCategory: "Fashion Club", image: null, order: 2 },
+  { id: "109", name: "Nivash R", role: "Member", category: "Vistara Club Members", subCategory: "Fashion Club", image: null, order: 3 },
+  { id: "110", name: "G Akash Kumar", role: "Member", category: "Vistara Club Members", subCategory: "Fashion Club", image: null, order: 4 },
+  { id: "111", name: "Sachin N", role: "Member", category: "Vistara Club Members", subCategory: "Fashion Club", image: null, order: 5 },
+  { id: "112", name: "Arsath Ahamed S", role: "Member", category: "Vistara Club Members", subCategory: "Fashion Club", image: null, order: 6 },
+  { id: "113", name: "Kamalesh R", role: "Member", category: "Vistara Club Members", subCategory: "Fashion Club", image: null, order: 7 },
+  { id: "114", name: "Sanjay", role: "Member", category: "Vistara Club Members", subCategory: "Fashion Club", image: null, order: 8 },
+  { id: "115", name: "Sentamizh", role: "Member", category: "Vistara Club Members", subCategory: "Fashion Club", image: null, order: 9 }
 ];
