@@ -155,29 +155,29 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
     const isFormFilled = React.useMemo(() => {
         if (isSoloEvent) {
             return !!(
-                formData.name &&
-                formData.phone &&
-                formData.email &&
-                formData.college &&
-                formData.department &&
-                formData.degree &&
-                formData.course &&
-                formData.year &&
+                formData.name?.trim() &&
+                formData.phone?.trim() &&
+                formData.email?.trim() &&
+                formData.college?.trim() &&
+                formData.department?.trim() &&
+                formData.degree?.trim() &&
+                formData.course?.trim() &&
+                formData.year?.trim() &&
                 formData.idCardUrl
             );
         }
         if (isTeamEvent) {
             const basicCheck = !!(
-                formData.teamName &&
-                formData.email &&
-                formData.college &&
-                formData.department &&
-                formData.degree &&
-                formData.course &&
-                formData.year &&
+                formData.teamName?.trim() &&
+                formData.email?.trim() &&
+                formData.college?.trim() &&
+                formData.department?.trim() &&
+                formData.degree?.trim() &&
+                formData.course?.trim() &&
+                formData.year?.trim() &&
                 formData.teamLeaderIdCardUrl
             );
-            const membersCheck = formData.teamMembers.every(m => m.name && m.phone);
+            const membersCheck = formData.teamMembers.every(m => m.name?.trim() && m.phone?.trim());
             return basicCheck && membersCheck;
         }
         return false;
@@ -186,24 +186,37 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        const phoneRegex = /^[0-9]{10}$/;
+
         if (isSoloEvent) {
-            if (!formData.name || !formData.phone || !formData.college || !formData.department ||
-                !formData.degree || !formData.course || !formData.year || !formData.idCardUrl
-                /* || !formData.paymentScreenshotUrl */) {
+            if (!formData.name?.trim() || !formData.phone?.trim() || !formData.email?.trim() || 
+                !formData.college?.trim() || !formData.department?.trim() || !formData.degree?.trim() || 
+                !formData.course?.trim() || !formData.year?.trim() || !formData.idCardUrl) {
                 toast.warning("Please fill all required fields for solo registration");
                 return;
             }
+
+            if (!phoneRegex.test(formData.phone.trim())) {
+                toast.warning("Please enter a valid 10-digit phone number");
+                return;
+            }
         } else if (isTeamEvent) {
-            if (!formData.teamName || !formData.college || !formData.department ||
-                !formData.degree || !formData.course || !formData.year ||
-                !formData.teamLeaderIdCardUrl /* || !formData.paymentScreenshotUrl */) {
+            if (!formData.teamName?.trim() || !formData.email?.trim() || !formData.college?.trim() || 
+                !formData.department?.trim() || !formData.degree?.trim() || !formData.course?.trim() || 
+                !formData.year?.trim() || !formData.teamLeaderIdCardUrl) {
                 toast.warning("Please fill all required team fields");
                 return;
             }
 
-            const allMembersValid = formData.teamMembers.every(member => member.name && member.phone);
+            const allMembersValid = formData.teamMembers.every(member => member.name?.trim() && member.phone?.trim());
             if (!allMembersValid) {
                 toast.warning("Please fill all team member names and phone numbers");
+                return;
+            }
+
+            const allPhonesValid = formData.teamMembers.every(member => phoneRegex.test(member.phone.trim()));
+            if (!allPhonesValid) {
+                toast.warning("All phone numbers must be 10 digits");
                 return;
             }
         }
