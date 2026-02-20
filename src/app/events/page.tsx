@@ -206,7 +206,11 @@ export default function EventsPage() {
                   title={event.title}
                   subtitle={event.category}
                   description={event.desc}
-                  features={event.rules.slice(0, 4)}
+                  features={
+                    event.title.toUpperCase() === "FRAME BY FRAME"
+                      ? ["Film duration: 5-15 mins", ...event.rules]
+                      : event.rules.slice(0, 4)
+                  }
                   actionLabel="View More"
                   onAction={() => setSelectedEvent(event)}
                   videoSrc={event.videoSrc}
