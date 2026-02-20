@@ -20,7 +20,19 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
 
     // Parse team size with better handling
     let maxTeamSize = 4; // default
-    if (selectedEvent?.teamSize) {
+    let minTeamSize = 1; // default
+    
+    // Hardcode min/max sizes for group events specific to requirements
+    if (selectedEvent?.title === "The Walk of Fame") {
+        maxTeamSize = 15;
+        minTeamSize = 5;
+    } else if (selectedEvent?.title === "FRAME BY FRAME" || selectedEvent?.title === "VOICE QUEST (Group)") {
+        maxTeamSize = 12;
+        minTeamSize = 3;
+    } else if (selectedEvent?.title === "ANYBODY CAN DANCE (Group)") {
+        maxTeamSize = 12;
+        minTeamSize = 2;
+    } else if (selectedEvent?.teamSize) {
         const parsed = parseInt(selectedEvent.teamSize.toString());
         if (!isNaN(parsed) && parsed > 0) {
             maxTeamSize = parsed;
@@ -81,6 +93,18 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
         paymentScreenshotUrl: ''
     });
 
+    React.useEffect(() => {
+        if (isTeamEvent && formData.teamMembers.length < minTeamSize) {
+            setFormData(prev => {
+                const newMembers = [...prev.teamMembers];
+                while (newMembers.length < minTeamSize) {
+                    newMembers.push({ name: '', phone: '' });
+                }
+                return { ...prev, teamMembers: newMembers };
+            });
+        }
+    }, [isTeamEvent, minTeamSize]);
+
     const [uploadingIdCard, setUploadingIdCard] = useState(false);
     const [uploadingPayment, setUploadingPayment] = useState(false);
 
@@ -107,9 +131,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
     };
 
     const removeTeamMember = (index: number) => {
-        if (formData.teamMembers.length > 1) {
+        if (formData.teamMembers.length > minTeamSize) {
             const updatedMembers = formData.teamMembers.filter((_, i) => i !== index);
             setFormData(prev => ({ ...prev, teamMembers: updatedMembers }));
+        } else {
+            toast.warning(`Minimum ${minTeamSize} team members required.`);
         }
     };
 
@@ -211,6 +237,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
             const allMembersValid = formData.teamMembers.every(member => member.name?.trim() && member.phone?.trim());
             if (!allMembersValid) {
                 toast.warning("Please fill all team member names and phone numbers");
+                return;
+            }
+
+            if (formData.teamMembers.length < minTeamSize) {
+                toast.warning(`Minimum ${minTeamSize} team members required.`);
                 return;
             }
 
@@ -464,7 +495,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                     <div className="space-y-4">
                                         <div className="flex items-center justify-between">
                                             <label className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest">
-                                                Team Members * ({formData.teamMembers.length}/{maxTeamSize})
+                                                Team Members * ({formData.teamMembers.length}/{maxTeamSize}) {minTeamSize > 1 && `(Min ${minTeamSize})`}
                                             </label>
                                             {formData.teamMembers.length < maxTeamSize && (
                                                 <button
@@ -501,7 +532,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                                             value={member.phone}
                                                             onChange={(e) => handleTeamMemberChange(index, 'phone', e.target.value)}
                                                         />
-                                                        {formData.teamMembers.length > 1 && (
+                                                        {formData.teamMembers.length > minTeamSize && (
                                                             <button
                                                                 type="button"
                                                                 onClick={() => removeTeamMember(index)}

@@ -206,11 +206,11 @@ export default function EventsPage() {
                   title={event.title}
                   subtitle={event.category}
                   description={event.desc}
-                  features={
+                  features={(
                     event.title.toUpperCase() === "FRAME BY FRAME"
                       ? ["Film duration: 5-15 mins", ...event.rules]
                       : event.rules.slice(0, 4)
-                  }
+                  ).map(rule => (event.title === "ANYBODY CAN DANCE (Group)" && typeof rule === 'string') ? rule.replace("3–12", "2–12") : rule)}
                   actionLabel="View More"
                   onAction={() => setSelectedEvent(event)}
                   videoSrc={event.videoSrc}
@@ -351,7 +351,7 @@ export default function EventsPage() {
                     <>
                       <li className="flex items-start gap-3">
                         <FaArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-[#A855F7] mt-1 shrink-0" />
-                        <span className="leading-relaxed">Each team must have a minimum of 5 members and a maximum of 10–20 members.</span>
+                        <span className="leading-relaxed">Team size: 5 - 15 members</span>
                       </li>
                       <li className="flex flex-col gap-2">
                         <div className="flex items-start gap-3 text-white font-bold">
@@ -371,6 +371,7 @@ export default function EventsPage() {
                           <span>Event Rules:</span>
                         </div>
                         <ul className="pl-8 space-y-2 text-zinc-400 text-sm">
+                          <li>• Outfits must be appropriate and maintain decency.</li>
                           <li>• No inappropriate dresses are allowed.</li>
                           <li>• Songs must be submitted to the coordinator before the event.</li>
                           <li>• Teams must inform their theme in advance to avoid repetition and confusion.</li>
@@ -378,12 +379,18 @@ export default function EventsPage() {
                       </li>
                     </>
                   ) : (
-                    selectedEvent.rules.map((rule, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <FaArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-[#A855F7] mt-1 shrink-0" />
-                        <span className="leading-relaxed">{rule}</span>
-                      </li>
-                    ))
+                    selectedEvent.rules.map((rule, i) => {
+                      let displayRule = rule;
+                      if (selectedEvent.title === "ANYBODY CAN DANCE (Group)" && displayRule.includes("3–12")) {
+                        displayRule = displayRule.replace("3–12", "2–12");
+                      }
+                      return (
+                        <li key={i} className="flex items-start gap-3">
+                          <FaArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-[#A855F7] mt-1 shrink-0" />
+                          <span className="leading-relaxed">{displayRule}</span>
+                        </li>
+                      );
+                    })
                   )}
                 </ul>
 
