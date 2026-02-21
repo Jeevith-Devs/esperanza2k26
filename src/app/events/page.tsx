@@ -216,39 +216,28 @@ export default function EventsPage() {
                   videoSrc={event.videoSrc}
                   imageSrc={event.img}
                   onSecondaryAction={() => {
-                    let fileName = event.title
-                      .replace(/\(.*\)/g, '') // Remove brackets and their content
-                      .trim()                 // Remove trailing/leading spaces
-                      .split(/\s+/)           // Split by whitespace
-                      .filter(word => word.length > 0)
-                      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-                      .join('_');
-                    
-                    // Special mapping for The Walk of Fame
-                    if (event.title === "The Walk of Fame") {
-                      fileName = "Ramp_Walk";
-                    }
+                    const rulebookMap: { [key: string]: string } = {
+                      "ANYBODY CAN DANCE (Group)": "Anybody Can Dance (Group) Rule book.pdf",
+                      "ANYBODY CAN DANCE (Solo)": "Anybody Can Dance (Solo) Rule book.pdf",
+                      "VOICE QUEST (Group)": "Voice Quest (Group) Rule book.pdf",
+                      "VOICE QUEST (Solo)": "Voice Quest (Solo) Rule book.pdf",
+                      "FRAME BY FRAME": "Frame By Frame Rule book.pdf",
+                      "The Walk of Fame": "Walk Of Fame Rule book.pdf"
+                    };
 
-                    // Special mapping for Anybody Can Dance
-                    if (event.title.toUpperCase().includes("ANYBODY CAN DANCE")) {
-                      const sourcePath = `/rulebook/ANYBODY CAN DANCE - RULES AND REGULATIONS.pdf`;
+                    const fileName = rulebookMap[event.title];
+                    if (fileName) {
+                      const sourcePath = `/rulebook/${fileName}`;
                       const link = document.createElement('a');
                       link.href = sourcePath;
-                      link.download = `ANYBODY CAN DANCE - RULES.pdf`;
+                      link.download = fileName;
                       document.body.appendChild(link);
                       link.click();
                       document.body.removeChild(link);
-                      return; // Exit early since we handled the download
+                    } else {
+                      // Fallback for any other events
+                      toast.error("Rulebook not available for this event.");
                     }
-                    
-                    const sourcePath = `/rulebook/${fileName}_Rules.pdf`;
-                    
-                    const link = document.createElement('a');
-                    link.href = sourcePath;
-                    link.download = `${event.title} Rules.pdf`;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
                   }}
                 />
               </div>
