@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { gsap } from "gsap";
 import { useMenu } from "@/context/MenuContext";
+import Head from "next/head";
 
 const HeroSection: React.FC = () => {
     const [isMounted, setIsMounted] = useState(false);
@@ -42,13 +43,16 @@ const HeroSection: React.FC = () => {
         setNextVideoIndex((currentVideoIndex + 1) % videos.length);
     }, [currentVideoIndex, videos.length]);
 
+    const isInitialMount = useRef(true);
+
     useEffect(() => {
-        if (currentVideoRef.current) {
+        if (!isInitialMount.current && currentVideoRef.current) {
             currentVideoRef.current.load();
             currentVideoRef.current.play().catch((error) => {
                 console.log("Current video autoplay prevented:", error);
             });
         }
+        isInitialMount.current = false;
     }, [currentVideoIndex]);
 
     useEffect(() => {
@@ -278,6 +282,14 @@ const HeroSection: React.FC = () => {
 
     return (
         <section className="relative h-dvh w-full overflow-hidden select-none bg-black">
+            <Head>
+                <link 
+                    rel="preload" 
+                    href={videos[0]} 
+                    as="video" 
+                    type="video/mp4" 
+                />
+            </Head>
             {/* Animated Gradient + Noise Background for Mobile */}
             <div className="absolute inset-0 sm:hidden z-0 overflow-hidden bg-black">
                 {/* Purple Gradient Blobs */}
@@ -304,28 +316,26 @@ const HeroSection: React.FC = () => {
                     {/* Background Videos - Hidden on Mobile */}
                     <video
                         ref={currentVideoRef}
+                        src={videos[currentVideoIndex]}
                         autoPlay
                         loop
                         muted
                         playsInline
                         preload="auto"
+                        crossOrigin="anonymous"
                         className="hidden sm:block absolute left-0 top-0 h-full w-full object-cover object-center"
-                        key={`current-${currentVideoIndex}`}
-                    >
-                        <source src={videos[currentVideoIndex]} type="video/mp4" />
-                    </video>
+                    />
 
                     <video
                         ref={nextVideoRef}
+                        src={videos[nextVideoIndex]}
                         loop
                         muted
                         playsInline
                         preload="auto"
+                        crossOrigin="anonymous"
                         className="hidden sm:block absolute left-0 top-0 h-full w-full object-cover object-center opacity-0 pointer-events-none"
-                        key={`next-${nextVideoIndex}`}
-                    >
-                        <source src={videos[nextVideoIndex]} type="video/mp4" />
-                    </video>
+                    />
 
                     {/* Mobile Layout - Text Above and Below Center Video */}
                     <div className="sm:hidden absolute inset-0 z-30 flex flex-col items-center justify-center gap-0 px-4 pointer-events-none">
@@ -349,18 +359,18 @@ const HeroSection: React.FC = () => {
                             }}
                         >
                             <video
+                                src={videos[currentVideoIndex]}
                                 autoPlay
                                 loop
                                 muted
                                 playsInline
                                 preload="auto"
+                                crossOrigin="anonymous"
                                 className="w-full h-full object-cover rounded-sm shadow-2xl"
                                 style={{
                                     boxShadow: "0 25px 50px rgba(0,0,0,0.9)"
                                 }}
-                            >
-                                <source src={videos[currentVideoIndex]} type="video/mp4" />
-                            </video>
+                            />
                         </div>
 
                         {/* 2K26 Text Below Video */}
