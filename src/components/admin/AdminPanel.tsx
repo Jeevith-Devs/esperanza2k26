@@ -602,6 +602,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                     <th className="p-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">College</th>
                                                     <th className="p-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Event</th>
                                                     <th className="p-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Status</th>
+                                                    <th className="p-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em]">Registered At</th>
                                                     <th className="p-6 text-[10px] font-black text-zinc-500 uppercase tracking-[0.2em] text-right">Action</th>
                                                 </tr>
                                             </thead>
@@ -636,6 +637,16 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                                 <span className={`text-[9px] font-black uppercase tracking-widest ${reg.isActive ? 'text-green-500' : 'text-yellow-500'}`}>
                                                                     {reg.isActive ? 'Verified' : 'Pending'}
                                                                 </span>
+                                                            </div>
+                                                        </td>
+                                                        <td className="p-6">
+                                                            <div className="space-y-0.5">
+                                                                <p className="text-[10px] font-black text-zinc-400 uppercase tracking-tight">
+                                                                    {reg.createdAt ? new Date(reg.createdAt).toLocaleDateString() : 'N/A'}
+                                                                </p>
+                                                                <p className="text-[9px] font-black text-zinc-600 uppercase tracking-widest">
+                                                                    {reg.createdAt ? new Date(reg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
+                                                                </p>
                                                             </div>
                                                         </td>
                                                         <td className="p-6 text-right">
@@ -1010,12 +1021,27 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div className="bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
-                                                        <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-2">Cycle</span>
+                                                        <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-1">Cycle</span>
                                                         <span className="text-purple-500 text-xs font-bold">{selectedRegistration.year} Year</span>
                                                     </div>
                                                     <div className="bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
-                                                        <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-1">Code</span>
-                                                        <span className="text-white text-[10px] font-mono opacity-60 truncate block">{(selectedRegistration as any).registrationCode || 'N/A'}</span>
+                                                        <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-1">Department</span>
+                                                        <span className="text-white text-[10px] font-black uppercase truncate block">{(selectedRegistration as any).department || 'N/A'}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <div className="bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                        <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-1">Registered On</span>
+                                                        <span className="text-white text-xs font-bold block">
+                                                            {selectedRegistration.createdAt ? new Date(selectedRegistration.createdAt).toLocaleDateString() : 'N/A'}
+                                                        </span>
+                                                        <span className="text-zinc-500 text-[9px] font-black uppercase tracking-widest">
+                                                            {selectedRegistration.createdAt ? new Date(selectedRegistration.createdAt).toLocaleTimeString() : ''}
+                                                        </span>
+                                                    </div>
+                                                    <div className="bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                        <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-1">Registration ID</span>
+                                                        <span className="text-white text-[10px] font-mono opacity-60 truncate block">{selectedRegistration._id}</span>
                                                     </div>
                                                 </div>
                                             </div>
