@@ -9,12 +9,19 @@ import { useMenu } from "@/context/MenuContext";
 import Head from "next/head";
 
 const HeroSection: React.FC = () => {
+    const videos = [
+        "/intro%20videos/intro1.mp4",
+        "/intro%20videos/intro2.mp4",
+    ];
+
     const [isMounted, setIsMounted] = useState(false);
     const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-    const [nextVideoIndex, setNextVideoIndex] = useState(1);
     const [isHovering, setIsHovering] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
     const { isMenuOpen, toggleMenu } = useMenu();
+
+    const nextVideoIndex = (currentVideoIndex + 1) % videos.length;
+
 
     const currentVideoRef = useRef<HTMLVideoElement>(null);
     const nextVideoRef = useRef<HTMLVideoElement>(null);
@@ -30,47 +37,16 @@ const HeroSection: React.FC = () => {
     const dateMarchBgRef = useRef<HTMLDivElement>(null);
     const dateNumbersRef = useRef<HTMLDivElement>(null);
 
-    const videos = [
-        "/intro%20videos/intro1.mp4",
-        "/intro%20videos/intro2.mp4",
-    ];
+
 
     useEffect(() => {
         setIsMounted(true);
     }, []);
 
-    useEffect(() => {
-        setNextVideoIndex((currentVideoIndex + 1) % videos.length);
-    }, [currentVideoIndex, videos.length]);
 
-    const isInitialMount = useRef(true);
 
-    useEffect(() => {
-        if (!isInitialMount.current && currentVideoRef.current) {
-            currentVideoRef.current.load();
-            currentVideoRef.current.play().catch((error) => {
-                console.log("Current video autoplay prevented:", error);
-            });
-        }
-        isInitialMount.current = false;
-    }, [currentVideoIndex]);
 
-    useEffect(() => {
-        if (nextVideoRef.current) {
-            nextVideoRef.current.load();
-        }
-    }, [nextVideoIndex]);
 
-    useEffect(() => {
-        if (isHovering && previewVideoRef.current && !isTransitioning) {
-            previewVideoRef.current.play().catch((error) => {
-                console.log("Preview video play prevented:", error);
-            });
-        } else if (previewVideoRef.current) {
-            previewVideoRef.current.pause();
-            previewVideoRef.current.currentTime = 0;
-        }
-    }, [isHovering, isTransitioning]);
 
     useEffect(() => {
         if (!isMounted) return;
@@ -236,47 +212,36 @@ const HeroSection: React.FC = () => {
         if (isTransitioning) return;
 
         setIsTransitioning(true);
-        setIsHovering(false);
 
         const tl = gsap.timeline({
             onComplete: () => {
                 setCurrentVideoIndex((prevIndex) => (prevIndex + 1) % videos.length);
                 setIsTransitioning(false);
+                setIsHovering(false);
+                // Clear all GSAP inline styles so React/CSS control returns to default
+                gsap.set([centerBoxRef.current, currentVideoRef.current, nextVideoRef.current], { 
+                    clearProps: "all" 
+                });
             }
         });
 
-        tl.to(centerBoxRef.current, {
-            scale: 3,
-            opacity: 0,
-            duration: 0.6,
+        tl.to(transitionOverlayRef.current, {
+            opacity: 1,
+            duration: 0.5,
             ease: "power2.inOut",
         })
-            .to(transitionOverlayRef.current, {
-                opacity: 1,
-                duration: 0.4,
-            }, "-=0.3")
-            .to(currentVideoRef.current, {
-                opacity: 0,
-                duration: 0.5,
-                ease: "power2.inOut",
-            }, "-=0.2")
-            .call(() => {
-                if (nextVideoRef.current) {
-                    nextVideoRef.current.play().catch(console.log);
-                }
+            .set([currentVideoRef.current, centerBoxRef.current], { 
+                opacity: 0 
             })
-            .to(nextVideoRef.current, {
+            .set(nextVideoRef.current, { 
                 opacity: 1,
-                duration: 0.5,
-                ease: "power2.inOut",
+                pointerEvents: "auto"
             })
             .to(transitionOverlayRef.current, {
                 opacity: 0,
-                duration: 0.3,
-            }, "-=0.2")
-            .set(centerBoxRef.current, {
-                scale: 1,
-                opacity: 1,
+                duration: 0.5,
+                ease: "power2.inOut",
+                delay: 0.1, // Momentary hold at black for better immersion
             });
     };
 
@@ -329,6 +294,7 @@ const HeroSection: React.FC = () => {
                     <video
                         ref={nextVideoRef}
                         src={videos[nextVideoIndex]}
+                        autoPlay
                         loop
                         muted
                         playsInline
@@ -415,9 +381,6 @@ const HeroSection: React.FC = () => {
                         </Link>
                     </div>
 
-
-
-
                     {/* Mobile - #VISTARA Bottom Right */}
                     <div
                         className="sm:hidden absolute bottom-6 right-4 z-40 font-extrabold select-none text-xs font-bricolage bg-gradient-to-b from-white via-[#E9D5FF] to-[#A855F7] bg-clip-text text-transparent mix-blend-screen drop-shadow-[0_0_30px_rgba(168,85,247,0.15)]"
@@ -460,29 +423,29 @@ const HeroSection: React.FC = () => {
                                 transform: "rotateX(0deg) rotateY(0deg) scale(1) translateZ(0px)",
                             }}
                         >
-                            {isHovering && !isTransitioning && (
-                                <div
-                                    ref={centerBoxRef}
-                                    className="relative size-full overflow-hidden rounded-lg shadow-2xl"
-                                >
-                                    <video
-                                        ref={previewVideoRef}
-                                        loop
-                                        muted
-                                        playsInline
-                                        preload="auto"
-                                        className="size-full object-cover object-center rounded-lg"
-                                    >
-                                        <source src={videos[nextVideoIndex]} type="video/mp4" />
-                                    </video>
+                            <div
+                                ref={centerBoxRef}
+                                className={`relative size-full overflow-hidden rounded-lg shadow-2xl transition-all duration-500 ${isHovering && !isTransitioning ? 'opacity-100 scale-100' : 'opacity-0 scale-95 pointer-events-none'}`}
+                            >
+                                <video
+                                    key={nextVideoIndex}
+                                    ref={previewVideoRef}
+                                    src={videos[nextVideoIndex]}
+                                    autoPlay
+                                    loop
+                                    muted
+                                    playsInline
+                                    preload="auto"
+                                    className="size-full object-cover object-center rounded-lg"
+                                />
 
-                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                                        <div className="text-white text-xs sm:text-sm font-bold uppercase tracking-wider">
-                                            Click to Switch
-                                        </div>
+
+                                <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                    <div className="text-white text-xs sm:text-sm font-bold uppercase tracking-wider">
+                                        Click to Switch
                                     </div>
                                 </div>
-                            )}
+                            </div>
                         </div>
                     </div>
 
