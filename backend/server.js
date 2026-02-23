@@ -221,9 +221,26 @@ app.post('/api/admin/login', (req, res) => {
 // === C. REGISTRATION ROUTES ===
 app.post('/api/register', async (req, res) => {
   try {
+    const { email, eventId, eventName, participationType, paymentScreenshotUrl } = req.body;
+    
+    // Basic validation
+    if (!email || !eventId || !eventName || !participationType || !paymentScreenshotUrl) {
+      return res.status(400).json({ success: false, error: "Missing required fields" });
+    }
+
+    if (participationType === 'Solo') {
+      if (!req.body.name || !req.body.phone || !req.body.idCardUrl) {
+        return res.status(400).json({ success: false, error: "Missing required solo fields" });
+      }
+    } else if (participationType === 'Team') {
+      if (!req.body.teamName || !req.body.teamMembers || !req.body.teamLeaderIdCardUrl) {
+        return res.status(400).json({ success: false, error: "Missing required team fields" });
+      }
+    }
+
     const newReg = new RegistrationModel(req.body);
     await newReg.save();
-    console.log("New Registration Saved:", req.body.name);
+    console.log("New Registration Saved:", req.body.name || req.body.teamName);
     res.json({ success: true, message: "Registration successful!" });
   } catch (error) {
     console.error("Registration Error:", error);

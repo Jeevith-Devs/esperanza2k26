@@ -117,7 +117,13 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
 
     const handleTeamMemberChange = (index: number, field: 'name' | 'phone', value: string) => {
         const updatedMembers = [...formData.teamMembers];
-        updatedMembers[index][field] = value;
+        if (field === 'phone') {
+            // Only allow numbers and max 10 digits
+            const numbersOnly = value.replace(/\D/g, '').slice(0, 10);
+            updatedMembers[index][field] = numbersOnly;
+        } else {
+            updatedMembers[index][field] = value;
+        }
         setFormData(prev => ({ ...prev, teamMembers: updatedMembers }));
     };
 
@@ -179,17 +185,21 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
     };
 
     const isFormFilled = React.useMemo(() => {
+        const hasPayment = !!formData.paymentScreenshotUrl;
+        
         if (isSoloEvent) {
             return !!(
                 formData.name?.trim() &&
                 formData.phone?.trim() &&
+                formData.phone.length === 10 &&
                 formData.email?.trim() &&
                 formData.college?.trim() &&
                 formData.department?.trim() &&
                 formData.degree?.trim() &&
                 formData.course?.trim() &&
                 formData.year?.trim() &&
-                formData.idCardUrl
+                formData.idCardUrl &&
+                hasPayment
             );
         }
         if (isTeamEvent) {
@@ -201,9 +211,14 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                 formData.degree?.trim() &&
                 formData.course?.trim() &&
                 formData.year?.trim() &&
-                formData.teamLeaderIdCardUrl
+                formData.teamLeaderIdCardUrl &&
+                hasPayment
             );
-            const membersCheck = formData.teamMembers.every(m => m.name?.trim() && m.phone?.trim());
+            const membersCheck = formData.teamMembers.every(m => 
+                m.name?.trim() && 
+                m.phone?.trim() && 
+                m.phone.trim().length === 10
+            );
             return basicCheck && membersCheck;
         }
         return false;
@@ -217,8 +232,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
         if (isSoloEvent) {
             if (!formData.name?.trim() || !formData.phone?.trim() || !formData.email?.trim() || 
                 !formData.college?.trim() || !formData.department?.trim() || !formData.degree?.trim() || 
-                !formData.course?.trim() || !formData.year?.trim() || !formData.idCardUrl) {
-                toast.warning("Please fill all required fields for solo registration");
+                !formData.course?.trim() || !formData.year?.trim() || !formData.idCardUrl || !formData.paymentScreenshotUrl) {
+                toast.warning("Please fill all required fields and upload both ID card and payment screenshot");
                 return;
             }
 
@@ -229,8 +244,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
         } else if (isTeamEvent) {
             if (!formData.teamName?.trim() || !formData.email?.trim() || !formData.college?.trim() || 
                 !formData.department?.trim() || !formData.degree?.trim() || !formData.course?.trim() || 
-                !formData.year?.trim() || !formData.teamLeaderIdCardUrl) {
-                toast.warning("Please fill all required team fields");
+                !formData.year?.trim() || !formData.teamLeaderIdCardUrl || !formData.paymentScreenshotUrl) {
+                toast.warning("Please fill all required team fields and upload both ID card and payment screenshot");
                 return;
             }
 
@@ -240,14 +255,14 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                 return;
             }
 
-            if (formData.teamMembers.length < minTeamSize) {
-                toast.warning(`Minimum ${minTeamSize} team members required.`);
-                return;
-            }
-
             const allPhonesValid = formData.teamMembers.every(member => phoneRegex.test(member.phone.trim()));
             if (!allPhonesValid) {
                 toast.warning("All phone numbers must be 10 digits");
+                return;
+            }
+            
+            if (formData.teamMembers.length < minTeamSize) {
+                toast.warning(`Minimum ${minTeamSize} team members required.`);
                 return;
             }
         }
@@ -362,9 +377,13 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                         <input
                                             required
                                             type="tel"
+                                            maxLength={10}
                                             className="w-full bg-[#1a1a1a] border-2 border-white/10 rounded-md p-2.5 md:p-3.5 text-sm md:text-base text-white focus:border-purple-500 focus:outline-none"
                                             value={formData.phone || ''}
-                                            onChange={(e) => handleChange('phone', e.target.value)}
+                                            onChange={(e) => {
+                                                const val = e.target.value.replace(/\D/g, '');
+                                                handleChange('phone', val);
+                                            }}
                                         />
                                     </div>
                                     <div className="space-y-4">
@@ -527,6 +546,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                                         <input
                                                             required
                                                             type="tel"
+                                                            maxLength={10}
                                                             placeholder="Phone number"
                                                             className="w-full bg-[#1a1a1a] border-2 border-white/10 rounded-md p-2.5 text-sm text-white focus:border-purple-500 focus:outline-none"
                                                             value={member.phone}
