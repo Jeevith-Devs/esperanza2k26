@@ -414,7 +414,7 @@ export default function EventsPage() {
                   </div>
                 </div>
 
-                {/* Payment Details Card - Temporarily Hidden
+                {/* Payment Details Card */}
                 <div className="mb-6 p-4 sm:p-5 bg-zinc-900/40 rounded-xl border-2 border-white/10 space-y-4">
                   <div className="flex items-center gap-3 text-zinc-400 text-xs sm:text-sm uppercase tracking-[0.2em] font-black font-bricolage">
                     <FaCreditCard className="h-4 w-4 sm:h-5 sm:w-5 text-[#A855F7]" />
@@ -436,20 +436,7 @@ export default function EventsPage() {
                     </div>
                   </div>
                 </div>
-                */}
 
-                {/* WhatsApp Payment Note - Styled Alert */}
-                <div className="mt-2 mb-8 p-4 bg-red-500/5 rounded-xl border-2 border-red-500/10 flex items-center gap-4 animate-pulse group">
-                  <div className="bg-red-500/10 p-2.5 rounded-lg border-2 border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]">
-                    <FaWhatsapp className="h-4 w-4 text-red-500" />
-                  </div>
-                  <p 
-                    className="text-sm sm:text-base font-semibold text-red-500/90 font-bricolage tracking-tight leading-tight"
-                    style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
-                  >
-                    Payment details will be shared via WhatsApp shortly after registration.
-                  </p>
-                </div>
               </div>
 
               {/* Footer / Action */}

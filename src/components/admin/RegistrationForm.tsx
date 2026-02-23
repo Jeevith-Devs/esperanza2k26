@@ -659,7 +659,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                             </>
                         )}
                         <div className="grid grid-cols-1 gap-3 md:gap-6">
-                            {/* Payment Details Card - Temporarily Hidden
+                            {/* Payment Details Card */}
                             <div className="space-y-4">
                                 <label className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
                                     <FaCreditCard className="text-purple-500" /> Payment Details
@@ -677,21 +677,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                     </div>
                                 </div>
                             </div>
-                            */}
 
-                            {/* WhatsApp Payment Note - Styled Alert */}
-                            <div className="mt-4 p-4 md:p-6 bg-red-500/5 rounded-2xl border-2 border-red-500/10 flex items-center gap-5 animate-pulse">
-                                <div className="bg-red-500/10 p-3 rounded-xl border-2 border-red-500/20 shadow-[0_0_20px_rgba(239,68,68,0.1)] shrink-0">
-                                    <FaWhatsapp className="h-5 w-5 text-red-500" />
-                                </div>
-                                <p 
-                                    className="text-sm md:text-lg font-semibold text-red-500/90 font-bricolage tracking-tight leading-tight"
-                                    style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
-                                >
-                                    Payment details will be shared via WhatsApp shortly after registration.
-                                </p>
-                            </div>
-{/*
                             <div className="space-y-4">
                                 <label className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest">Payment Screenshot *</label>
                                 <div className="relative">
@@ -719,11 +705,12 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                             <>
                                                 <FaCloudUploadAlt size={20} /> <span className="text-sm md:text-base">Upload Screenshot</span>
                                             </>
-                                        )}
+                                        )
+                                        }
                                     </label>
                                 </div>
                             </div>
-*/}
+
                         </div>
                         <button
                             type="submit"
