@@ -22,30 +22,7 @@ const transporter = nodemailer.createTransport({
 // --- 1. MIDDLEWARE ---
 app.use(express.json());
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-
-    const allowedOrigins = [
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-      'https://esparanza2k26.vercel.app',
-      'https://esparanza-git-main-esparanzas-projects.vercel.app'
-    ];
-
-    // Check if the origin is in the explicitly allowed list
-    if (allowedOrigins.indexOf(origin) !== -1) {
-      return callback(null, true);
-    }
-
-    // Allow any Vercel preview or production deployment dynamically
-    if (origin.endsWith('.vercel.app')) {
-      return callback(null, true);
-    }
-
-    console.log("Blocked CORS for:", origin);
-    return callback(new Error('Not allowed by CORS'));
-  },
+  origin: true,
   credentials: true
 }));
 
