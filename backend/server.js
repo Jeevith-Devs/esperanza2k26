@@ -29,7 +29,7 @@ app.use(cors({
     const allowedOrigins = [
       'http://localhost:3000',
       'http://127.0.0.1:3000',
-      'https://esparanza.vercel.app',
+      'https://esparanza2k26.vercel.app',
       'https://esparanza-git-main-esparanzas-projects.vercel.app'
     ];
 
@@ -232,7 +232,7 @@ app.post('/api/admin/login', (req, res) => {
 app.post('/api/register', async (req, res) => {
   try {
     const { email, eventId, eventName, participationType, paymentScreenshotUrl } = req.body;
-    
+
     // Basic validation
     if (!email || !eventId || !eventName || !participationType || !paymentScreenshotUrl) {
       return res.status(400).json({ success: false, error: "Missing required fields" });
@@ -447,7 +447,7 @@ app.post('/api/events/update', async (req, res) => {
     const operations = events.map(event => ({
       updateOne: {
         filter: { id: event.id },
-        update: { 
+        update: {
           $set: {
             title: event.title,
             date: event.date,
