@@ -133,10 +133,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
             const json = await res.json();
             if (!res.ok) throw new Error(json.error || "Server Error");
 
-            if (!silent) alert("Changes Saved to Database!");
+            if (!silent) toast.success("Changes Saved to Database!");
         } catch (error: any) {
             console.error("Failed to save content", error);
-            alert(`Error saving content: ${error.message}`);
+            toast.error(`Error saving content: ${error.message}`);
         }
     };
 
@@ -173,7 +173,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
             // alert(`User ${reg.name} Verified!`); // Optional: Remove alert for smoother UX
         } catch (error) {
             console.error("Verification failed", error);
-            alert("Verification failed");
+            toast.error("Verification failed");
             // Revert optimistic update
             setRegistrations(registrations);
         }
@@ -246,7 +246,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
 
     const handleSaveEvent = () => {
         if (!newEvent.title || !newEvent.description) {
-            alert("Please fill in all required fields (Title, Description)");
+            toast.warning("Please fill in all required fields (Title, Description)");
             return;
         }
 
@@ -268,7 +268,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
 
         setEvents(updatedEvents);
         saveEventsToBackend(updatedEvents);
-        alert("Event Saved Successfully!");
+        toast.success("Event Saved Successfully!");
         resetForm();
     };
 

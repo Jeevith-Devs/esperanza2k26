@@ -445,16 +445,25 @@ export default function EventsPage() {
                 <div className="px-5 sm:px-8 py-4 sm:py-6">
                   <button
                     onClick={handleRegisterForEvent}
-                    className="w-full group relative flex items-center justify-between rounded-xl p-4 bg-zinc-800 hover:bg-zinc-800/80 transition-all duration-300 overflow-hidden cursor-pointer"
+                    disabled={getAdminEvent(selectedEvent).registeredCount >= (getAdminEvent(selectedEvent).maxSlots || 100)}
+                    className={`w-full group relative flex items-center justify-between rounded-xl p-4 transition-all duration-300 overflow-hidden ${
+                      getAdminEvent(selectedEvent).registeredCount >= (getAdminEvent(selectedEvent).maxSlots || 100)
+                        ? 'bg-zinc-900 cursor-not-allowed text-zinc-600'
+                        : 'bg-zinc-800 hover:bg-zinc-800/80 cursor-pointer'
+                    }`}
                   >
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#A855F7]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     <span
                       className="font-medium text-white relative z-10 transition-colors group-hover:text-[#A855F7] font-bricolage"
                       style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
                     >
-                      Register Now
+                      {getAdminEvent(selectedEvent).registeredCount >= (getAdminEvent(selectedEvent).maxSlots || 100) 
+                        ? 'Event Full / Sold Out' 
+                        : 'Register Now'}
                     </span>
-                    <FaArrowRight className="h-5 w-5 text-zinc-400 group-hover:text-[#A855F7] transition-colors relative z-10" />
+                    {!(getAdminEvent(selectedEvent).registeredCount >= (getAdminEvent(selectedEvent).maxSlots || 100)) && (
+                      <FaArrowRight className="h-5 w-5 text-zinc-400 group-hover:text-[#A855F7] transition-colors relative z-10" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -466,34 +475,13 @@ export default function EventsPage() {
       {/* Registration Form Modal */}
       <AnimatePresence>
         {showRegistration && selectedEvent && (
-          <div className="fixed inset-0 z-[60] overflow-y-auto bg-black/90 backdrop-blur-sm">
-            <div className="min-h-screen px-4 text-center">
-              {/* Overlay to close */}
-              <div
-                className="fixed inset-0 transition-opacity"
-                aria-hidden="true"
-                onClick={() => setShowRegistration(false)}
-              ></div>
-
-              <span className="inline-block h-screen align-middle" aria-hidden="true">&#8203;</span>
-
-              <div className="inline-block w-full max-w-2xl p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-zinc-900 border border-zinc-800 rounded-2xl shadow-xl">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-2xl font-bold text-white font-bricolage">Register for {selectedEvent.title}</h3>
-                  <button onClick={() => setShowRegistration(false)} className="text-zinc-400 hover:text-white">
-                    <FaArrowRight className="rotate-45" />
-                  </button>
-                </div>
-                <RegistrationForm
-                  selectedEvent={getAdminEvent(selectedEvent)}
-                  onClose={() => setShowRegistration(false)}
-                  onSubmit={handleRegistrationSubmit}
-                  upiId={content?.upiId}
-                  qrCodeUrl={content?.qrCodeUrl}
-                />
-              </div>
-            </div>
-          </div>
+          <RegistrationForm
+            selectedEvent={getAdminEvent(selectedEvent)}
+            onClose={() => setShowRegistration(false)}
+            onSubmit={handleRegistrationSubmit}
+            upiId={content?.upiId}
+            qrCodeUrl={content?.qrCodeUrl}
+          />
         )}
       </AnimatePresence>
 

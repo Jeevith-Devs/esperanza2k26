@@ -318,11 +318,12 @@ const HeroSection: React.FC = () => {
 
                         {/* Center Video with Rotation */}
                         <div
-                            className="relative w-[300px] h-[160px] pointer-events-none z-10"
+                            className="relative w-[300px] h-[160px] pointer-events-auto z-10 cursor-pointer"
                             style={{
                                 transform: "perspective(800px) rotateY(-8deg) rotateX(3deg) rotateZ(5deg)",
                                 transformOrigin: "center center"
                             }}
+                            onClick={handleClick}
                         >
                             <video
                                 src={videos[currentVideoIndex]}
