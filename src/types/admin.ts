@@ -66,16 +66,19 @@ export interface Registration {
     email: string;
     phone: string;
     college: string;
+    department?: string;
     degree: string;
     course: string;
     year: string;
     isVeltechStudent: boolean;
     vmNumber?: string;
     idCardUrl?: string;
+    teamLeaderIdCardUrl?: string;
     paymentScreenshotUrl: string;
     eventOfInterest?: string; // Legacy
     eventId?: string;        // New
     eventName?: string;      // New
+    teamMembers?: { name: string; phone: string }[];
     paymentStatus: string;
     isActive?: boolean;      // Verified status
     createdAt: string;

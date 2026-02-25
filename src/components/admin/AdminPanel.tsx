@@ -1026,7 +1026,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                     </div>
                                                     <div className="bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
                                                         <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-1">Department</span>
-                                                        <span className="text-white text-[10px] font-black uppercase truncate block">{(selectedRegistration as any).department || 'N/A'}</span>
+                                                        <span className="text-white text-[10px] font-black uppercase truncate block">{selectedRegistration.department || 'N/A'}</span>
                                                     </div>
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-4">
@@ -1053,9 +1053,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                 <h4 className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em]">Team Members</h4>
                                                 <div className="h-px flex-1 bg-white/5" />
                                             </div>
-                                            {(selectedRegistration as any).teamMembers && ((selectedRegistration as any).teamMembers as any[]).length > 0 ? (
+                                            {selectedRegistration.teamMembers && selectedRegistration.teamMembers.length > 0 ? (
                                                 <div className="grid grid-cols-1 gap-2">
-                                                    {((selectedRegistration as any).teamMembers as any[]).map((member: any, i: number) => (
+                                                    {selectedRegistration.teamMembers.map((member: any, i: number) => (
                                                         <div key={i} className="bg-zinc-900/20 p-4 rounded-xl border border-white/5 flex items-center justify-between">
                                                             <div className="flex items-center gap-3">
                                                                 <span className="text-purple-500 font-mono text-[10px] opacity-40">[{i+1}]</span>
@@ -1074,6 +1074,42 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                     </div>
 
                                     <div className="space-y-12">
+                                        <section className="space-y-8">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-px flex-1 bg-white/5" />
+                                                <h4 className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em]">Identification Card</h4>
+                                                <div className="h-px flex-1 bg-white/5" />
+                                            </div>
+                                            <div className="aspect-[4/5] bg-zinc-950 rounded-[40px] overflow-hidden border-2 border-zinc-900 group relative">
+                                                {(selectedRegistration.idCardUrl || selectedRegistration.teamLeaderIdCardUrl) ? (
+                                                    <>
+                                                        <img 
+                                                            src={selectedRegistration.idCardUrl || selectedRegistration.teamLeaderIdCardUrl} 
+                                                            alt="ID Card" 
+                                                            className="w-full h-full object-cover grayscale opacity-50 transition-all duration-700 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-105"
+                                                        />
+                                                        <div className="absolute inset-x-0 bottom-0 p-8 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                                                            <a 
+                                                                href={selectedRegistration.idCardUrl || selectedRegistration.teamLeaderIdCardUrl} 
+                                                                target="_blank" 
+                                                                rel="noopener noreferrer"
+                                                                className="w-full h-16 bg-white text-black rounded-2xl flex items-center justify-center gap-3 text-[10px] font-black uppercase tracking-widest shadow-2xl"
+                                                            >
+                                                                <FaExternalLinkAlt size={14} /> View Full Image
+                                                            </a>
+                                                        </div>
+                                                    </>
+                                                ) : (
+                                                    <div className="w-full h-full flex flex-col items-center justify-center text-zinc-800 gap-6">
+                                                        <div className="h-20 w-20 rounded-full border-2 border-zinc-900 flex items-center justify-center">
+                                                            <FaFileAlt size={32} />
+                                                        </div>
+                                                        <span className="text-[10px] font-black uppercase tracking-widest border border-zinc-900 px-4 py-2 rounded-full">No ID Card Uploaded</span>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </section>
+
                                         <section className="space-y-8">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-px flex-1 bg-white/5" />
