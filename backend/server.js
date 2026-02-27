@@ -622,7 +622,7 @@ app.post('/api/admin/verify-registration', async (req, res) => {
                             <p>Vel Tech Multi Tech – Avadi, Chennai</p>
                             <p style="margin-top: 15px; margin-bottom: 0;">
                                 Questions? <br/>
-                                <a href="mailto:esperanza2k26@vtmt.edu.in" style="display:inline-block; margin-top:5px;">esperanza2k26@vtmt.edu.in</a>
+                                <a href="mailto:technical.vistara25@gmail.com" style="display:inline-block; margin-top:5px;">technical.vistara25@gmail.com</a>
                             </p>
                         </td>
                     </tr>
@@ -852,7 +852,7 @@ app.post('/api/admin/verify-registration', async (req, res) => {
                             <p>Vel Tech Multi Tech – Avadi, Chennai</p>
                             <p style="margin-top: 15px; margin-bottom: 0;">
                                 Support Email: <br/>
-                                <a href="mailto:esperanza2k26@vtmt.edu.in" style="display:inline-block; margin-top:5px; color: #eab308;">esperanza2k26@vtmt.edu.in</a>
+                                <a href="mailto:technical.vistara25@gmail.com" style="display:inline-block; margin-top:5px; color: #eab308;">technical.vistara25@gmail.com</a>
                             </p>
                         </td>
                     </tr>
