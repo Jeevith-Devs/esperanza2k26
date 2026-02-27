@@ -205,6 +205,9 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
         if (isTeamEvent) {
             const basicCheck = !!(
                 formData.teamName?.trim() &&
+                formData.name?.trim() &&
+                formData.phone?.trim() &&
+                formData.phone.length === 10 &&
                 formData.email?.trim() &&
                 formData.college?.trim() &&
                 formData.department?.trim() &&
@@ -242,10 +245,15 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                 return;
             }
         } else if (isTeamEvent) {
-            if (!formData.teamName?.trim() || !formData.email?.trim() || !formData.college?.trim() || 
+            if (!formData.teamName?.trim() || !formData.name?.trim() || !formData.phone?.trim() || !formData.email?.trim() || !formData.college?.trim() || 
                 !formData.department?.trim() || !formData.degree?.trim() || !formData.course?.trim() || 
                 !formData.year?.trim() || !formData.teamLeaderIdCardUrl || !formData.paymentScreenshotUrl) {
                 toast.warning("Please fill all required team fields and upload both ID card and payment screenshot");
+                return;
+            }
+
+            if (!phoneRegex.test(formData.phone.trim())) {
+                toast.warning("Please enter a valid 10-digit phone number for the Team Leader");
                 return;
             }
 
@@ -509,6 +517,35 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                             value={formData.teamName || ''}
                                             onChange={(e) => handleChange('teamName', e.target.value)}
                                         />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                                        <div className="space-y-4">
+                                            <label className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest">Team Leader Name *</label>
+                                            <input
+                                                required
+                                                type="text"
+                                                placeholder="Enter leader's name"
+                                                className="w-full bg-[#1a1a1a] border-2 border-white/10 rounded-md p-2.5 md:p-3.5 text-sm md:text-base text-white placeholder:text-gray-600 focus:border-purple-500 focus:outline-none"
+                                                value={formData.name || ''}
+                                                onChange={(e) => handleChange('name', e.target.value)}
+                                            />
+                                        </div>
+                                        <div className="space-y-4">
+                                            <label className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest">Team Leader Phone *</label>
+                                            <input
+                                                required
+                                                type="tel"
+                                                maxLength={10}
+                                                placeholder="Enter leader's phone"
+                                                className="w-full bg-[#1a1a1a] border-2 border-white/10 rounded-md p-2.5 md:p-3.5 text-sm md:text-base text-white placeholder:text-gray-600 focus:border-purple-500 focus:outline-none"
+                                                value={formData.phone || ''}
+                                                onChange={(e) => {
+                                                    const val = e.target.value.replace(/\D/g, '');
+                                                    handleChange('phone', val);
+                                                }}
+                                            />
+                                        </div>
                                     </div>
 
                                     <div className="space-y-4">

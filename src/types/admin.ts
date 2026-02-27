@@ -78,6 +78,8 @@ export interface Registration {
     eventOfInterest?: string; // Legacy
     eventId?: string;        // New
     eventName?: string;      // New
+    participationType?: string; // New
+    teamName?: string;       // New
     teamMembers?: { name: string; phone: string }[];
     paymentStatus: string;
     isActive?: boolean;      // Verified status

@@ -9,6 +9,7 @@ import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import nodemailer from 'nodemailer';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import axios from 'axios';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -571,15 +572,12 @@ app.post('/api/admin/verify-registration', async (req, res) => {
                                                     <div class="detail-value">${updatedReg.teamName}</div>
                                                 </td>
                                             </tr>` : ''}
-                                            ${updatedReg.teamMembers && (Array.isArray(updatedReg.teamMembers) ? updatedReg.teamMembers.length > 0 : Object.keys(updatedReg.teamMembers).length > 0) ? `
+                                            ${(updatedReg.participationType === 'Team' && updatedReg.teamMembers && Array.isArray(updatedReg.teamMembers) && updatedReg.teamMembers.length > 0 && updatedReg.teamMembers.some(m => m.name && m.name.trim() !== '')) ? `
                                             <tr>
                                                 <td class="detail-row" style="padding-bottom: 15px;">
                                                     <div class="detail-label">Team Members</div>
                                                     <div class="detail-value" style="font-size: 14px; font-weight: 500;">
-                                                        ${Array.isArray(updatedReg.teamMembers) 
-                                                            ? updatedReg.teamMembers.map(m => m.name || m).join(', ') 
-                                                            : Object.values(updatedReg.teamMembers).filter(Boolean).map(m => typeof m === 'object' ? m.name : m).join(', ')
-                                                        }
+                                                        ${updatedReg.teamMembers.filter(m => m.name && m.name.trim() !== '').map(m => m.name).join(', ')}
                                                     </div>
                                                 </td>
                                             </tr>` : ''}
@@ -639,9 +637,30 @@ app.post('/api/admin/verify-registration', async (req, res) => {
 
         const defaultPassImagePath = path.join(__dirname, '..', 'public', 'Entry Pass', 'esperanza_entry_pass.png');
         
-        const attachmentConfig = passImageUrl 
-          ? { filename: 'esperanza_entry_pass.png', href: passImageUrl, cid: 'esperanza_entry_pass' }
-          : { filename: 'esperanza_entry_pass.png', path: defaultPassImagePath, cid: 'esperanza_entry_pass' };
+        let isBuffer = false;
+        let attachmentConfig;
+
+        if (passImageUrl) {
+          try {
+            const resp = await axios.get(passImageUrl, { responseType: 'arraybuffer' });
+            attachmentConfig = {
+              filename: 'esperanza_entry_pass.png',
+              content: Buffer.from(resp.data),
+              cid: 'esperanza_entry_pass'
+            };
+            isBuffer = true;
+          } catch (fetchErr) {
+            console.error("Failed fetching pass string image, falling back to default:", fetchErr.message);
+          }
+        }
+
+        if (!isBuffer) {
+          attachmentConfig = { 
+            filename: 'esperanza_entry_pass.png', 
+            path: defaultPassImagePath, 
+            cid: 'esperanza_entry_pass' 
+          };
+        }
 
         await transporter.sendMail({
           from: `"Esperanza 2K26" <${process.env.EMAIL_USER}>`,
@@ -655,9 +674,208 @@ app.post('/api/admin/verify-registration', async (req, res) => {
         console.error("❌ Error sending confirmation email:", mailError);
         // We don't return error here because the registration IS verified in DB
       }
+    } else {
+      // Send Pending Email
+      try {
+        const participantName = updatedReg.name || updatedReg.teamName || "Participant";
+        const eventName = updatedReg.eventName || "Esperanza Event";
+        
+        const pendingEmailHtml = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Pending - Esperanza 2K26</title>
+    <!--[if mso]>
+    <style type="text/css">
+        table {border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;}
+        table, td {font-family: Arial, sans-serif;}
+    </style>
+    <![endif]-->
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap');
+        
+        body, table, td, p, a, h1, h2, h3 {
+            font-family: 'Bricolage Grotesque', Arial, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0c0c0c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #0f172a;
+            border-radius: 24px;
+            border: 1px solid #1e293b;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .header {
+            background-color: #020617;
+            padding: 40px 30px;
+            text-align: center;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 14px;
+            color: #eab308;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .greeting {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0 0 20px 0;
+            color: #ffffff;
+        }
+
+        .message {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #cbd5e1;
+            margin: 0 0 35px 0;
+        }
+
+        .alert-box {
+            background-color: rgba(234, 179, 8, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(234, 179, 8, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .alert-box p {
+            margin: 0;
+            font-size: 14px;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .footer {
+            background-color: #020617;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #1e293b;
+        }
+
+        .footer p {
+            margin: 0 0 10px 0;
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .footer a {
+            color: #eab308;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .main-container {
+                border-radius: 0 !important;
+                border: none !important;
+            }
+            body {
+                padding: 0 !important;
+            }
+            .header, .content, .footer {
+                padding: 30px 20px !important;
+            }
+        }
+    </style>
+</head>
+<body style="background-color: #0c0c0c; margin: 0; padding: 40px 20px;">
+    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center">
+                <table role="presentation" class="main-container" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px;">
+                    <tr>
+                        <td class="header">
+                            <h1>Esperanza 2K26</h1>
+                            <p style="color: #eab308;">Action Required</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="content">
+                            <h2 class="greeting">Hello ${participantName},</h2>
+                            <p class="message">
+                                Your registration status for <strong>${eventName}</strong> has been updated to <strong>PENDING</strong>. 
+                                We are currently verifying your payment and identity details. If there are any discrepancies, we may need you to reach out and provide further proof.
+                            </p>
+                            <table role="presentation" class="alert-box" border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                    <td>
+                                        <p>⚠️ Please ensure your payment screenshot and ID card details were uploaded correctly.</p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="footer">
+                            <p>© 2026 Vistara Student Club, VTMT</p>
+                            <p>Vel Tech Multi Tech – Avadi, Chennai</p>
+                            <p style="margin-top: 15px; margin-bottom: 0;">
+                                Support Email: <br/>
+                                <a href="mailto:esperanza2k26@vtmt.edu.in" style="display:inline-block; margin-top:5px; color: #eab308;">esperanza2k26@vtmt.edu.in</a>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>`;
+
+        await transporter.sendMail({
+          from: `"Esperanza 2K26" <${process.env.EMAIL_USER}>`,
+          to: updatedReg.email,
+          subject: `Action Required: Registration Pending for ${eventName} - Esperanza 2K26`,
+          html: pendingEmailHtml
+        });
+        console.log(`📧 Pending status email sent to: ${updatedReg.email}`);
+      } catch (mailError) {
+        console.error("❌ Error sending pending email:", mailError);
+      }
     }
 
-    res.json({ success: true, message: "Registration verified successfully and email sent!", data: updatedReg });
+    res.json({ success: true, message: `Registration ${isActive ? 'verified' : 'set to pending'} successfully and email sent!`, data: updatedReg });
   } catch (error) {
     console.error("❌ Error verifying registration:", error);
     res.status(500).json({ success: false, error: error.message });

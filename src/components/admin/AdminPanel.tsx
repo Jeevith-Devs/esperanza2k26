@@ -15,7 +15,8 @@ import {
     FaExternalLinkAlt,
     FaGripVertical,
     FaShieldAlt,
-    FaArrowRight
+    FaArrowRight,
+    FaDownload
 } from 'react-icons/fa';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from "sonner";
@@ -23,6 +24,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea
 import { FileUploader } from './FileUploader';
 import config from '../../config';
 import { Content, Event, Registration, MediaAsset } from '../../types/admin';
+import * as XLSX from 'xlsx';
 
 // Default / Empty States
 const emptyEvent: Event = {
@@ -95,6 +97,62 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
             console.error("Failed to load registrations", error);
         }
         setIsLoadingRegs(false);
+    };
+
+    const exportToExcel = () => {
+        let filteredRegs = registrations;
+        let fileName = 'All_Registrations';
+        if (selectedEventFilter !== 'all' && selectedEventFilter !== 'all-list') {
+            filteredRegs = registrations.filter(r => r.eventId === selectedEventFilter);
+            const evt = events.find(e => e.id === selectedEventFilter);
+            if (evt) fileName = evt.title.replace(/[^a-zA-Z0-9]/g, '_');
+        }
+
+        if (filteredRegs.length === 0) {
+            toast.warning("No records found to export.");
+            return;
+        }
+
+        const dataToExport = filteredRegs.map(reg => {
+            // Provide a graceful fallback for old or malformed team member data
+            let teamMembersStr = '';
+            if (Array.isArray(reg.teamMembers)) {
+                teamMembersStr = reg.teamMembers
+                    .filter(m => m && m.name) // ensure valid items only
+                    .map((m: any) => `${m.name} ${m.phone ? '(' + m.phone + ')' : ''}`.trim())
+                    .join(', ');
+            }
+
+            return {
+                'Registration ID': reg._id || 'N/A',
+                'Event Name': reg.eventName || 'Unknown Event',
+                'Participation Type': reg.participationType || 'N/A',
+                'Participant / Team Name': reg.name || reg.teamName || 'N/A',
+                'Email': reg.email || 'N/A',
+                'Phone': reg.phone || 'N/A',
+                'Institution': reg.college || 'N/A',
+                'Department': reg.department || 'N/A',
+                'Degree': reg.degree || 'N/A',
+                'Course / Branch': reg.course || 'N/A',
+                'Year of Study': reg.year ? `${reg.year} Year` : 'N/A',
+                'Team Members': teamMembersStr,
+                'Status': reg.isActive ? 'VERIFIED' : 'PENDING',
+                'ID Card URL': reg.idCardUrl || reg.teamLeaderIdCardUrl || 'N/A',
+                'Payment Proof URL': reg.paymentScreenshotUrl || 'N/A',
+                'Registered At': reg.createdAt ? new Date(reg.createdAt).toLocaleString() : 'N/A'
+            };
+        });
+
+        try {
+            const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, "Registrations");
+            XLSX.writeFile(workbook, `${fileName}_${new Date().toISOString().split('T')[0]}.xlsx`);
+            toast.success(`Successfully exported ${filteredRegs.length} records!`);
+        } catch (err) {
+            console.error('Excel Export Error:', err);
+            toast.error('Failed to generate Excel file.');
+        }
     };
 
     const saveContentToBackend = async (newContent: Content, silent = false) => {
@@ -527,12 +585,21 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                 </div>
                                 <div className="flex items-center gap-3">
                                     {selectedEventFilter !== 'all' && (
-                                        <button
-                                            onClick={() => setSelectedEventFilter('all')}
-                                            className="h-12 px-6 bg-zinc-900 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all"
-                                        >
-                                            Reset Filter
-                                        </button>
+                                        <>
+                                            <button
+                                                onClick={exportToExcel}
+                                                className="h-12 px-6 bg-[#1a1a1a] border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center gap-2"
+                                            >
+                                                <FaDownload size={14} />
+                                                Export Excel
+                                            </button>
+                                            <button
+                                                onClick={() => setSelectedEventFilter('all')}
+                                                className="h-12 px-6 bg-zinc-900 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all"
+                                            >
+                                                Reset Filter
+                                            </button>
+                                        </>
                                     )}
                                     <button
                                         onClick={fetchRegistrations}
@@ -1085,7 +1152,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                                 <span className="text-purple-500 font-mono text-[10px] opacity-40">[{i+1}]</span>
                                                                 <span className="text-zinc-300 text-[11px] font-black uppercase tracking-tight">{member.name}</span>
                                                             </div>
-                                                            <div className="h-1 w-8 bg-zinc-800 rounded-full" />
+                                                            <span className="text-zinc-500 text-[10px] font-mono tracking-widest bg-black/50 px-3 py-1.5 rounded-lg border border-white/5 whitespace-nowrap">
+                                                                {member.phone || 'N/A'}
+                                                            </span>
                                                         </div>
                                                     ))}
                                                 </div>
