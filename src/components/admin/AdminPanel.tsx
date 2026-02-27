@@ -170,10 +170,34 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                 body: JSON.stringify({ registrationId: reg._id, isActive: true })
             });
             console.log("Verified user:", reg.name);
-            // alert(`User ${reg.name} Verified!`); // Optional: Remove alert for smoother UX
+            toast.success("Registration Verified");
         } catch (error) {
             console.error("Verification failed", error);
             toast.error("Verification failed");
+            // Revert optimistic update
+            setRegistrations(registrations);
+        }
+    };
+
+    const handleChangeToPending = async (reg: Registration) => {
+        // Optimistic Update
+        const updatedRegs = registrations.map(r => r._id === reg._id ? { ...r, isActive: false } : r);
+        setRegistrations(updatedRegs);
+        if (selectedRegistration && selectedRegistration._id === reg._id) {
+            setSelectedRegistration({ ...selectedRegistration, isActive: false });
+        }
+
+        try {
+            await fetch(`${config.API_URL}/admin/verify-registration`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ registrationId: reg._id, isActive: false })
+            });
+            console.log("Reverted user to pending:", reg.name);
+            toast.success("Status Changed to Pending");
+        } catch (error) {
+            console.error("Change to pending failed", error);
+            toast.error("Change to pending failed");
             // Revert optimistic update
             setRegistrations(registrations);
         }
@@ -1164,12 +1188,30 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                 </button>
                                             )}
                                             {selectedRegistration.isActive && (
-                                                <div className="h-24 w-full bg-zinc-900/40 border-2 border-green-500/20 rounded-[32px] flex items-center justify-center gap-4">
-                                                    <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 border border-green-500/20">
-                                                        <FaCheck size={16} />
+                                                <button 
+                                                    onClick={() => handleChangeToPending(selectedRegistration!)}
+                                                    className="group h-24 w-full bg-zinc-900/40 border-2 border-green-500/20 hover:border-yellow-500/50 rounded-[32px] overflow-hidden relative transition-all active:scale-[0.98]"
+                                                >
+                                                    <div className="absolute inset-0 bg-yellow-500 translate-y-full group-hover:translate-y-0 transition-transform duration-500" />
+                                                    
+                                                    {/* Default State - Verified */}
+                                                    <div className="absolute inset-0 flex items-center justify-center gap-4 group-hover:opacity-0 transition-opacity duration-300">
+                                                        <div className="h-10 w-10 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 border border-green-500/20">
+                                                            <FaCheck size={16} />
+                                                        </div>
+                                                        <span className="text-white text-[11px] font-black uppercase tracking-[0.3em]">Verified</span>
                                                     </div>
-                                                    <span className="text-white text-[11px] font-black uppercase tracking-[0.3em]">Verified</span>
-                                                </div>
+
+                                                    {/* Hover State - Change to Pending */}
+                                                    <div className="relative h-full flex flex-col items-center justify-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                        <span className="text-black text-[10px] font-black uppercase tracking-[0.4em]">CHANGE TO PENDING</span>
+                                                        <div className="flex items-center gap-2 text-black/60">
+                                                            <span className="h-px w-8 bg-black/20" />
+                                                            <FaTimes size={12} />
+                                                            <span className="h-px w-8 bg-black/20" />
+                                                        </div>
+                                                    </div>
+                                                </button>
                                             )}
                                         </div>
                                     </div>
