@@ -637,20 +637,18 @@ app.post('/api/admin/verify-registration', async (req, res) => {
 </body>
 </html>`;
 
-        const passImagePath = path.join(__dirname, '..', 'public', 'Entry Pass', 'esperanza_entry_pass.png');
+        const defaultPassImagePath = path.join(__dirname, '..', 'public', 'Entry Pass', 'esperanza_entry_pass.png');
+        
+        const attachmentConfig = passImageUrl 
+          ? { filename: 'esperanza_entry_pass.png', href: passImageUrl, cid: 'esperanza_entry_pass' }
+          : { filename: 'esperanza_entry_pass.png', path: defaultPassImagePath, cid: 'esperanza_entry_pass' };
 
         await transporter.sendMail({
           from: `"Esperanza 2K26" <${process.env.EMAIL_USER}>`,
           to: updatedReg.email,
           subject: `Registration Confirmed: ${eventName} - Esperanza 2K26`,
           html: emailHtml,
-          attachments: [
-            {
-              filename: 'esperanza_entry_pass.png',
-              path: passImagePath,
-              cid: 'esperanza_entry_pass'
-            }
-          ]
+          attachments: [attachmentConfig]
         });
         console.log(`📧 Confirmation email sent to: ${updatedReg.email}`);
       } catch (mailError) {

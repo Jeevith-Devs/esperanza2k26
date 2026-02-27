@@ -425,7 +425,7 @@ export default function EventsPage() {
                     <div className="space-y-1">
                       <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold font-bricolage">Acc No:</p>
                       <p className="text-base sm:text-lg font-black text-white font-bricolage tracking-tight leading-none break-all">
-                        15330400000010
+                        75330100008020
                       </p>
                     </div>
                     <div className="space-y-1">

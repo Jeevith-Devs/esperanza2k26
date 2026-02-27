@@ -688,7 +688,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-10">
                                         <div className="space-y-1">
                                             <p className="text-[10px] md:text-xs font-black text-gray-500 uppercase tracking-[0.2em] mb-1">Account Number</p>
-                                            <p className="text-xl md:text-2xl font-black text-white font-bricolage tracking-tight leading-none">15330400000010</p>
+                                            <p className="text-xl md:text-2xl font-black text-white font-bricolage tracking-tight leading-none">75330100008020</p>
                                         </div>
                                         <div className="space-y-1">
                                             <p className="text-[10px] md:text-xs font-black text-gray-500 uppercase tracking-[0.2em] mb-1">IFSC Code</p>

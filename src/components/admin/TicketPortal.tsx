@@ -176,7 +176,7 @@ export const TicketPortal: React.FC<TicketPortalProps> = ({ prices, upiId, qrCod
                                             <div className="grid grid-cols-1 gap-4">
                                                 <div>
                                                     <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">ACC NO:</p>
-                                                    <p className="text-xl font-bold text-white font-mono tracking-wide">15330400000010</p>
+                                                    <p className="text-xl font-bold text-white font-mono tracking-wide">75330100008020</p>
                                                 </div>
                                                 <div>
                                                     <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">IFSC:</p>
