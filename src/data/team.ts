@@ -42,7 +42,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   // Faculty Coordinators
   {
     id: "4",
-    name: "Dr. Selvam",
+    name: "Dr. Selvam M",
     role: "Faculty Coordinator",
     category: "Faculty Coordinators",
     image: null,
@@ -50,7 +50,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     id: "5",
-    name: "Dr. Muthukumar",
+    name: "Dr. Muthukumar S",
     role: "Faculty Coordinator",
     category: "Faculty Coordinators",
     image: null,
@@ -58,7 +58,7 @@ export const TEAM_MEMBERS: TeamMember[] = [
   },
   {
     id: "6",
-    name: "Dr. Balaji",
+    name: "Dr. Balaji E",
     role: "Faculty Coordinator",
     category: "Faculty Coordinators",
     image: null,
