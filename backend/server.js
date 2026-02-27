@@ -292,94 +292,312 @@ app.post('/api/admin/verify-registration', async (req, res) => {
 
         const emailHtml = `
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Esperanza 2K26 - Confirmed</title>
-<style>
-body{ margin:0; padding:0; background: radial-gradient(circle at top, #0d1b3d 0%, #050816 70%); font-family: 'Segoe UI', sans-serif; color:white; }
-.wrapper{ padding:40px 15px; }
-.container{ max-width:650px; margin:auto; background: linear-gradient(180deg, rgba(15,23,42,0.95), rgba(5,8,22,0.95)); border-radius:20px; overflow:hidden; box-shadow:0 25px 70px rgba(0,0,0,0.8); border:1px solid rgba(255,255,255,0.08); }
-.header{ text-align:center; padding:60px 20px; background: linear-gradient(135deg,#0f2027,#203a43,#2c5364); position:relative; }
-.header h1{ font-size:42px; margin:0; letter-spacing:3px; text-transform:uppercase; color:#8be9fd; text-shadow: 0 0 10px #00f0ff, 0 0 20px #00f0ff, 0 0 40px #008cff; }
-.header p{ margin-top:15px; font-size:16px; letter-spacing:2px; color:#ff4ecd; }
-.content{ padding:40px 30px; }
-.greeting{ font-size:20px; color:#00f0ff; }
-.message{ margin:20px 0 30px; line-height:1.7; color:#cbd5e1; font-size:16px; }
-.details{ background:rgba(255,255,255,0.05); padding:25px; border-radius:15px; border:1px solid rgba(255,255,255,0.08); margin-bottom:30px; }
-.details h2{ margin-top:0; font-size:18px; letter-spacing:2px; color:#ff4ecd; }
-.row{ display:flex; justify-content:space-between; margin-bottom:12px; font-size:14px; }
-.label{ color:#94a3b8; font-weight:600; }
-.value{ color:white; font-weight:500; }
-.registration-id{ font-family:monospace; color:#ffd700; letter-spacing:2px; font-weight:bold; }
-.important{ background:linear-gradient(90deg,#ff4ecd,#00f0ff); padding:15px; border-radius:10px; font-size:14px; margin-bottom:30px; color:#0f172a; font-weight:600; }
-.pass-container{ text-align:center; padding:20px; border-radius:15px; border:1px dashed #00f0ff; background:rgba(0,240,255,0.05); }
-.pass-container p{ font-size:12px; letter-spacing:3px; color:#8be9fd; }
-.pass-image{ max-width:100%; border-radius:10px; box-shadow:0 10px 40px rgba(0,240,255,0.3); }
-.footer{ text-align:center; padding:30px 20px; background:#020617; font-size:12px; color:#64748b; }
-.footer a{ color:#00f0ff; text-decoration:none; }
-@media(max-width:600px){ .row{ flex-direction:column; } }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Confirmed - Esperanza 2K26</title>
+    <!--[if mso]>
+    <style type="text/css">
+        table {border-collapse: collapse; mso-table-lspace: 0pt; mso-table-rspace: 0pt;}
+        table, td {font-family: Arial, sans-serif;}
+    </style>
+    <![endif]-->
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200..800&display=swap');
+        
+        body, table, td, p, a, h1, h2, h3 {
+            font-family: 'Bricolage Grotesque', Arial, sans-serif;
+        }
+        
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0c0c0c;
+            color: #ffffff;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #0f172a;
+            border-radius: 24px;
+            border: 1px solid #1e293b;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .header {
+            background-color: #020617;
+            padding: 40px 30px;
+            text-align: center;
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 32px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 14px;
+            color: #c084fc;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .greeting {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0 0 20px 0;
+            color: #ffffff;
+        }
+
+        .message {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #cbd5e1;
+            margin: 0 0 35px 0;
+        }
+
+        .details-box {
+            background-color: #1e293b;
+            border-radius: 16px;
+            padding: 25px 30px;
+            border: 1px solid #334155;
+            margin-bottom: 30px;
+        }
+
+        .details-title {
+            font-size: 13px;
+            color: #c084fc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0 0 20px 0;
+            font-weight: 700;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 12px;
+        }
+
+        .detail-row {
+            margin-bottom: 18px;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .alert-box {
+            background-color: rgba(168, 85, 247, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            margin-bottom: 30px;
+        }
+
+        .alert-box p {
+            margin: 0;
+            font-size: 14px;
+            color: #e2e8f0;
+            font-weight: 500;
+        }
+
+        .pass-section {
+            background-color: rgba(168, 85, 247, 0.05);
+            border: 1px dashed rgba(168, 85, 247, 0.3);
+            border-radius: 16px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .pass-title {
+            font-size: 13px;
+            color: #c084fc;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 800;
+            margin: 0 0 15px 0;
+        }
+
+        .pass-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer {
+            background-color: #020617;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #1e293b;
+        }
+
+        .footer p {
+            margin: 0 0 10px 0;
+            font-size: 13px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .footer a {
+            color: #c084fc;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+    </style>
 </head>
-<body>
-<div class="wrapper">
-<div class="container">
-<div class="header">
-  <h1>Esperanza 2K26</h1>
-  <p>AN INTER-COLLEGE CULTURAL FEST</p>
-</div>
-<div class="content">
-<p class="greeting">Hello <strong>${participantName}</strong>,</p>
-<p class="message">
-Your registration for <strong>${eventName}</strong> has been successfully confirmed.
-Get ready to experience lights, music, energy, and unforgettable moments on
-<strong>6th March 2026</strong> 🚀
-</p>
-<div class="details">
-<h2>REGISTRATION DETAILS</h2>
-<div class="row">
-<span class="label">Event</span>
-<span class="value">${eventName}</span>
-</div>
-${updatedReg.name ? `
-<div class="row">
-<span class="label">Participant</span>
-<span class="value">${updatedReg.name}</span>
-</div>` : ''}
-${updatedReg.teamName ? `
-<div class="row">
-<span class="label">Team</span>
-<span class="value">${updatedReg.teamName}</span>
-</div>` : ''}
-<div class="row">
-<span class="label">Registration ID</span>
-<span class="value registration-id">${updatedReg._id}</span>
-</div>
-<div class="row">
-<span class="label">College</span>
-<span class="value">${updatedReg.college || 'N/A'}</span>
-</div>
-</div>
-<div class="important">
-⚠️ Bring this pass to the venue. Arrive 30 minutes early to avoid entry delay.
-</div>
-${passImageUrl ? `
-<div class="pass-container">
-<p>OFFICIAL EVENT PASS</p>
-<img src="${passImageUrl}" class="pass-image" alt="Event Pass"/>
-</div>` : ''}
-</div>
-<div class="footer">
-© 2026 Vistara Student Club, VTMT  
-<br>
-Vel Tech Multi Tech – Avadi, Chennai  
-<br><br>
-Questions?  
-<a href="mailto:esperanza2k26@vtmt.edu.in">esperanza2k26@vtmt.edu.in</a>
-</div>
-</div>
-</div>
+<body style="background-color: #0c0c0c; margin: 0; padding: 40px 20px;">
+    <!-- Centering Table -->
+    <table role="presentation" width="100%" border="0" cellspacing="0" cellpadding="0">
+        <tr>
+            <td align="center">
+                
+                <!-- Main Content Table -->
+                <table role="presentation" class="main-container" border="0" cellspacing="0" cellpadding="0" style="max-width: 600px;">
+                    
+                    <!-- Header -->
+                    <tr>
+                        <td class="header">
+                            <h1>Esperanza 2K26</h1>
+                            <p>An Inter-College Cultural Fest</p>
+                        </td>
+                    </tr>
+
+                    <!-- Body Content -->
+                    <tr>
+                        <td class="content">
+                            <h2 class="greeting">Hello ${participantName},</h2>
+                            <p class="message">
+                                Your registration for <strong>${eventName}</strong> has been successfully verified! 
+                                Get ready to experience lights, music, energy, and unforgettable moments on 
+                                <strong>6th March 2026</strong>.
+                            </p>
+
+                            <!-- Details Table -->
+                            <table role="presentation" class="details-box" border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                    <td>
+                                        <p class="details-title">Registration Details</p>
+
+                                        <table role="presentation" border="0" cellspacing="0" cellpadding="0" width="100%">
+                                            <tr>
+                                                <td class="detail-row" style="padding-bottom: 15px;">
+                                                    <div class="detail-label">Event</div>
+                                                    <div class="detail-value">${eventName}</div>
+                                                </td>
+                                            </tr>
+                                            ${updatedReg.name ? `
+                                            <tr>
+                                                <td class="detail-row" style="padding-bottom: 15px;">
+                                                    <div class="detail-label">Participant</div>
+                                                    <div class="detail-value">${updatedReg.name}</div>
+                                                </td>
+                                            </tr>` : ''}
+                                            ${updatedReg.teamName ? `
+                                            <tr>
+                                                <td class="detail-row" style="padding-bottom: 15px;">
+                                                    <div class="detail-label">Team</div>
+                                                    <div class="detail-value">${updatedReg.teamName}</div>
+                                                </td>
+                                            </tr>` : ''}
+                                            ${updatedReg.teamMembers && (Array.isArray(updatedReg.teamMembers) ? updatedReg.teamMembers.length > 0 : Object.keys(updatedReg.teamMembers).length > 0) ? `
+                                            <tr>
+                                                <td class="detail-row" style="padding-bottom: 15px;">
+                                                    <div class="detail-label">Team Members</div>
+                                                    <div class="detail-value" style="font-size: 14px; font-weight: 500;">
+                                                        ${Array.isArray(updatedReg.teamMembers) 
+                                                            ? updatedReg.teamMembers.map(m => m.name || m).join(', ') 
+                                                            : Object.values(updatedReg.teamMembers).filter(Boolean).map(m => typeof m === 'object' ? m.name : m).join(', ')
+                                                        }
+                                                    </div>
+                                                </td>
+                                            </tr>` : ''}
+                                            <tr>
+                                                <td class="detail-row" style="padding-bottom: 0;">
+                                                    <div class="detail-label">Institution</div>
+                                                    <div class="detail-value">${updatedReg.college || 'N/A'}</div>
+                                                </td>
+                                            </tr>
+                                        </table>
+
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Important Alert -->
+                            <table role="presentation" class="alert-box" border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                    <td>
+                                        <p>⚠️ Please bring this email or pass to the venue. Arrive 30 minutes early.</p>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- Pass Image -->
+                            ${passImageUrl ? `
+                            <table role="presentation" class="pass-section" border="0" cellspacing="0" cellpadding="0" width="100%">
+                                <tr>
+                                    <td>
+                                        <p class="pass-title">Official Event Pass</p>
+                                        <img src="${passImageUrl}" class="pass-image" alt="Event Pass" width="500" style="width: 100%; max-width: 500px; display: block; margin: 0 auto;"/>
+                                    </td>
+                                </tr>
+                            </table>` : ''}
+
+                        </td>
+                    </tr>
+
+                    <!-- Footer -->
+                    <tr>
+                        <td class="footer">
+                            <p>© 2026 Vistara Student Club, VTMT</p>
+                            <p>Vel Tech Multi Tech – Avadi, Chennai</p>
+                            <p style="margin-top: 15px; margin-bottom: 0;">
+                                Questions? <br/>
+                                <a href="mailto:esperanza2k26@vtmt.edu.in" style="display:inline-block; margin-top:5px;">esperanza2k26@vtmt.edu.in</a>
+                            </p>
+                        </td>
+                    </tr>
+                    
+                </table>
+
+            </td>
+        </tr>
+    </table>
 </body>
 </html>`;
 
