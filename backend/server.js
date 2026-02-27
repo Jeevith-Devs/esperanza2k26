@@ -7,6 +7,11 @@ import { v2 as cloudinary } from 'cloudinary';
 import multer from 'multer';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
 import nodemailer from 'nodemailer';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -478,6 +483,38 @@ app.post('/api/admin/verify-registration', async (req, res) => {
             font-weight: 600;
             transition: color 0.3s ease;
         }
+
+        /* Responsive Styles */
+        @media only screen and (max-width: 600px) {
+            .main-container {
+                border-radius: 0 !important;
+                border: none !important;
+            }
+            body {
+                padding: 0 !important;
+            }
+            .header, .content, .footer {
+                padding: 30px 20px !important;
+            }
+            .header h1 {
+                font-size: 26px !important;
+            }
+            .greeting {
+                font-size: 20px !important;
+            }
+            .message {
+                font-size: 15px !important;
+            }
+            .details-box, .pass-section {
+                padding: 20px !important;
+            }
+            .detail-value {
+                font-size: 14px !important;
+            }
+            .pass-image {
+                border-radius: 8px !important;
+            }
+        }
     </style>
 </head>
 <body style="background-color: #0c0c0c; margin: 0; padding: 40px 20px;">
@@ -568,15 +605,14 @@ app.post('/api/admin/verify-registration', async (req, res) => {
                             </table>
 
                             <!-- Pass Image -->
-                            ${passImageUrl ? `
                             <table role="presentation" class="pass-section" border="0" cellspacing="0" cellpadding="0" width="100%">
                                 <tr>
                                     <td>
                                         <p class="pass-title">Official Event Pass</p>
-                                        <img src="${passImageUrl}" class="pass-image" alt="Event Pass" width="500" style="width: 100%; max-width: 500px; display: block; margin: 0 auto;"/>
+                                        <img src="cid:esperanza_entry_pass" class="pass-image" alt="Event Pass" width="500" style="width: 100%; max-width: 500px; display: block; margin: 0 auto;"/>
                                     </td>
                                 </tr>
-                            </table>` : ''}
+                            </table>
 
                         </td>
                     </tr>
@@ -601,11 +637,20 @@ app.post('/api/admin/verify-registration', async (req, res) => {
 </body>
 </html>`;
 
+        const passImagePath = path.join(__dirname, '..', 'public', 'Entry Pass', 'esperanza_entry_pass.png');
+
         await transporter.sendMail({
           from: `"Esperanza 2K26" <${process.env.EMAIL_USER}>`,
           to: updatedReg.email,
           subject: `Registration Confirmed: ${eventName} - Esperanza 2K26`,
-          html: emailHtml
+          html: emailHtml,
+          attachments: [
+            {
+              filename: 'esperanza_entry_pass.png',
+              path: passImagePath,
+              cid: 'esperanza_entry_pass'
+            }
+          ]
         });
         console.log(`📧 Confirmation email sent to: ${updatedReg.email}`);
       } catch (mailError) {
