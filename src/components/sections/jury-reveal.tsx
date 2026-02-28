@@ -21,8 +21,8 @@ const juryEvents = [
     { 
         id: 4, 
         title: "Walk Of Fame", 
-        image: null,
-        isRevealed: false 
+        image: "/jury/RampWalk Jury.jpg",
+        isRevealed: true 
     },
     { 
         id: 5, 
