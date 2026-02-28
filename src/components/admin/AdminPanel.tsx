@@ -1059,13 +1059,13 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                             initial={{ opacity: 0, scale: 0.9, y: 30 }}
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 30 }}
-                            className="relative w-full max-w-4xl bg-[#080808] border-2 border-zinc-800 rounded-[48px] overflow-hidden shadow-[0_0_120px_rgba(0,0,0,1)]"
+                            className="relative w-full max-w-4xl bg-[#080808] border-2 border-zinc-800 rounded-3xl overflow-hidden shadow-[0_0_120px_rgba(0,0,0,1)]"
                         >
                             <div className="absolute inset-0 opacity-10 pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')]" />
                             
-                            <div className="relative p-10 md:p-14 max-h-[90vh] overflow-y-auto custom-scrollbar">
-                                <header className="flex items-start justify-between mb-12">
-                                    <div className="space-y-4">
+                            <div className="relative p-6 md:p-14 max-h-[90vh] overflow-y-auto custom-scrollbar">
+                                <header className="flex items-start justify-between mb-8 md:mb-12">
+                                    <div className="space-y-4 pr-4">
                                         <div className="flex items-center gap-3">
                                             <span className="h-1.5 w-1.5 rounded-full bg-purple-500 animate-pulse" />
                                             <span className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.4em]">Registration Details</span>
@@ -1084,53 +1084,53 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                     </div>
                                     <button 
                                         onClick={() => setSelectedRegistration(null)}
-                                        className="h-14 w-14 bg-zinc-900 border border-white/5 rounded-[22px] flex items-center justify-center text-zinc-500 hover:text-white hover:bg-zinc-800 transition-all group"
+                                        className="h-10 w-10 md:h-14 md:w-14 shrink-0 bg-zinc-900 border border-white/5 rounded-xl md:rounded-[22px] flex items-center justify-center text-zinc-500 hover:text-white hover:bg-zinc-800 transition-all group"
                                     >
-                                        <FaTimes size={18} className="group-hover:rotate-90 transition-transform duration-300" />
+                                        <FaTimes className="text-[14px] md:text-[18px] group-hover:rotate-90 transition-transform duration-300" />
                                     </button>
                                 </header>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
-                                    <div className="space-y-12">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
+                                    <div className="space-y-10 md:space-y-12">
                                         <section className="space-y-8">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-px flex-1 bg-white/5" />
                                                 <h4 className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em]">Personal Information</h4>
                                                 <div className="h-px flex-1 bg-white/5" />
                                             </div>
-                                            <div className="space-y-6">
-                                                <div className="flex justify-between items-center bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                            <div className="space-y-4 md:space-y-6">
+                                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-zinc-900/40 p-4 md:p-5 rounded-2xl border border-white/5 gap-1">
                                                     <span className="text-zinc-600 text-[10px] font-black uppercase tracking-widest">Email</span>
-                                                    <span className="text-white text-xs font-bold tracking-tight">{selectedRegistration.email}</span>
+                                                    <span className="text-white text-xs font-bold tracking-tight break-all">{selectedRegistration.email}</span>
                                                 </div>
-                                                <div className="flex justify-between items-center bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-zinc-900/40 p-4 md:p-5 rounded-2xl border border-white/5 gap-1">
                                                     <span className="text-zinc-600 text-[10px] font-black uppercase tracking-widest">Phone</span>
                                                     <span className="text-white text-xs font-bold tracking-tight">{selectedRegistration.phone}</span>
                                                 </div>
-                                                <div className="flex justify-between items-center bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-zinc-900/40 p-4 md:p-5 rounded-2xl border border-white/5 gap-1">
                                                     <span className="text-zinc-600 text-[10px] font-black uppercase tracking-widest">Institution</span>
                                                     <span className="text-white text-xs font-bold tracking-tight">{selectedRegistration.college}</span>
                                                 </div>
                                                 {selectedRegistration.driveLink && (
-                                                    <div className="flex justify-between items-center bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center bg-zinc-900/40 p-4 md:p-5 rounded-2xl border border-white/5 gap-1">
                                                         <span className="text-zinc-600 text-[10px] font-black uppercase tracking-widest">Drive Link</span>
-                                                        <a href={selectedRegistration.driveLink} target="_blank" rel="noopener noreferrer" className="text-purple-400 text-xs font-bold tracking-tight hover:underline truncate ml-4" title={selectedRegistration.driveLink}>
+                                                        <a href={selectedRegistration.driveLink} target="_blank" rel="noopener noreferrer" className="text-purple-400 text-xs font-bold tracking-tight hover:underline truncate sm:ml-4" title={selectedRegistration.driveLink}>
                                                             {selectedRegistration.driveLink}
                                                         </a>
                                                     </div>
                                                 )}
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div className="bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                <div className="grid grid-cols-2 gap-3 md:gap-4">
+                                                    <div className="bg-zinc-900/40 p-4 md:p-5 rounded-2xl border border-white/5">
                                                         <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-1">Cycle</span>
                                                         <span className="text-purple-500 text-xs font-bold">{selectedRegistration.year} Year</span>
                                                     </div>
-                                                    <div className="bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                    <div className="bg-zinc-900/40 p-4 md:p-5 rounded-2xl border border-white/5 break-all">
                                                         <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-1">Department</span>
                                                         <span className="text-white text-[10px] font-black uppercase truncate block">{selectedRegistration.department || 'N/A'}</span>
                                                     </div>
                                                 </div>
-                                                <div className="grid grid-cols-2 gap-4">
-                                                    <div className="bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                <div className="grid grid-cols-2 gap-3 md:gap-4">
+                                                    <div className="bg-zinc-900/40 p-4 md:p-5 rounded-2xl border border-white/5">
                                                         <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-1">Registered On</span>
                                                         <span className="text-white text-xs font-bold block">
                                                             {selectedRegistration.createdAt ? new Date(selectedRegistration.createdAt).toLocaleDateString() : 'N/A'}
@@ -1139,7 +1139,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                             {selectedRegistration.createdAt ? new Date(selectedRegistration.createdAt).toLocaleTimeString() : ''}
                                                         </span>
                                                     </div>
-                                                    <div className="bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                    <div className="bg-zinc-900/40 p-4 md:p-5 rounded-2xl border border-white/5 overflow-hidden">
                                                         <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-1">Registration ID</span>
                                                         <span className="text-white text-[10px] font-mono opacity-60 truncate block">{selectedRegistration._id}</span>
                                                     </div>
@@ -1175,8 +1175,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                         </section>
                                     </div>
 
-                                    <div className="space-y-12">
-                                        <section className="space-y-8">
+                                    <div className="space-y-10 md:space-y-12">
+                                        <section className="space-y-6 md:space-y-8">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-px flex-1 bg-white/5" />
                                                 <h4 className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em]">Identification Card</h4>
@@ -1212,7 +1212,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                             </div>
                                         </section>
 
-                                        <section className="space-y-8">
+                                        <section className="space-y-6 md:space-y-8">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-px flex-1 bg-white/5" />
                                                 <h4 className="text-[9px] font-black text-zinc-600 uppercase tracking-[0.3em]">Payment Proof</h4>
