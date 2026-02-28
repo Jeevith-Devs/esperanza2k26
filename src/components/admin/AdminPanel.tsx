@@ -139,6 +139,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                 'Status': reg.isActive ? 'VERIFIED' : 'PENDING',
                 'ID Card URL': reg.idCardUrl || reg.teamLeaderIdCardUrl || 'N/A',
                 'Payment Proof URL': reg.paymentScreenshotUrl || 'N/A',
+                'Drive Link': reg.driveLink || 'N/A',
                 'Registered At': reg.createdAt ? new Date(reg.createdAt).toLocaleString() : 'N/A'
             };
         });
@@ -588,14 +589,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                         <>
                                             <button
                                                 onClick={exportToExcel}
-                                                className="h-12 px-6 bg-[#1a1a1a] border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center gap-2"
+                                                className="h-12 px-6 bg-[#1a1a1a] border-2 border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center gap-2"
                                             >
                                                 <FaDownload size={14} />
                                                 Export Excel
                                             </button>
                                             <button
                                                 onClick={() => setSelectedEventFilter('all')}
-                                                className="h-12 px-6 bg-zinc-900 border border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all"
+                                                className="h-12 px-6 bg-zinc-900 border-2 border-white/10 rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all"
                                             >
                                                 Reset Filter
                                             </button>
@@ -718,7 +719,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                             <p className="text-xs font-black text-zinc-500 uppercase tracking-tight">{reg.college}</p>
                                                         </td>
                                                         <td className="p-6">
-                                                            <span className="text-[10px] font-black text-purple-400 uppercase tracking-widest bg-purple-500/10 px-3 py-1.5 rounded-full border border-purple-500/20">
+                                                            <span className="inline-block whitespace-nowrap text-[10px] font-black text-purple-400 uppercase tracking-widest bg-purple-500/10 px-3 py-1.5 rounded-full border-2 border-purple-500/20">
                                                                 {reg.eventName || 'SYSTEM_CORE'}
                                                             </span>
                                                         </td>
@@ -743,7 +744,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                         <td className="p-6 text-right">
                                                             <button
                                                                 onClick={() => setSelectedRegistration(reg)}
-                                                                className="h-10 px-5 bg-zinc-900 border border-white/5 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center gap-2 ml-auto"
+                                                                className="h-10 px-5 bg-zinc-900 border-2 border-white/5 rounded-xl text-[9px] font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all flex items-center gap-2 ml-auto"
                                                             >
                                                                 <FaEye size={12} /> View Details
                                                             </button>
@@ -1110,6 +1111,14 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                     <span className="text-zinc-600 text-[10px] font-black uppercase tracking-widest">Institution</span>
                                                     <span className="text-white text-xs font-bold tracking-tight">{selectedRegistration.college}</span>
                                                 </div>
+                                                {selectedRegistration.driveLink && (
+                                                    <div className="flex justify-between items-center bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
+                                                        <span className="text-zinc-600 text-[10px] font-black uppercase tracking-widest">Drive Link</span>
+                                                        <a href={selectedRegistration.driveLink} target="_blank" rel="noopener noreferrer" className="text-purple-400 text-xs font-bold tracking-tight hover:underline truncate ml-4" title={selectedRegistration.driveLink}>
+                                                            {selectedRegistration.driveLink}
+                                                        </a>
+                                                    </div>
+                                                )}
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <div className="bg-zinc-900/40 p-5 rounded-2xl border border-white/5">
                                                         <span className="text-zinc-600 text-[9px] font-black uppercase tracking-widest block mb-1">Cycle</span>

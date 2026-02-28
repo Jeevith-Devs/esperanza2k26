@@ -81,6 +81,7 @@ export interface Registration {
     participationType?: string; // New
     teamName?: string;       // New
     teamMembers?: { name: string; phone: string }[];
+    driveLink?: string;
     paymentStatus: string;
     isActive?: boolean;      // Verified status
     createdAt: string;

@@ -17,6 +17,7 @@ interface RegistrationFormProps {
 export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', onSubmit, selectedEvent, onClose, upiId = '', qrCodeUrl = '' }) => {
     const isSoloEvent = selectedEvent?.participationType === 'Solo';
     const isTeamEvent = selectedEvent?.participationType === 'Team';
+    const isFrameByFrame = selectedEvent?.title === 'FRAME BY FRAME';
 
     // Parse team size with better handling
     let maxTeamSize = 4; // default
@@ -88,6 +89,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
         teamName: '',
         teamMembers: [{ name: '', phone: '' }],
         teamLeaderIdCardUrl: '',
+        driveLink: '',
 
         // Payment
         paymentScreenshotUrl: ''
@@ -215,6 +217,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                 formData.course?.trim() &&
                 formData.year?.trim() &&
                 formData.teamLeaderIdCardUrl &&
+                (!isFrameByFrame || (formData.driveLink && formData.driveLink.trim())) &&
                 hasPayment
             );
             const membersCheck = formData.teamMembers.every(m => 
@@ -249,6 +252,11 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                 !formData.department?.trim() || !formData.degree?.trim() || !formData.course?.trim() || 
                 !formData.year?.trim() || !formData.teamLeaderIdCardUrl || !formData.paymentScreenshotUrl) {
                 toast.warning("Please fill all required team fields and upload both ID card and payment screenshot");
+                return;
+            }
+
+            if (isFrameByFrame && (!formData.driveLink || !formData.driveLink.trim())) {
+                toast.warning("Please provide the drive link for your short film");
                 return;
             }
 
@@ -712,6 +720,24 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                                             </label>
                                         </div>
                                     </div>
+
+                                    {isFrameByFrame && (
+                                        <div className="space-y-4">
+                                            <label className="text-[10px] md:text-xs font-bold text-gray-500 uppercase tracking-widest">Short Film Drive Link *</label>
+                                            <input
+                                                required={isFrameByFrame}
+                                                type="url"
+                                                placeholder="Paste your Google Drive link here"
+                                                className="w-full bg-[#1a1a1a] border-2 border-white/10 rounded-md p-2.5 md:p-3.5 text-sm md:text-base text-white placeholder:text-gray-600 focus:border-purple-500 focus:outline-none"
+                                                value={formData.driveLink || ''}
+                                                onChange={(e) => handleChange('driveLink', e.target.value)}
+                                            />
+                                            <p className="text-xs md:text-sm text-gray-400 mt-1 font-inter">
+                                                Note: The drive link should be viewable by the team of Esperanza.
+                                            </p>
+                                        </div>
+                                    )}
+
                                 </div>
                             </>
                         )}
@@ -771,9 +797,9 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
                         </div>
                         <button
                             type="submit"
-                            disabled={uploadingIdCard || uploadingPayment || !isFormFilled}
+                            disabled={uploadingIdCard || uploadingPayment}
                             className={`w-full font-bold py-3.5 md:py-4 text-sm md:text-base rounded-md transition-all flex items-center justify-center gap-2 mt-4 active:scale-[0.98] touch-manipulation ${
-                                uploadingIdCard || uploadingPayment || !isFormFilled
+                                uploadingIdCard || uploadingPayment
                                     ? 'bg-gray-600 text-gray-400 cursor-not-allowed opacity-50'
                                     : 'bg-white text-black hover:bg-gray-200'
                             }`}
