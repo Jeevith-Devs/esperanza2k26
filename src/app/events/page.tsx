@@ -208,7 +208,7 @@ export default function EventsPage() {
                   description={event.desc}
                   features={(
                     event.title.toUpperCase() === "FRAME BY FRAME"
-                      ? ["Film duration: 5-15 mins", ...event.rules]
+                      ? ["Film duration: 1-15 mins", ...event.rules.filter(r => !r.includes("5–7 minutes"))]
                       : event.rules.slice(0, 4)
                   ).map(rule => (event.title === "ANYBODY CAN DANCE (Group)" && typeof rule === 'string') ? rule.replace("3–12", "2–12") : rule)}
                   actionLabel="View More"
@@ -372,6 +372,9 @@ export default function EventsPage() {
                       let displayRule = rule;
                       if (selectedEvent.title === "ANYBODY CAN DANCE (Group)" && displayRule.includes("3–12")) {
                         displayRule = displayRule.replace("3–12", "2–12");
+                      }
+                      if (selectedEvent.title === "FRAME BY FRAME" && displayRule.includes("5–7 minutes")) {
+                        displayRule = displayRule.replace("5–7 minutes.", "1-15 mins.");
                       }
                       return (
                         <li key={i} className="flex items-start gap-3">
