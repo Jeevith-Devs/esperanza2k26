@@ -25,6 +25,17 @@ import { FileUploader } from './FileUploader';
 import config from '../../config';
 import { Content, Event, Registration, MediaAsset } from '../../types/admin';
 import * as XLSX from 'xlsx';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '../ui/alert-dialog';
 
 // Default / Empty States
 const emptyEvent: Event = {
@@ -100,10 +111,10 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
     };
 
     const exportToExcel = () => {
-        let filteredRegs = registrations;
+        let filteredRegs = [...registrations];
         let fileName = 'All_Registrations';
         if (selectedEventFilter !== 'all' && selectedEventFilter !== 'all-list') {
-            filteredRegs = registrations.filter(r => r.eventId === selectedEventFilter);
+            filteredRegs = filteredRegs.filter(r => r.eventId === selectedEventFilter);
             const evt = events.find(e => e.id === selectedEventFilter);
             if (evt) fileName = evt.title.replace(/[^a-zA-Z0-9]/g, '_');
         }
@@ -113,7 +124,52 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
             return;
         }
 
-        const dataToExport = filteredRegs.map(reg => {
+        const eventOrder = [
+            "Anybody Can Dance (Group)",
+            "Anybody Can Dance (Solo)",
+            "Voice Quest (Group)",
+            "Voice Quest (Solo)",
+            "Frame By Frame",
+            "Walk of Fame"
+        ];
+
+        filteredRegs.sort((a, b) => {
+            // Priority 1: Sort by Verified vs Pending
+            const statusA = a.isActive ? 1 : 0;
+            const statusB = b.isActive ? 1 : 0;
+            
+            if (statusA !== statusB) {
+                return statusB - statusA; // 1 (Verified) comes before 0 (Pending)
+            }
+
+            // Priority 2: Sort Event-wise
+            const eventA = a.eventName || "Unknown Event";
+            const eventB = b.eventName || "Unknown Event";
+            
+            const indexA = eventOrder.indexOf(eventA);
+            const indexB = eventOrder.indexOf(eventB);
+            
+            if (indexA !== -1 && indexB !== -1) {
+                if (indexA !== indexB) return indexA - indexB;
+            } else if (indexA !== -1) {
+                return -1;
+            } else if (indexB !== -1) {
+                return 1;
+            } else {
+                if (eventA < eventB) return -1;
+                if (eventA > eventB) return 1;
+            }
+
+            return 0;
+        });
+
+        const totalVerifiedAmount = filteredRegs.filter(r => r.isActive).reduce((sum, reg) => {
+            const isGroup = reg.eventName?.toLowerCase().includes('group') || reg.participationType?.toLowerCase() === 'team' || reg.participationType?.toLowerCase() === 'group';
+            const basePrice = isGroup ? 354 : 118;
+            return sum + basePrice;
+        }, 0);
+
+        const dataToExport = filteredRegs.map((reg, index) => {
             // Provide a graceful fallback for old or malformed team member data
             let teamMembersStr = '';
             if (Array.isArray(reg.teamMembers)) {
@@ -122,6 +178,9 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                     .map((m: any) => `${m.name} ${m.phone ? '(' + m.phone + ')' : ''}`.trim())
                     .join(', ');
             }
+
+            const isGroup = reg.eventName?.toLowerCase().includes('group') || reg.participationType?.toLowerCase() === 'team' || reg.participationType?.toLowerCase() === 'group';
+            const basePrice = isGroup ? 354 : 118;
 
             return {
                 'Registration ID': reg._id || 'N/A',
@@ -137,6 +196,8 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                 'Year of Study': reg.year ? `${reg.year} Year` : 'N/A',
                 'Team Members': teamMembersStr,
                 'Status': reg.isActive ? 'VERIFIED' : 'PENDING',
+                'Event Price (₹)': basePrice,
+                'Total Verified Amount (₹)': index === 0 ? totalVerifiedAmount : '',
                 'ID Card URL': reg.idCardUrl || reg.teamLeaderIdCardUrl || 'N/A',
                 'Payment Proof URL': reg.paymentScreenshotUrl || 'N/A',
                 'Drive Link': reg.driveLink || 'N/A',
@@ -146,6 +207,30 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
 
         try {
             const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+            
+            // Format column widths to make things look professional and clean
+            worksheet['!cols'] = [
+                { wch: 28 }, // ID
+                { wch: 35 }, // Event Name
+                { wch: 18 }, // Participation Type
+                { wch: 30 }, // Participant Name
+                { wch: 30 }, // Email
+                { wch: 15 }, // Phone
+                { wch: 35 }, // Institution
+                { wch: 25 }, // Department
+                { wch: 15 }, // Degree
+                { wch: 25 }, // Course / Branch
+                { wch: 15 }, // Year of Study
+                { wch: 50 }, // Team Members
+                { wch: 15 }, // Status
+                { wch: 15 }, // Event Price
+                { wch: 25 }, // Total Amount
+                { wch: 50 }, // ID Card URL
+                { wch: 50 }, // Payment URL
+                { wch: 50 }, // Drive Link
+                { wch: 25 }, // Registered At
+            ];
+
             const workbook = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(workbook, worksheet, "Registrations");
             XLSX.writeFile(workbook, `${fileName}_${new Date().toISOString().split('T')[0]}.xlsx`);
@@ -262,6 +347,25 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
         }
     };
 
+
+    const handleDeleteUser = async (registrationId: string) => {
+        try {
+            const res = await fetch(`${config.API_URL}/admin/registrations/${registrationId}`, {
+                method: 'DELETE',
+            });
+            const data = await res.json();
+            if (data.success) {
+                toast.success("User deleted successfully!");
+                setRegistrations(registrations.filter(r => r._id !== registrationId));
+                setSelectedRegistration(null);
+            } else {
+                toast.error(data.error || "Failed to delete user");
+            }
+        } catch (error) {
+            console.error("Delete user failed", error);
+            toast.error("Failed to delete user");
+        }
+    };
 
     if (!isOpen) return null;
 
@@ -1248,7 +1352,7 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                             </div>
                                         </section>
 
-                                        <div className="pt-2">
+                                        <div className="pt-2 flex flex-col gap-4">
                                             {!selectedRegistration.isActive && (
                                                 <button 
                                                     onClick={() => handleVerifyRegistration(selectedRegistration!)}
@@ -1291,6 +1395,36 @@ export const AdminPanel: React.FC<AdminPanelProps> = ({ content, setContent, eve
                                                     </div>
                                                 </button>
                                             )}
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <button 
+                                                        className="group h-16 w-full bg-red-500/10 border-2 border-red-500/20 hover:border-red-500/50 hover:bg-red-500/20 rounded-[32px] overflow-hidden relative transition-all active:scale-[0.98] flex items-center justify-center gap-3"
+                                                    >
+                                                        <FaTrash className="text-red-500" size={14} />
+                                                        <span className="text-red-500 text-[10px] font-black uppercase tracking-[0.4em]">DELETE USER</span>
+                                                    </button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent className="bg-[#0c0c0c] border-2 border-zinc-900 text-white rounded-[24px] font-bricolage">
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle className="text-xl font-black uppercase tracking-tight text-white/90 font-bricolage">Are you sure?</AlertDialogTitle>
+                                                        <AlertDialogDescription className="text-zinc-500 text-sm font-medium font-bricolage">
+                                                            This action cannot be undone. This will permanently delete the registration and remove the data from our servers.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter className="mt-6 sm:justify-between items-center w-full sm:flex-row flex-col gap-3">
+                                                        <AlertDialogCancel className="w-full sm:w-auto mt-0 border-2 border-zinc-800 bg-transparent text-white hover:bg-zinc-900 hover:text-white rounded-xl uppercase tracking-wider text-[10px] font-black font-bricolage">Go back</AlertDialogCancel>
+                                                        <AlertDialogAction 
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleDeleteUser(selectedRegistration!._id);
+                                                            }}
+                                                            className="w-full sm:w-auto border-2 border-red-600 bg-red-600 hover:bg-red-700 hover:border-red-700 text-white rounded-xl uppercase tracking-wider text-[10px] font-black font-bricolage"
+                                                        >
+                                                            Yes, Delete
+                                                        </AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
                                         </div>
                                     </div>
                                 </div>

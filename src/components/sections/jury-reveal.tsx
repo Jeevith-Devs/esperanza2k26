@@ -27,8 +27,8 @@ const juryEvents = [
     { 
         id: 5, 
         title: "Frame By Frame", 
-        image: null,
-        isRevealed: false 
+        image: "/jury/Short Film Jury.png",
+        isRevealed: true 
     },
 ];
 

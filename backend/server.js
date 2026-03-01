@@ -886,6 +886,34 @@ app.post('/api/admin/verify-registration', async (req, res) => {
   }
 });
 
+app.delete('/api/admin/registrations/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Find the registration
+    const reg = await RegistrationModel.findById(id);
+    if (!reg) {
+      return res.status(404).json({ success: false, error: "Registration not found" });
+    }
+
+    // If it was active, decrement event count
+    if (reg.isActive) {
+      await EventModel.findOneAndUpdate(
+        { id: reg.eventId },
+        { $inc: { registeredCount: -1 } }
+      );
+    }
+
+    await RegistrationModel.findByIdAndDelete(id);
+    console.log(`🗑️ Deleted Registration: ${reg.name || reg.teamName} (${id})`);
+
+    res.json({ success: true, message: "Registration deleted successfully." });
+  } catch (error) {
+    console.error("❌ Error deleting registration:", error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // --- D. EVENT ROUTES ---
 app.get('/api/events', async (req, res) => {
   try {
