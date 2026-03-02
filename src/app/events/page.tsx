@@ -207,7 +207,7 @@ export default function EventsPage() {
                   subtitle={event.category}
                   description={event.desc}
                   features={(
-                    event.title.toUpperCase() === "FRAME BY FRAME"
+                    event.title.toUpperCase().includes("FRAME BY FRAME")
                       ? ["Film duration: 1-15 mins", ...event.rules.filter(r => !r.includes("5–7 minutes"))]
                       : event.rules.slice(0, 4)
                   ).map(rule => (event.title === "ANYBODY CAN DANCE (Group)" && typeof rule === 'string') ? rule.replace("3–12", "2–12") : rule)}
@@ -225,7 +225,10 @@ export default function EventsPage() {
                       "The Walk of Fame": "Walk Of Fame Rule book.pdf"
                     };
 
-                    const fileName = rulebookMap[event.title];
+                    let fileName = rulebookMap[event.title];
+                    if (!fileName && event.title.toUpperCase().includes("FRAME BY FRAME")) {
+                      fileName = "Frame By Frame Rule book.pdf";
+                    }
                     if (fileName) {
                       const sourcePath = `/rulebook/${fileName}`;
                       const link = document.createElement('a');
@@ -373,7 +376,7 @@ export default function EventsPage() {
                       if (selectedEvent.title === "ANYBODY CAN DANCE (Group)" && displayRule.includes("3–12")) {
                         displayRule = displayRule.replace("3–12", "2–12");
                       }
-                      if (selectedEvent.title === "FRAME BY FRAME" && displayRule.includes("5–7 minutes")) {
+                      if (selectedEvent.title?.toUpperCase().includes("FRAME BY FRAME") && displayRule.includes("5–7 minutes")) {
                         displayRule = displayRule.replace("5–7 minutes.", "1-15 mins.");
                       }
                       return (

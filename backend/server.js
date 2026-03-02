@@ -236,7 +236,7 @@ app.post('/api/register', async (req, res) => {
       if (!req.body.teamName || !req.body.teamMembers || !req.body.teamLeaderIdCardUrl || !req.body.name || !req.body.phone || !req.body.email || !req.body.college || !req.body.department || !req.body.degree || !req.body.course || !req.body.year) {
         return res.status(400).json({ success: false, error: "Missing required team fields" });
       }
-      if (eventName === 'FRAME BY FRAME' && (!req.body.driveLink || !req.body.driveLink.trim())) {
+      if (eventName && eventName.toUpperCase().includes('FRAME BY FRAME') && (!req.body.driveLink || !req.body.driveLink.trim())) {
         return res.status(400).json({ success: false, error: "Missing required drive link for short film" });
       }
     }

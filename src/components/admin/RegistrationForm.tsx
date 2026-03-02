@@ -17,7 +17,7 @@ interface RegistrationFormProps {
 export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', onSubmit, selectedEvent, onClose, upiId = '', qrCodeUrl = '' }) => {
     const isSoloEvent = selectedEvent?.participationType === 'Solo';
     const isTeamEvent = selectedEvent?.participationType === 'Team';
-    const isFrameByFrame = selectedEvent?.title === 'FRAME BY FRAME';
+    const isFrameByFrame = selectedEvent?.title?.toUpperCase().includes('FRAME BY FRAME');
 
     // Parse team size with better handling
     let maxTeamSize = 4; // default
@@ -27,7 +27,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
     if (selectedEvent?.title === "The Walk of Fame") {
         maxTeamSize = 15;
         minTeamSize = 4;
-    } else if (selectedEvent?.title === "FRAME BY FRAME" || selectedEvent?.title === "VOICE QUEST (Group)") {
+    } else if (selectedEvent?.title?.toUpperCase().includes("FRAME BY FRAME") || selectedEvent?.title === "VOICE QUEST (Group)") {
         maxTeamSize = 12;
         minTeamSize = 3;
     } else if (selectedEvent?.title === "ANYBODY CAN DANCE (Group)") {
