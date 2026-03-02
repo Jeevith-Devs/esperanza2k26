@@ -26,7 +26,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ email = '', 
     // Hardcode min/max sizes for group events specific to requirements
     if (selectedEvent?.title === "The Walk of Fame") {
         maxTeamSize = 15;
-        minTeamSize = 5;
+        minTeamSize = 4;
     } else if (selectedEvent?.title === "FRAME BY FRAME" || selectedEvent?.title === "VOICE QUEST (Group)") {
         maxTeamSize = 12;
         minTeamSize = 3;

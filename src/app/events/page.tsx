@@ -340,7 +340,7 @@ export default function EventsPage() {
                     <>
                       <li className="flex items-start gap-3">
                         <FaArrowRight className="h-4 w-4 sm:h-5 sm:w-5 text-[#A855F7] mt-1 shrink-0" />
-                        <span className="leading-relaxed">Team size: 5 - 15 members</span>
+                        <span className="leading-relaxed">Team size: 4 - 15 members</span>
                       </li>
                       <li className="flex flex-col gap-2">
                         <div className="flex items-start gap-3 text-white font-bold">
