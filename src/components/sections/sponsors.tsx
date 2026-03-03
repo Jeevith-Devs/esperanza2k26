@@ -42,89 +42,51 @@ const Sponsors = () => {
           OUR SPONSORS
         </motion.h2>
 
-        <motion.section
+        <motion.section 
+          ref={sponsorsRef} 
           style={{ y: sponsorY }}
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={isTitleInView ? { opacity: 1, scale: 1 } : {}}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-          className="flex scale-90 flex-col items-center justify-center py-[1rem] font-bricolage text-white"
+          className="flex flex-col md:flex-row md:flex-wrap justify-center items-center gap-6 lg:gap-8 mt-4 md:mt-8 pb-10 md:pb-16"
         >
-          <h3 className="text-sm md:text-xl lg:text-3xl font-black tracking-tight mb-4 md:mb-8 bg-gradient-to-b from-white via-[#C0C0C0] to-[#505050] bg-clip-text text-transparent mix-blend-screen drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]">TITLE SPONSOR</h3>
-          <motion.div
-            className="fade-image px-4 md:px-8 py-4 md:py-8 flex items-center justify-center"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-          >
-            <div className="w-32 md:w-48 lg:w-72 h-32 md:h-48 lg:h-72 rounded-2xl border-2 border-dashed border-white/30 bg-white/5 backdrop-blur-sm flex flex-col items-center justify-center gap-3 md:gap-4 ">
-              <motion.div
-                animate={{
-                  scale: [1, 1.1, 1],
-                  opacity: [0.5, 1, 0.5],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                <svg className="w-12 h-12 md:w-16 md:h-16 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-              </motion.div>
-              <p className="text-white/60 font-bold text-sm md:text-lg lg:text-xl">COMING SOON</p>
-            </div>
-          </motion.div>
-        </motion.section>
-
-        <section ref={sponsorsRef} className="flex flex-col justify-around lg:flex-row lg:gap-8 mt-8 md:mt-12">
-          {[
-            { title: "MEDIA SPONSOR" },
-            { title: "TELEVISION PARTNER" },
-            { title: "RADIO PARTNER" },
-          ].map((sponsor, index) => (
-            <motion.section
+          {[1, 2, 3, 4].map((index) => (
+            <motion.div
               key={index}
               initial={{ opacity: 0, y: 80, filter: "blur(10px)" }}
               animate={isSponsorsInView ? { opacity: 1, y: 0, filter: "blur(0px)" } : {}}
               transition={{ duration: 0.7, delay: index * 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-              className="flex flex-col items-center justify-center pb-6 md:pb-8 font-bricolage text-white"
+              className="flex flex-col items-center justify-center font-bricolage text-white w-full md:w-auto"
             >
-              <h4 className="pb-2 md:pb-4 text-xs md:text-lg lg:text-2xl font-black tracking-tight bg-gradient-to-b from-white via-[#C0C0C0] to-[#505050] bg-clip-text text-transparent mix-blend-screen drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]">{sponsor.title}</h4>
               <motion.div
-                className="fade-image h-28 md:h-40 lg:h-52 px-4 md:px-8 py-4 md:py-6 flex items-center"
-                whileHover={{ scale: 1.05 }}
+                className="relative group h-auto md:h-40 lg:h-52 px-4 md:px-4 py-4 md:py-6 flex items-center justify-center w-full md:w-auto md:cursor-pointer"
+                whileHover={{ y: -8, scale: 1.02 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
               >
-                <div className="w-40 md:w-56 lg:w-72 h-full rounded-xl border-2 border-dashed border-white/30 bg-white/5 backdrop-blur-sm flex flex-col items-center justify-center gap-2 md:gap-3">
-                  <motion.div
-                    animate={{
-                      scale: [1, 1.1, 1],
-                      opacity: [0.5, 1, 0.5],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: index * 0.3,
-                    }}
+                {/* Outer Glow Effect on Hover (Desktop only) */}
+                <div className="absolute inset-2 md:inset-4 rounded-2xl bg-gradient-to-r from-purple-500/0 via-purple-500/20 to-purple-500/0 opacity-0 md:group-hover:opacity-100 blur-xl transition-all duration-500 z-0" />
+                
+                {/* Main Card Container */}
+                <div className="relative z-10 w-[85vw] sm:w-[70vw] md:w-56 lg:w-72 aspect-video md:aspect-auto md:h-full rounded-2xl border border-white/5 bg-black/40 backdrop-blur-md flex flex-col items-center justify-center overflow-hidden transition-all duration-500 md:group-hover:border-white/20 md:group-hover:bg-white/[0.02]">
+                  
+                  {/* Inner Refined Shine (Top Edge) */}
+                  <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-white/30 to-transparent opacity-0 md:group-hover:opacity-100 transition-opacity duration-500" />
+                  
+                  {/* Image Container */}
+                  <motion.div className="w-full h-full relative"
+                    whileHover={{ scale: 1.08 }}
+                    transition={{ duration: 0.6, ease: "easeOut" }}
                   >
-                    <svg className="w-8 h-8 md:w-10 md:h-10 text-white/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                    </svg>
+                    <img 
+                      src={`/sponsors/${index}.png`} 
+                      alt={`Sponsor ${index}`} 
+                      className="w-full h-full object-cover filter brightness-100 contrast-125 saturate-100 md:saturate-50 md:group-hover:saturate-100 md:group-hover:brightness-110 transition-all duration-500" 
+                    />
+                    
+                    {/* Thematic Vignette Overlay for Depth (Desktop only) */}
+                    <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-50 md:group-hover:opacity-20 transition-opacity duration-500" />
                   </motion.div>
-                  <p className="text-white/60 font-bold text-xs md:text-sm lg:text-base">COMING SOON</p>
                 </div>
               </motion.div>
-            </motion.section>
+            </motion.div>
           ))}
-        </section>
-
-        <motion.section
-          initial={{ opacity: 0 }}
-          animate={isSponsorsInView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="flex flex-col items-center justify-center pb-10 md:pb-16 font-bricolage text-white"
-        >
-          <h4 className="text-xs md:text-lg lg:text-2xl font-black tracking-tight opacity-80 bg-gradient-to-b from-white via-[#C0C0C0] to-[#505050] bg-clip-text text-transparent mix-blend-screen drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]">OTHER SPONSORS</h4>
         </motion.section>
       </section>
     </div>

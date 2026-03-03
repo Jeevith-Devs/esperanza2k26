@@ -59,6 +59,7 @@ export default function Home() {
         <JuryReveal />
         <TeaserVideo />
         <Vistara />
+        <Sponsors />
         <FAQs />
         <Footer />
       </main>

@@ -1,0 +1,194 @@
+commit 25237c257cd6d00d5e4b3c56879d56faf2cf11a3
+Author: Dev-Madhan <maddyclickz24@gmail.com>
+Date:   Sat Feb 14 10:42:44 2026 +0530
+
+    Event pricing error has been fixed.
+
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index f29b3ee..e545aee 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -15,13 +15,11 @@ import Inauguration from "@/components/sections/inauguration";
+ import Valedictory from "@/components/sections/valedictory";
+ import Footer from "@/components/sections/footer";
+ import Loader from "@/components/ui/loader";
+-import { TicketPortal } from "@/components/admin/TicketPortal";
+ import config from "@/config";
+ import { Content } from "@/types/admin";
+ 
+ export default function Home() {
+   const [isLoading, setIsLoading] = useState(true);
+-  const [showTicketPortal, setShowTicketPortal] = useState(false);
+   const [content, setContent] = useState<Content | null>(null);
+ 
+   useEffect(() => {
+@@ -43,11 +41,7 @@ export default function Home() {
+   const router = useRouter();
+ 
+   const handleRegisterClick = () => {
+-    if (content?.isTicketPassEnabled === false) {
+-      router.push('/events');
+-    } else {
+-      setShowTicketPortal(true);
+-    }
++    router.push('/events');
+   };
+ 
+   return (
+@@ -67,15 +61,6 @@ export default function Home() {
+         <Vistara />
+         <FAQs />
+         <Footer />
+-
+-        {showTicketPortal && content && (
+-          <TicketPortal
+-            prices={content.ticketPrices}
+-            upiId={content.upiId}
+-            qrCodeUrl={content.qrCodeUrl}
+-            onClose={() => setShowTicketPortal(false)}
+-          />
+-        )}
+       </main>
+     </>
+   );
+
+commit 50bd0597ff789aa0deb2a862508e1b2f43447ea1
+Author: Dev-Madhan <maddyclickz24@gmail.com>
+Date:   Thu Feb 12 06:09:58 2026 +0530
+
+    FAQ section added.
+
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index 54ea3e3..f29b3ee 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -9,6 +9,7 @@ import IntroTextSection from "@/components/sections/intro-text";
+ import JuryReveal from "@/components/sections/jury-reveal";
+ import TeaserVideo from "@/components/sections/teaser-video";
+ import Vistara from "@/components/sections/vistara";
++import FAQs from "@/components/sections/faqs-3";
+ import Sponsors from "@/components/sections/sponsors";
+ import Inauguration from "@/components/sections/inauguration";
+ import Valedictory from "@/components/sections/valedictory";
+@@ -64,6 +65,7 @@ export default function Home() {
+         <JuryReveal />
+         <TeaserVideo />
+         <Vistara />
++        <FAQs />
+         <Footer />
+ 
+         {showTicketPortal && content && (
+
+commit 4b7ebe0cfa805f3dd0faf9970dfa28e67d50423b
+Author: JEEVITH <150571568+JEEVITH14@users.noreply.github.com>
+Date:   Wed Feb 11 08:33:33 2026 +0530
+
+    feat: implement the main landing page, integrating various UI sections, content fetching, and a ticket portal.
+
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+index 1e49678..54ea3e3 100644
+--- a/src/app/page.tsx
++++ b/src/app/page.tsx
+@@ -64,7 +64,6 @@ export default function Home() {
+         <JuryReveal />
+         <TeaserVideo />
+         <Vistara />
+-        <Sponsors />
+         <Footer />
+ 
+         {showTicketPortal && content && (
+
+commit 9e601ff79d263c9e19aeb751fdd3a3d6dbaa36ff
+Author: JEEVITH <150571568+JEEVITH14@users.noreply.github.com>
+Date:   Tue Feb 10 22:56:15 2026 +0530
+
+    first commit
+
+diff --git a/src/app/page.tsx b/src/app/page.tsx
+new file mode 100644
+index 0000000..1e49678
+--- /dev/null
++++ b/src/app/page.tsx
+@@ -0,0 +1,81 @@
++"use client";
++
++import { useState, useEffect } from "react";
++import { useRouter } from "next/navigation";
++import Header from "@/components/sections/header";
++import MobileNav from "@/components/sections/MobileNav";
++import HeroSection from "@/components/sections/hero";
++import IntroTextSection from "@/components/sections/intro-text";
++import JuryReveal from "@/components/sections/jury-reveal";
++import TeaserVideo from "@/components/sections/teaser-video";
++import Vistara from "@/components/sections/vistara";
++import Sponsors from "@/components/sections/sponsors";
++import Inauguration from "@/components/sections/inauguration";
++import Valedictory from "@/components/sections/valedictory";
++import Footer from "@/components/sections/footer";
++import Loader from "@/components/ui/loader";
++import { TicketPortal } from "@/components/admin/TicketPortal";
++import config from "@/config";
++import { Content } from "@/types/admin";
++
++export default function Home() {
++  const [isLoading, setIsLoading] = useState(true);
++  const [showTicketPortal, setShowTicketPortal] = useState(false);
++  const [content, setContent] = useState<Content | null>(null);
++
++  useEffect(() => {
++    // Fetch content (prices, upi, etc.)
++    const fetchContent = async () => {
++      try {
++        const res = await fetch(`${config.API_URL}/content`);
++        const data = await res.json();
++        if (data.success) {
++          setContent(data.data);
++        }
++      } catch (error) {
++        console.error("Failed to fetch content", error);
++      }
++    };
++    fetchContent();
++  }, []);
++
++  const router = useRouter();
++
++  const handleRegisterClick = () => {
++    if (content?.isTicketPassEnabled === false) {
++      router.push('/events');
++    } else {
++      setShowTicketPortal(true);
++    }
++  };
++
++  return (
++    <>
++      <Loader onLoadingComplete={() => setIsLoading(false)} />
++      <main
++        className="relative min-h-screen bg-background text-foreground"
++        style={{ opacity: isLoading ? 0 : 1, transition: 'opacity 0.3s ease' }}
++      >
++        <div className="grainy-overlay" />
++        <MobileNav onRegister={handleRegisterClick} />
++        <Header onRegister={handleRegisterClick} />
++        <HeroSection />
++        <IntroTextSection />
++        <JuryReveal />
++        <TeaserVideo />
++        <Vistara />
++        <Sponsors />
++        <Footer />
++
++        {showTicketPortal && content && (
++          <TicketPortal
++            prices={content.ticketPrices}
++            upiId={content.upiId}
++            qrCodeUrl={content.qrCodeUrl}
++            onClose={() => setShowTicketPortal(false)}
++          />
++        )}
++      </main>
++    </>
++  );
++}
+\ No newline at end of file
