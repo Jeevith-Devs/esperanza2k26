@@ -54,7 +54,7 @@ const JuryReveal = () => {
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     className="flex flex-col items-center mb-20"
                 >
-                    <h2 className="text-4xl md:text-6xl lg:text-7xl font-black font-bricolage tracking-widest uppercase bg-gradient-to-b from-white via-zinc-400 to-zinc-800 bg-clip-text text-transparent mb-4">
+                    <h2 className="text-3xl md:text-6xl lg:text-7xl font-black font-bricolage tracking-widest uppercase bg-gradient-to-b from-white via-zinc-400 to-zinc-800 bg-clip-text text-transparent mb-4">
                         Meet Our Jury
                     </h2>
                     <div className="w-24 h-1 bg-gradient-to-r from-transparent via-purple-500 to-transparent" />
