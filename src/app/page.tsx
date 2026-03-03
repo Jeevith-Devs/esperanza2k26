@@ -6,6 +6,7 @@ import Header from "@/components/sections/header";
 import MobileNav from "@/components/sections/MobileNav";
 import HeroSection from "@/components/sections/hero";
 import IntroTextSection from "@/components/sections/intro-text";
+import ChiefGuest from "@/components/sections/chief-guest";
 import JuryReveal from "@/components/sections/jury-reveal";
 import TeaserVideo from "@/components/sections/teaser-video";
 import Vistara from "@/components/sections/vistara";
@@ -56,9 +57,10 @@ export default function Home() {
         <Header onRegister={handleRegisterClick} />
         <HeroSection />
         <IntroTextSection />
-        <JuryReveal />
-        <TeaserVideo />
         <Vistara />
+        <JuryReveal />
+        <ChiefGuest />
+        <TeaserVideo />
         <Sponsors />
         <FAQs />
         <Footer />
