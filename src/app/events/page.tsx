@@ -453,53 +453,21 @@ export default function EventsPage() {
                   </div>
                 </div>
 
-                {/* Registration Closed Note for specific events */}
-                {selectedEvent.title === "VOICE QUEST (Solo)" && (
-                  <div className="mb-6 p-4 sm:p-5 bg-red-500/10 rounded-xl border-2 border-red-500/20 flex items-start gap-4">
-                    <div className="bg-red-500/20 p-2 rounded-lg shrink-0">
-                      <FaStar className="h-4 w-4 text-red-500" />
-                    </div>
-                    <div className="space-y-1">
-                      <p className="text-xs text-red-400 uppercase tracking-widest font-black font-bricolage">Notice</p>
-                      <p className="text-sm font-medium text-red-200 font-inter leading-snug">
-                        Registration for this event is currently closed or has reached maximum capacity.
-                      </p>
-                    </div>
+                {/* Registration Closed Note for all events */}
+                <div className="mb-6 p-4 sm:p-5 bg-red-500/10 rounded-xl border-2 border-red-500/20 flex items-start gap-4">
+                  <div className="bg-red-500/20 p-2 rounded-lg shrink-0">
+                    <FaStar className="h-4 w-4 text-red-500" />
                   </div>
-                )}
+                  <div className="space-y-1">
+                    <p className="text-xs text-red-400 uppercase tracking-widest font-black font-bricolage">Notice</p>
+                    <p className="text-sm font-medium text-red-200 font-inter leading-snug">
+                      Registration for this event is currently closed or has reached maximum capacity.
+                    </p>
+                  </div>
+                </div>
 
               </div>
 
-              {/* Footer / Action */}
-              {!(selectedEvent.title === "VOICE QUEST (Solo)") && (
-                <div className="mt-auto">
-                  <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-                  <div className="px-5 sm:px-8 py-4 sm:py-6">
-                    <button
-                      onClick={handleRegisterForEvent}
-                      disabled={getAdminEvent(selectedEvent).registeredCount >= (getAdminEvent(selectedEvent).maxSlots || 100)}
-                      className={`w-full group relative flex items-center justify-between rounded-xl p-4 transition-all duration-300 overflow-hidden ${
-                        getAdminEvent(selectedEvent).registeredCount >= (getAdminEvent(selectedEvent).maxSlots || 100)
-                          ? 'bg-zinc-900 cursor-not-allowed text-zinc-600'
-                          : 'bg-zinc-800 hover:bg-zinc-800/80 cursor-pointer'
-                      }`}
-                    >
-                      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#A855F7]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <span
-                        className="font-medium text-white relative z-10 transition-colors group-hover:text-[#A855F7] font-bricolage"
-                        style={{ fontFamily: '"Bricolage Grotesque", sans-serif' }}
-                      >
-                        {getAdminEvent(selectedEvent).registeredCount >= (getAdminEvent(selectedEvent).maxSlots || 100) 
-                          ? 'Event Full / Sold Out' 
-                          : 'Register Now'}
-                      </span>
-                      {!(getAdminEvent(selectedEvent).registeredCount >= (getAdminEvent(selectedEvent).maxSlots || 100)) && (
-                        <FaArrowRight className="h-5 w-5 text-zinc-400 group-hover:text-[#A855F7] transition-colors relative z-10" />
-                      )}
-                    </button>
-                  </div>
-                </div>
-              )}
             </motion.div>
           </motion.div>
         )}
