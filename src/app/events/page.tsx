@@ -106,7 +106,7 @@ export default function EventsPage() {
   }, []);
 
   const handleRegisterForEvent = () => {
-    if (selectedEvent?.title === "ANYBODY CAN DANCE (Solo)" || selectedEvent?.title === "VOICE QUEST (Solo)") {
+    if (selectedEvent?.title === "VOICE QUEST (Solo)") {
       router.push('/events');
       setSelectedEvent(null);
       return;
@@ -220,7 +220,7 @@ export default function EventsPage() {
                     event.title.toUpperCase().includes("FRAME BY FRAME")
                       ? ["Film duration: 1-15 mins", ...event.rules.filter(r => !r.includes("5–7 minutes"))]
                       : event.rules.slice(0, 4)
-                  ).map(rule => (event.title === "ANYBODY CAN DANCE (Group)" && typeof rule === 'string') ? rule.replace("3–12", "2–12") : rule)}
+                  ).map(rule => (event.title.includes("ANYBODY CAN DANCE") && typeof rule === 'string') ? rule.replace("3–12", "2–12") : rule)}
                   actionLabel="View More"
                   onAction={() => setSelectedEvent(event)}
                   videoSrc={event.videoSrc}
@@ -383,7 +383,7 @@ export default function EventsPage() {
                   ) : (
                     selectedEvent.rules.map((rule, i) => {
                       let displayRule = rule;
-                      if (selectedEvent.title === "ANYBODY CAN DANCE (Group)" && displayRule.includes("3–12")) {
+                      if (selectedEvent.title.includes("ANYBODY CAN DANCE") && displayRule.includes("3–12")) {
                         displayRule = displayRule.replace("3–12", "2–12");
                       }
                       if (selectedEvent.title?.toUpperCase().includes("FRAME BY FRAME") && displayRule.includes("5–7 minutes")) {
@@ -454,7 +454,7 @@ export default function EventsPage() {
                 </div>
 
                 {/* Registration Closed Note for specific events */}
-                {(selectedEvent.title === "ANYBODY CAN DANCE (Solo)" || selectedEvent.title === "VOICE QUEST (Solo)") && (
+                {selectedEvent.title === "VOICE QUEST (Solo)" && (
                   <div className="mb-6 p-4 sm:p-5 bg-red-500/10 rounded-xl border-2 border-red-500/20 flex items-start gap-4">
                     <div className="bg-red-500/20 p-2 rounded-lg shrink-0">
                       <FaStar className="h-4 w-4 text-red-500" />
@@ -471,7 +471,7 @@ export default function EventsPage() {
               </div>
 
               {/* Footer / Action */}
-              {!(selectedEvent.title === "ANYBODY CAN DANCE (Solo)" || selectedEvent.title === "VOICE QUEST (Solo)") && (
+              {!(selectedEvent.title === "VOICE QUEST (Solo)") && (
                 <div className="mt-auto">
                   <div className="w-full h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
                   <div className="px-5 sm:px-8 py-4 sm:py-6">
