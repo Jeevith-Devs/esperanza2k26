@@ -150,9 +150,9 @@ const Vistara = () => {
 
   const [currentMascotIndex, setCurrentMascotIndex] = useState(0);
   const mascotImages = [
-    "/mascot/mascot_normal_shadow.svg",
-    "/mascot/mascot_hi_shadow.svg",
-    "/mascot/mascot_party_shadow.svg"
+    "/mascot/mascot_normal.svg",
+    "/mascot/mascot_hi.svg",
+    "/mascot/mascot_party.svg"
   ];
 
   useEffect(() => {
@@ -428,9 +428,9 @@ const Vistara = () => {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="text-center mb-8 z-10"
           >
-            <h3 className="text-lg md:text-xl font-bold tracking-[0.2em] mb-2 uppercase font-bricolage bg-gradient-to-b from-white via-[#C0C0C0] to-[#505050] bg-clip-text text-transparent mix-blend-screen drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]">Guess Who is Coming?</h3>
+            <h3 className="text-lg md:text-xl font-bold tracking-[0.2em] mb-2 uppercase font-bricolage bg-gradient-to-b from-white via-[#C0C0C0] to-[#505050] bg-clip-text text-transparent mix-blend-screen drop-shadow-[0_0_30px_rgba(255,255,255,0.15)]">MEET THE SPIRIT</h3>
             <h2 className="text-5xl md:text-7xl lg:text-8xl font-black font-bricolage text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-fuchsia-300 to-indigo-400 animate-gradient-x drop-shadow-[0_0_15px_rgba(124,58,237,0.5)]">
-              ???
+              VIZZY
             </h2>
           </motion.div>
 
@@ -460,14 +460,14 @@ const Vistara = () => {
             </div>
           </motion.div>
 
-          <motion.p
+          {/* <motion.p
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
             className="mt-10 text-center text-white/50 max-w-xl text-base md:text-lg font-bricolage"
           >
             Be Awaited...
-          </motion.p>
+          </motion.p> */}
         </div>
 
       </div>
